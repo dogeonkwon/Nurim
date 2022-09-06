@@ -1,2 +1,3 @@
 # DS Store ignore
 .DS_Store
+/backend/src/main/resources/properties

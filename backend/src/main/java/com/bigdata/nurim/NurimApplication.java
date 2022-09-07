@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WheelKoApplication {
+public class NurimApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WheelKoApplication.class, args);
+		SpringApplication.run(NurimApplication.class, args);
 	}
 
 }

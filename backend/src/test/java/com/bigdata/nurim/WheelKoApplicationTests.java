@@ -1,4 +1,4 @@
-package com.bigdata.WheelKo;
+package com.bigdata.nurim;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

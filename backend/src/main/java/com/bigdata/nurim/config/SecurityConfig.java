@@ -1,9 +1,9 @@
-package com.bigdata.WheelKo.config;
+package com.bigdata.nurim.config;
 
-import com.bigdata.WheelKo.security.JwtAccessDeniedHandler;
-import com.bigdata.WheelKo.security.JwtAuthenticationEntryPoint;
-import com.bigdata.WheelKo.security.JwtSecurityConfig;
-import com.bigdata.WheelKo.security.TokenProvider;
+import com.bigdata.nurim.security.JwtAccessDeniedHandler;
+import com.bigdata.nurim.security.JwtAuthenticationEntryPoint;
+import com.bigdata.nurim.security.JwtSecurityConfig;
+import com.bigdata.nurim.security.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

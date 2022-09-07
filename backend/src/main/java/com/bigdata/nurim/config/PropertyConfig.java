@@ -1,4 +1,4 @@
-package com.bigdata.WheelKo.config;
+package com.bigdata.nurim.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

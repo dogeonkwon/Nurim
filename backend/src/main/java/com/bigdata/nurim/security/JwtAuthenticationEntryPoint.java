@@ -1,4 +1,4 @@
-package com.bigdata.WheelKo.security;
+package com.bigdata.nurim.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

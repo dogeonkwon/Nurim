@@ -28,11 +28,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String phone;
 
-    @Column(nullable = false)
+    @Column
     private String emergency;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LoginType loginType;

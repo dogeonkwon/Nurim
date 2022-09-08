@@ -1,15 +1,22 @@
 package com.bigdata.nurim.service;
 
+import com.bigdata.nurim.dto.LoginDto;
+import com.bigdata.nurim.dto.TokenDto;
 import com.bigdata.nurim.dto.UserDto;
 import com.bigdata.nurim.entity.LoginType;
 import com.bigdata.nurim.entity.User;
 import com.bigdata.nurim.repository.UserRepository;
+import com.bigdata.nurim.security.JwtFilter;
 import com.bigdata.nurim.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,4 +48,25 @@ public class UserService {
         return new ResponseEntity<>("사용가능한 이메일입니다.", HttpStatus.OK);
     }
 
+    public ResponseEntity<TokenDto> login(LoginDto loginDto) {
+        //  LoginDto의 userName,Password를 받아서 UsernamePasswordAuthenticationToken 객체를 생성한다
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+
+        // authenticationToken 을 이용해서 Authentication 객체를 생성하려고 authenticate메서드가 실행될때
+        // CustomUserDetailsService 의 loadUserByUsername 메서드가 실행된다.
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        // 생성된 Authentication 객체를 SecurityContextHolder에 저장하고,
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 그 인증정보를 기반으로 토큰을 생성한다
+        String jwt = tokenProvider.createToken(authentication);
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        // 생성한 토큰을 Response 헤더에 넣어주고,
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+    }
 }

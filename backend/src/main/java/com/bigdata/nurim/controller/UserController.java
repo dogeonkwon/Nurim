@@ -1,5 +1,7 @@
 package com.bigdata.nurim.controller;
 
+import com.bigdata.nurim.dto.LoginDto;
+import com.bigdata.nurim.dto.TokenDto;
 import com.bigdata.nurim.dto.UserDto;
 import com.bigdata.nurim.entity.LoginType;
 import com.bigdata.nurim.service.KakaoUserService;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -41,5 +44,13 @@ public class UserController {
     @PostMapping("/naver-login")
     public HttpEntity<?> naverLogin(@RequestBody HashMap<String, String> param) {
         return naverUserService.login(param.get("access_token"));
+    }
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
+        return userService.login(loginDto);
+    }
+    @GetMapping
+    public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {
+        return userService.getInfo(request);
     }
 }

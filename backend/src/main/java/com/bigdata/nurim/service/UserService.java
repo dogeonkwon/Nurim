@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @Slf4j
 @Transactional(readOnly = true)
@@ -63,10 +65,26 @@ public class UserService {
         // 그 인증정보를 기반으로 토큰을 생성한다
         String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
-
+        log.debug(jwt);
         // 생성한 토큰을 Response 헤더에 넣어주고,
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
+
+    public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {
+        String token = request.getHeader("jwt-token");
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(new UserDto(), HttpStatus.NO_CONTENT);
+        }
+
+        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
+        log.info(String.valueOf(tokenProvider.getPayload(token)));
+        User findUser = userRepository.findByEmail(userEmail).get();
+
+        UserDto userDto = findUser.toDto();
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+
 }

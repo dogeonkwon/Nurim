@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/api").permitAll()
                 .anyRequest().permitAll()
                 // 인증없이 접근을 허용하는 path 추가
 //                .and()

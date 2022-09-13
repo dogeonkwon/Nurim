@@ -53,4 +53,9 @@ public class UserController {
     public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {
         return userService.getInfo(request);
     }
+    @DeleteMapping
+    public ResponseEntity<String> delete(HttpServletRequest request) {
+        return userService.delete(request);
+    }
+
 }

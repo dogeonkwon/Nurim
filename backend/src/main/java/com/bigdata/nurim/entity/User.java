@@ -1,5 +1,6 @@
 package com.bigdata.nurim.entity;
 
+import com.bigdata.nurim.dto.ModifyUserInfoDto;
 import com.bigdata.nurim.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,6 +61,12 @@ public class User {
 
     public void changePw(String password) {
         this.password = password;
+    }
+
+    public void update(ModifyUserInfoDto modifyUserInfoDto){
+        this.userName = modifyUserInfoDto.getUserName();
+        this.phone = modifyUserInfoDto.getPhone();
+        this.emergency = modifyUserInfoDto.getEmergency();
     }
 
     public UserDto toDto() {

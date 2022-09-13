@@ -1,6 +1,7 @@
 package com.bigdata.nurim.controller;
 
 import com.bigdata.nurim.dto.LoginDto;
+import com.bigdata.nurim.dto.ModifyUserInfoDto;
 import com.bigdata.nurim.dto.TokenDto;
 import com.bigdata.nurim.dto.UserDto;
 import com.bigdata.nurim.entity.LoginType;
@@ -58,4 +59,8 @@ public class UserController {
         return userService.delete(request);
     }
 
+    @PutMapping
+    public ResponseEntity<String> modify(@RequestBody ModifyUserInfoDto modifyUserInfoDto, HttpServletRequest request) {
+        return userService.modify(modifyUserInfoDto, request);
+    }
 }

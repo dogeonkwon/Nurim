@@ -1,6 +1,7 @@
 package com.bigdata.nurim.service;
 
 import com.bigdata.nurim.dto.LoginDto;
+import com.bigdata.nurim.dto.ModifyUserInfoDto;
 import com.bigdata.nurim.dto.TokenDto;
 import com.bigdata.nurim.dto.UserDto;
 import com.bigdata.nurim.entity.LoginType;
@@ -100,5 +101,18 @@ public class UserService {
 
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
+    @Transactional
+    public ResponseEntity<String> modify(ModifyUserInfoDto modifyUserInfoDto, HttpServletRequest request) {
+        String token = request.getHeader("jwt-token");
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
+        }
+        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
+        User findUser = userRepository.findByEmail(userEmail).get();
 
+        findUser.update(modifyUserInfoDto);
+
+        userRepository.save(findUser);
+        return new ResponseEntity<>("수정완료", HttpStatus.OK);
+    }
 }

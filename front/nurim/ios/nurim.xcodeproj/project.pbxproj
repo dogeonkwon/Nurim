@@ -12,6 +12,11 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		64C936E128D0C36B0098444E /* AppleSDGothicNeoH.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64C936DC28D0C36B0098444E /* AppleSDGothicNeoH.ttf */; };
+		64C936E228D0C36B0098444E /* AppleSDGothicNeoEB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64C936DD28D0C36B0098444E /* AppleSDGothicNeoEB.ttf */; };
+		64C936E328D0C36B0098444E /* AppleSDGothicNeoB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64C936DE28D0C36B0098444E /* AppleSDGothicNeoB.ttf */; };
+		64C936E428D0C36B0098444E /* AppleSDGothicNeoL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64C936DF28D0C36B0098444E /* AppleSDGothicNeoL.ttf */; };
+		64C936E528D0C36B0098444E /* AppleSDGothicNeoM.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64C936E028D0C36B0098444E /* AppleSDGothicNeoM.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-nurim-nurimTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-nurim-nurimTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -41,6 +46,11 @@
 		5709B34CF0A7D63546082F79 /* Pods-nurim.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-nurim.release.xcconfig"; path = "Target Support Files/Pods-nurim/Pods-nurim.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-nurim-nurimTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-nurim-nurimTests.debug.xcconfig"; path = "Target Support Files/Pods-nurim-nurimTests/Pods-nurim-nurimTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-nurim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-nurim.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		64C936DC28D0C36B0098444E /* AppleSDGothicNeoH.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AppleSDGothicNeoH.ttf; path = ../assets/fonts/AppleSDGothicNeoH.ttf; sourceTree = "<group>"; };
+		64C936DD28D0C36B0098444E /* AppleSDGothicNeoEB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AppleSDGothicNeoEB.ttf; path = ../assets/fonts/AppleSDGothicNeoEB.ttf; sourceTree = "<group>"; };
+		64C936DE28D0C36B0098444E /* AppleSDGothicNeoB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AppleSDGothicNeoB.ttf; path = ../assets/fonts/AppleSDGothicNeoB.ttf; sourceTree = "<group>"; };
+		64C936DF28D0C36B0098444E /* AppleSDGothicNeoL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AppleSDGothicNeoL.ttf; path = ../assets/fonts/AppleSDGothicNeoL.ttf; sourceTree = "<group>"; };
+		64C936E028D0C36B0098444E /* AppleSDGothicNeoM.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AppleSDGothicNeoM.ttf; path = ../assets/fonts/AppleSDGothicNeoM.ttf; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = nurim/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-nurim-nurimTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-nurim-nurimTests.release.xcconfig"; path = "Target Support Files/Pods-nurim-nurimTests/Pods-nurim-nurimTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -116,6 +126,11 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				64C936DE28D0C36B0098444E /* AppleSDGothicNeoB.ttf */,
+				64C936DD28D0C36B0098444E /* AppleSDGothicNeoEB.ttf */,
+				64C936DC28D0C36B0098444E /* AppleSDGothicNeoH.ttf */,
+				64C936DF28D0C36B0098444E /* AppleSDGothicNeoL.ttf */,
+				64C936E028D0C36B0098444E /* AppleSDGothicNeoM.ttf */,
 				13B07FAE1A68108700A75B9A /* nurim */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* nurimTests */,
@@ -242,6 +257,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64C936E128D0C36B0098444E /* AppleSDGothicNeoH.ttf in Resources */,
+				64C936E228D0C36B0098444E /* AppleSDGothicNeoEB.ttf in Resources */,
+				64C936E328D0C36B0098444E /* AppleSDGothicNeoB.ttf in Resources */,
+				64C936E428D0C36B0098444E /* AppleSDGothicNeoL.ttf in Resources */,
+				64C936E528D0C36B0098444E /* AppleSDGothicNeoM.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -562,7 +582,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -596,6 +616,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -633,7 +654,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -659,6 +680,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

@@ -15,6 +15,8 @@ const getFont = (level: number): string => {
       return Platform.OS === 'ios' ? 'AppleSDGothicNeoEB00' : '';
     case 5:
       return Platform.OS === 'ios' ? 'AppleSDGothicNeoH00' : '';
+    default:
+      return '';
   }
 };
 

@@ -23,15 +23,15 @@ public class TaxiService {
 
     public ResponseEntity<List<TaxiDto>> getInfo(String address) {
 
-        List<Taxi> findTaxilist = taxiRepository.findAllByTaxiAddressContaining(address);
-        List<TaxiDto> TaxiDtolist = new ArrayList<>();
+        List<Taxi> findTaxiList = taxiRepository.findAllByTaxiAddressContaining(address);
+        List<TaxiDto> taxiDtoList = new ArrayList<>();
 
-        for (Taxi taxi: findTaxilist) {
+        for (Taxi taxi: findTaxiList) {
             TaxiDto taxiDto = taxi.toDto();
-            TaxiDtolist.add(taxiDto);
+            taxiDtoList.add(taxiDto);
         }
 
-        return new ResponseEntity<>(TaxiDtolist, HttpStatus.OK);
+        return new ResponseEntity<>(taxiDtoList, HttpStatus.OK);
     }
 
 }

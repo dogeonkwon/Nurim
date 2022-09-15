@@ -25,6 +25,7 @@ public class TaxiService {
 
         List<Taxi> findTaxilist = taxiRepository.findAllByTaxiAddressContaining(address);
         List<TaxiDto> TaxiDtolist = new ArrayList<>();
+
         for (Taxi taxi: findTaxilist) {
             TaxiDto taxiDto = taxi.toDto();
             TaxiDtolist.add(taxiDto);

@@ -17,13 +17,16 @@ import java.util.Collections;
 @NoArgsConstructor
 public class UserDto {
 
-    private String userName;
-    private String email;
+    private String nickname;
     private String password;
+    private String email;
     private String phone;
     private String emergency;
     private String loginType;
+    private String imgUrl;
+    private Boolean isFirst;
     private Role role;
+
     public User toEntity(LoginType loginType){
 
         Authority authority = Authority.builder()
@@ -31,12 +34,14 @@ public class UserDto {
                 .build();
 
         return User.builder()
-                .userName(this.getUserName())
-                .email(this.getEmail())
+                .nickname(this.getNickname())
                 .password(this.getPassword())
                 .phone(this.getPhone())
+                .imgUrl(this.getImgUrl())
+                .isFirst(this.getIsFirst())
                 .authorities(Collections.singleton(authority))
                 .emergency(this.getEmergency())
+                .email(this.getEmail())
                 .role(Role.USER)
                 .loginType(loginType)
                 .build();

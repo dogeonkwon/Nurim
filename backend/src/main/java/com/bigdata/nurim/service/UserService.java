@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +35,8 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final ImageUploadService imageUploadService;
+    private final String defaultImg = "https://nurim.s3.ap-northeast-2.amazonaws.com/pngegg.png";
 
     @Transactional
     public ResponseEntity<String> signup(UserDto userDto, LoginType loginType) {
@@ -43,7 +46,7 @@ public class UserService {
         return new ResponseEntity<>("가입 성공", HttpStatus.OK);
     }
 
-    public ResponseEntity<TokenDto> login(LoginDto loginDto) {
+    public ResponseEntity<TokenDto> login(LoginDto loginDto, boolean isFirst) {
         //  LoginDto의 userName,Password를 받아서 UsernamePasswordAuthenticationToken 객체를 생성한다
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
@@ -58,11 +61,13 @@ public class UserService {
         // 그 인증정보를 기반으로 토큰을 생성한다
         String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
-        log.debug(jwt);
         // 생성한 토큰을 Response 헤더에 넣어주고,
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setToken(jwt);
+        tokenDto.setIsFirst(isFirst);
+        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
     }
 
     public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {
@@ -94,7 +99,7 @@ public class UserService {
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<String> modify(ModifyUserInfoDto modifyUserInfoDto, HttpServletRequest request) {
+    public ResponseEntity<String> modify(ModifyUserInfoDto modifyUserInfoDto, MultipartFile file, HttpServletRequest request) {
         String token = request.getHeader("jwt-token");
         if (!tokenProvider.validateToken(token)) {
             return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
@@ -102,6 +107,13 @@ public class UserService {
         String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
         User findUser = userRepository.findByEmail(userEmail).get();
 
+        if(!file.isEmpty()){
+
+            if (!findUser.getImgUrl().equals(defaultImg)) {
+                imageUploadService.delete(findUser.getImgUrl());
+            }
+            modifyUserInfoDto.setImgUrl(imageUploadService.uploadImge(file));
+        }
         findUser.update(modifyUserInfoDto);
 
         userRepository.save(findUser);

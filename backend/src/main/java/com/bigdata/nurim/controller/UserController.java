@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -46,7 +47,9 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<String> modify(@RequestBody ModifyUserInfoDto modifyUserInfoDto, HttpServletRequest request) {
-        return userService.modify(modifyUserInfoDto, request);
+    public ResponseEntity<String> modify(@RequestPart(value = "file", required = false) MultipartFile file,
+                                         @RequestPart(value = "userDto", required = false) ModifyUserInfoDto modifyUserInfoDto,
+                                         HttpServletRequest request) {
+        return userService.modify(modifyUserInfoDto, file,request);
     }
 }

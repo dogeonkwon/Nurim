@@ -10,7 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModifyUserInfoDto {
-    private String userName;
+    private String nickname;
     private String phone;
     private String emergency;
+    private String imgUrl;
 }

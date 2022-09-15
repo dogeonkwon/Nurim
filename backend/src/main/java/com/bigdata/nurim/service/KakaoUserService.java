@@ -1,6 +1,7 @@
 package com.bigdata.nurim.service;
 
 import com.bigdata.nurim.dto.LoginDto;
+import com.bigdata.nurim.entity.User;
 import com.bigdata.nurim.repository.UserRepository;
 import com.bigdata.nurim.dto.UserDto;
 import com.bigdata.nurim.entity.LoginType;
@@ -29,6 +30,7 @@ public class KakaoUserService implements SocialUserService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final String defaultImg = "https://nurim.s3.ap-northeast-2.amazonaws.com/pngegg.png";
 
     @Override
     @Transactional
@@ -63,9 +65,8 @@ public class KakaoUserService implements SocialUserService {
         UserDto userDto = getUserInfoByAccessToken(access_token);
 
         LoginDto loginDto = new LoginDto();
-        loginDto.setEmail(userDto.getEmail());
         loginDto.setPassword(userDto.getPassword());
-        return userService.login(loginDto);
+        return userService.login(loginDto,userDto.getIsFirst());
     }
 
     @Override
@@ -86,14 +87,23 @@ public class KakaoUserService implements SocialUserService {
 
             Optional user = userRepository.findByEmail(email);
             if(user.isPresent()){
+                User findUser = (User) user.get();
+                if(findUser.getIsFirst()){
+                    findUser.updateIsFirst();
+                    userRepository.save(findUser);
+                    userDto.setIsFirst(false);
+                }
                 return userDto;
             }
-            String name;
+            String nickname;
             String temp_nickname = UUID.randomUUID().toString().replaceAll("-", "");
             temp_nickname = "User"+temp_nickname.substring(0, 10);
-            name=(String)profile.getOrDefault("name",temp_nickname);
-            userDto.setUserName(name);
+            nickname=(String)profile.getOrDefault("nickname",temp_nickname);
+            userDto.setNickname(nickname);
 
+            String profile_image_url= (String)profile.getOrDefault("profile_image_url",defaultImg);
+            userDto.setImgUrl(profile_image_url);
+            userDto.setIsFirst(true);
             userService.signup(userDto, LoginType.KAKAO);
 
         } catch (ParseException e) {

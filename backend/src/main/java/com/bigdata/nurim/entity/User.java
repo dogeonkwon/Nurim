@@ -1,5 +1,6 @@
 package com.bigdata.nurim.entity;
 
+import com.bigdata.nurim.dto.ModifyUserInfoDto;
 import com.bigdata.nurim.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,13 +23,19 @@ public class User {
     private int userId;
 
     @Column(nullable = false)
-    private String userName;
-
-    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String imgUrl;
+
+    @Column(nullable = false)
+    private Boolean isFirst;
 
     @Column
     private String phone;
@@ -52,23 +59,26 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Authority> authorities;
-    public void update(String emergency, String phone, String userName) {
-        this.emergency = emergency;
-        this.phone = phone;
-        this.userName = userName;
+
+    public void update(ModifyUserInfoDto modifyUserInfoDto){
+        this.nickname = modifyUserInfoDto.getNickname();
+        this.phone = modifyUserInfoDto.getPhone();
+        this.emergency = modifyUserInfoDto.getEmergency();
+        this.imgUrl = modifyUserInfoDto.getImgUrl();
     }
 
-    public void changePw(String password) {
-        this.password = password;
+    public void updateIsFirst(){
+        this.isFirst=true;
     }
 
     public UserDto toDto() {
         return UserDto.builder()
-                .email(this.email)
-                .userName(this.userName)
-                .emergency(this.emergency)
-                .phone(this.phone)
-                .role(this.role)
+                .nickname(this.getNickname())
+                .imgUrl(this.getImgUrl())
+                .emergency(this.getEmergency())
+                .phone(this.getPhone())
+                .role(this.getRole())
+                .isFirst(this.getIsFirst())
                 .loginType(this.loginType.toString())
                 .build();
     }

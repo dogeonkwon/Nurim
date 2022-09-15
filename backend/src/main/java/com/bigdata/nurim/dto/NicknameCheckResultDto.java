@@ -5,10 +5,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenDto {
-
-    private String token;
-    private Boolean isFirst;
+public class NicknameCheckResultDto {
+    private Boolean availability;
 }

@@ -1,3 +1,4 @@
+
 package com.bigdata.nurim.entity;
 
 import lombok.AllArgsConstructor;

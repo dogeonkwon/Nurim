@@ -1,5 +1,6 @@
 package com.bigdata.nurim.entity;
 
+import com.bigdata.nurim.dto.LocationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,4 +38,16 @@ public class Location {
     private List<Favorite> favorites = new ArrayList<>();
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<Instrument> instruments = new ArrayList<>();
+
+    public LocationDto toDto() {
+        return LocationDto.builder()
+                .locationId(this.locationId)
+                .locationName(this.locationName)
+                .address(this.address)
+                .phone(this.phone)
+                .lat(this.lat)
+                .lng(this.lng)
+                .locationType(this.locationType)
+                .build();
+    }
 }

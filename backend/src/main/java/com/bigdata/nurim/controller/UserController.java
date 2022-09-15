@@ -1,10 +1,6 @@
 package com.bigdata.nurim.controller;
 
-import com.bigdata.nurim.dto.LoginDto;
-import com.bigdata.nurim.dto.ModifyUserInfoDto;
-import com.bigdata.nurim.dto.TokenDto;
-import com.bigdata.nurim.dto.UserDto;
-import com.bigdata.nurim.entity.LoginType;
+import com.bigdata.nurim.dto.*;
 import com.bigdata.nurim.service.KakaoUserService;
 import com.bigdata.nurim.service.NaverUserService;
 import com.bigdata.nurim.service.UserService;
@@ -45,11 +41,14 @@ public class UserController {
     public ResponseEntity<String> delete(HttpServletRequest request) {
         return userService.delete(request);
     }
-
     @PutMapping
     public ResponseEntity<String> modify(@RequestPart(value = "file", required = false) MultipartFile file,
                                          @RequestPart(value = "userDto", required = false) ModifyUserInfoDto modifyUserInfoDto,
                                          HttpServletRequest request) {
         return userService.modify(modifyUserInfoDto, file,request);
+    }
+    @PostMapping("/nickname-check")
+    public ResponseEntity<NicknameCheckResultDto> nicknameCheck(@RequestBody HashMap<String, String> param){
+        return userService.nicknameCheck(param.get("nickname"));
     }
 }

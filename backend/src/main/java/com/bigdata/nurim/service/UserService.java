@@ -1,9 +1,6 @@
 package com.bigdata.nurim.service;
 
-import com.bigdata.nurim.dto.LoginDto;
-import com.bigdata.nurim.dto.ModifyUserInfoDto;
-import com.bigdata.nurim.dto.TokenDto;
-import com.bigdata.nurim.dto.UserDto;
+import com.bigdata.nurim.dto.*;
 import com.bigdata.nurim.entity.LoginType;
 import com.bigdata.nurim.entity.User;
 import com.bigdata.nurim.repository.UserRepository;
@@ -108,15 +105,23 @@ public class UserService {
         User findUser = userRepository.findByEmail(userEmail).get();
 
         if(!file.isEmpty()){
-
             if (!findUser.getImgUrl().equals(defaultImg)) {
                 imageUploadService.delete(findUser.getImgUrl());
             }
             modifyUserInfoDto.setImgUrl(imageUploadService.uploadImge(file));
+        }else{
+            modifyUserInfoDto.setImgUrl(findUser.getImgUrl());
         }
         findUser.update(modifyUserInfoDto);
 
         userRepository.save(findUser);
         return new ResponseEntity<>("수정완료", HttpStatus.OK);
+    }
+    public ResponseEntity<NicknameCheckResultDto> nicknameCheck(String nickname){
+        NicknameCheckResultDto nicknameCheckResultDto = new NicknameCheckResultDto(true);
+        if (userRepository.findByNickname(nickname).orElse(null) != null) {
+            nicknameCheckResultDto.setAvailability(false);
+        }
+        return new ResponseEntity<>(nicknameCheckResultDto, HttpStatus.OK);
     }
 }

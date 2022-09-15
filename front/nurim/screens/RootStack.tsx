@@ -1,8 +1,8 @@
-// 네이티브 스택 네비게이션 화면
+// 네이티브 스택 네비게이션, 드로어 내비게이션 설정 화면
 // 2022.09.14 김국진 작업
 
 import React from 'react';
-import {Button, Text, View} from 'react-native';
+import {Button, Text, View, TouchableOpacity} from 'react-native';
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
@@ -17,68 +17,118 @@ import MyPage from './MyPage';
 import {
   createDrawerNavigator,
   DrawerNavigationProp,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
 } from '@react-navigation/drawer'; // 드로어 내비게이션
 import {
   CompositeNavigationProp,
   NavigatorScreenParams,
 } from '@react-navigation/native';
+import LogOutSideBar from '../components/LogOutSideBar/';
+import LogInSideBar from '../components/LogInSideBar';
+import CustomDrawer from '../components/CustomDrawer';
+import MyReviewFavor from './MyReviewFavor';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 /* 스택 내비게이션 사용 파트 */
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
-type RootStackParamList = {
-  RootDrawer: undefined;
+export type RootStackParams = {
   Map: undefined;
   MyPage: undefined;
+  SignUp: undefined;
+  logoutsidebar: undefined;
+  MyReviewFavor: undefined;
+};
+const StackNavi = createDrawerNavigator<RootStackParams>();
+
+// Map Component Stack Navigator 구현
+export type MyReviewFavorParams = {
+  MyReviewFavor: undefined;
 };
 
-export type RootStackNavigationProp =
-  NativeStackNavigationProp<RootStackParamList>;
-
-const Stack = createNativeStackNavigator();
-/* 스택 내비게이션 사용 파트 종료 */
-
-/* 드로어 내비게이션 사용 파트 */
-// [드로어 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의
-type RootDrawerParamList = {
-  SideBar: undefined;
-  Map: undefined;
-  RootStack: undefined;
+const MyReviewFavorStack = createNativeStackNavigator<MyReviewFavorParams>();
+const MyReviewFavorScreenStack = navigation => {
+  return (
+    <MyReviewFavorStack.Navigator initialRouteName="MyReviewFavor">
+      <MyReviewFavorStack.Screen
+        name="MyReviewFavor"
+        component={MyReviewFavor}
+        options={{
+          headerLeft: ({onPress}) => (
+            <TouchableOpacity>
+              <Text>Left</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
+    </MyReviewFavorStack.Navigator>
+  );
 };
-
-export type RootDrawerNavigationProp = CompositeNavigationProp<
-  RootStackNavigationProp,
-  DrawerNavigationProp<RootDrawerParamList>
->;
-
-export type RootDrawerNavigationScreenParams =
-  NavigatorScreenParams<RootDrawerParamList>;
-
-const Drawer = createDrawerNavigator<RootDrawerParamList>();
-/* 드로어 내비게이션 사용 파트 종료 */
 
 const RootStack = () => {
+  const isLogin = false;
   return (
-    <Box minH={'100%'} style={{backgroundColor: 'tomato'}}>
-      <Stack.Navigator initialRouteName="Map">
-        {/* 메인 맵 스크린  */}
-        <Stack.Screen
-          component={Map}
-          name="Map"
-          // 헤더 없애기
-          options={{headerShown: false}}
-        />
-        <Stack.Screen component={MyPage} name="MyPage" />
-        {/* */}
-        {/* */}
-        {/* */}
-        {/* */}
-        {/* */}
-        {/* */}
-        {/* */}
-        {/* */}
-        {/* */}
-      </Stack.Navigator>
-    </Box>
+    <StackNavi.Navigator
+      initialRouteName="Map"
+      screenOptions={{
+        // 색상 변경
+        drawerActiveBackgroundColor: '#fb8c00',
+        drawerActiveTintColor: 'white',
+      }}
+      drawerContent={props => (
+        <DrawerContentScrollView {...props}>
+          {isLogin ? <LogInSideBar /> : <LogOutSideBar />}
+          <DrawerItemList {...props} />
+        </DrawerContentScrollView>
+      )}>
+      {isLogin && (
+        <>
+          <StackNavi.Screen
+            component={MyReviewFavorScreenStack}
+            name="리뷰보기"
+            // 헤더 없애기
+            options={{
+              headerShown: false,
+            }}
+          />
+          <StackNavi.Screen
+            component={MyReviewFavorScreenStack}
+            name="즐겨찾기"
+            // 헤더 없애기
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
+      )}
+      {/* 메인 맵 스크린  */}
+      <StackNavi.Screen
+        component={Map}
+        name="Map"
+        // 헤더 없애기
+        options={{
+          headerShown: false,
+          title: '지도보기',
+        }}
+        screenOptions={{
+          drawerStyle: {
+            backgroundColor: '#c6cbef',
+            width: 240,
+          },
+        }}
+      />
+      <StackNavi.Screen component={MyPage} name="MyPage" />
+      {/* */}
+      {/* */}
+      {/* */}
+      {/* */}
+      {/* */}
+      {/* */}
+      {/* */}
+      {/* */}
+      {/* */}
+    </StackNavi.Navigator>
   );
 };
 

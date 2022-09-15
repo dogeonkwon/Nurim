@@ -8,22 +8,16 @@
  * @format
  */
 
- import React, {type PropsWithChildren} from 'react';
- import {
-   SafeAreaView,
-   View,
-   Text
- } from 'react-native';
- import { NavigationContainer } from '@react-navigation/native';
- 
- import Map from './screens/Map';
- import RootStack from './screens/RootStack';
- 
- const App = () => {
-   return (
-     <NavigationContainer><RootStack/></NavigationContainer>
-   );
- };
- 
- export default App;
- 
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import RootStack from './screens/RootStack';
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <RootStack />
+    </NavigationContainer>
+  );
+};
+
+export default App;

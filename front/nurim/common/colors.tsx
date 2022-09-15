@@ -3,9 +3,9 @@
 const getColor = (name: string): string => {
   switch (name) {
     case 'KAKAO':
-      return '#E7E600';
+      return '#FAE100';
     case 'NAVER':
-      return '#2D8400';
+      return '#1EC800';
     default:
       return '';
   }

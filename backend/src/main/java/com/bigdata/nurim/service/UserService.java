@@ -43,14 +43,6 @@ public class UserService {
         return new ResponseEntity<>("가입 성공", HttpStatus.OK);
     }
 
-    public ResponseEntity<String> checkEmail(String email) {
-        if (userRepository.findByEmail(email).orElse(null) != null) {
-            log.info("이미존재하는 이메일");
-            return new ResponseEntity<>("이미 존재하는 이메일입니다.", HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>("사용가능한 이메일입니다.", HttpStatus.OK);
-    }
-
     public ResponseEntity<TokenDto> login(LoginDto loginDto) {
         //  LoginDto의 userName,Password를 받아서 UsernamePasswordAuthenticationToken 객체를 생성한다
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -80,7 +72,7 @@ public class UserService {
         }
 
         String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-        log.info(String.valueOf(tokenProvider.getPayload(token)));
+
         User findUser = userRepository.findByEmail(userEmail).get();
 
         UserDto userDto = findUser.toDto();

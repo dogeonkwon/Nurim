@@ -28,16 +28,6 @@ public class UserController {
     private final KakaoUserService kakaoUserService;
     private final NaverUserService naverUserService;
 
-    @PostMapping("/signUp")
-    public ResponseEntity<String> signup(@RequestBody UserDto userDto) {
-        return userService.signup(userDto, LoginType.NURIM);
-    }
-
-    @PostMapping("/emailCheck")
-    public ResponseEntity<String> checkEmail(@RequestBody HashMap<String, Object> map) {
-        String email = (String) map.get("email");
-        return userService.checkEmail(email);
-    }
     @PostMapping("/kakao-login")
     public HttpEntity<?> kakaoLogin(@RequestBody HashMap<String, String> param) {
         return kakaoUserService.login(param.get("access_token"));
@@ -45,10 +35,6 @@ public class UserController {
     @PostMapping("/naver-login")
     public HttpEntity<?> naverLogin(@RequestBody HashMap<String, String> param) {
         return naverUserService.login(param.get("access_token"));
-    }
-    @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
     }
     @GetMapping
     public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {

@@ -2,6 +2,9 @@ package com.bigdata.nurim.dto;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -22,7 +25,9 @@ public class LocationDto {
     private String lat;
     //경도
     private String lng;
-    //시설유형
-    private String locationType;
-
+    //운영 시간
+    private String openingHours;
+    private String subCategoryName;
+    private String mainCategoryName;
+    private List<String> facilities = new ArrayList<>();
 }

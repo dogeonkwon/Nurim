@@ -1,4 +1,3 @@
-
 package com.bigdata.nurim.entity;
 
 import lombok.AllArgsConstructor;
@@ -7,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -15,14 +16,18 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Instrument {
+public class SubCategory {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int instrumentId;
-    @Column(nullable = false)
-    private String instrumentName;
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "locationId")
-    private Location location;
+    private int subCategoryId;
 
+    @Column(nullable = false)
+    private String subCategoryName;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "mainCategoryId")
+    private MainCategory mainCategory;
+
+    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL)
+    private List<Location> locations = new ArrayList<>();
 }

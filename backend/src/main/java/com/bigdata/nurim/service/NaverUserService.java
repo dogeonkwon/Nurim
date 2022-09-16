@@ -4,6 +4,7 @@ import com.bigdata.nurim.dto.LoginDto;
 import com.bigdata.nurim.dto.UserDto;
 import com.bigdata.nurim.entity.LoginType;
 import com.bigdata.nurim.entity.Role;
+import com.bigdata.nurim.entity.User;
 import com.bigdata.nurim.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class NaverUserService implements SocialUserService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final String defaultImg = "https://nurim.s3.ap-northeast-2.amazonaws.com/pngegg.png";
 
     @Override
     @Transactional
@@ -73,7 +75,7 @@ public class NaverUserService implements SocialUserService {
         loginDto.setEmail(userDto.getEmail());
         loginDto.setPassword(userDto.getPassword());
 
-        return userService.login(loginDto);
+        return userService.login(loginDto, userDto.getIsFirst());
     }
     @Override
     public UserDto StringToDto(String userInfo) {
@@ -92,14 +94,23 @@ public class NaverUserService implements SocialUserService {
 
             Optional user = userRepository.findByEmail(email);
             if(user.isPresent()){
+                User findUser = (User) user.get();
+                if(findUser.getIsFirst()){
+                    findUser.updateIsFirst();
+                    userRepository.save(findUser);
+                    userDto.setIsFirst(false);
+                }
                 return userDto;
             }
-            String name;
+            String nickname;
             String temp_nickname = UUID.randomUUID().toString().replaceAll("-", "");
             temp_nickname = "User"+temp_nickname.substring(0, 10);
-            name=(String)account.getOrDefault("name",temp_nickname);
-            userDto.setUserName(name);
+            nickname=(String)account.getOrDefault("nickname",temp_nickname);
+            userDto.setNickname(nickname);
 
+            String profile_image_url= (String)account.getOrDefault("profile_image",defaultImg);
+            userDto.setImgUrl(profile_image_url);
+            userDto.setIsFirst(true);
             userService.signup(userDto, LoginType.NAVER);
 
         } catch (ParseException e) {

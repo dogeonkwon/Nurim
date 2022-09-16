@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/Foundation';
 
 const styles = StyleSheet.create({
-  button: {
+  // 검색창 스타일
+  searchbar: {
     marginTop: 30,
     alignSelf: 'center',
     borderWidth: 1,
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
 const SearchBar = () => {
   return (
     <SafeAreaView>
-      <View style={styles.button}>
+      <View style={styles.searchbar}>
         <Pressable>
           <Icon2 name="list" size={30} color="#000000" />
         </Pressable>

@@ -16,8 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MainCategory {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int mainCategoryId;
+    private String mainCategoryId;
 
     @Column(nullable = false)
     private String mainCategoryName;

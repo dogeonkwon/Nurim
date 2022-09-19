@@ -50,7 +50,7 @@ const FilterBar = () => {
     <SafeAreaView style={styles.container}>
       {choice.map((data: filter_type, idx: number): any => (
         // 상가, 의료, 문화
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} key={idx}>
           <Icon
             style={{paddingHorizontal: 2}}
             name={data.image}

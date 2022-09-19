@@ -1,6 +1,7 @@
-import {StyleSheet, SafeAreaView, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   // 비상호출, 내위치 버튼 컴포넌트 위치

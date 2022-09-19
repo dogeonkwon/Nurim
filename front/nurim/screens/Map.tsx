@@ -1,6 +1,10 @@
-import {SafeAreaView, View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import SearchBar from '../components/SearchBar';
 import MainWidget from '../components/MainWidget';
+import FilterBar from '../components/FilterBar';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParams} from './RootStack';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   container: {
@@ -8,11 +12,17 @@ const styles = StyleSheet.create({
   },
 });
 
-interface Props {}
-const Map = ({}: Props) => {
+type Props = NativeStackScreenProps<RootStackParams, 'Map'>;
+
+const Map = ({navigation}: Props) => {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBar />
+      <SearchBar openDrawer={openDrawer} />
+      <FilterBar />
       <MainWidget />
     </SafeAreaView>
   );

@@ -1,5 +1,6 @@
 package com.bigdata.nurim.entity;
 
+import com.bigdata.nurim.dto.ReviewDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,9 @@ public class Review {
     @Column(nullable = false)
     private int type;
 
+    @Column(nullable = false)
+    private boolean reported;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "userId")
     private User user;
@@ -36,4 +40,14 @@ public class Review {
     @JoinColumn(name = "locationId")
     private Location location;
 
+    public ReviewDto toDto(){
+        return ReviewDto.builder()
+                .reviewId(this.reviewId)
+                .content(this.content)
+                .type(this.type)
+                .createdDate(this.createdDate)
+                .reported(this.reported)
+                .nickname(this.user.getNickname())
+                .build();
+    }
 }

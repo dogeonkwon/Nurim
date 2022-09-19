@@ -41,12 +41,6 @@ public class Location {
     private String lng;
 
     @Column(nullable = false)
-    private String locationType;
-
-    @Column(nullable = false)
-    private String subcategory;
-
-    @Column(nullable = false)
     private String facilities;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)

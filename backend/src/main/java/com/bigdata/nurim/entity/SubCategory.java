@@ -18,8 +18,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor
 public class SubCategory {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int subCategoryId;
+    private String subCategoryId;
 
     @Column(nullable = false)
     private String subCategoryName;

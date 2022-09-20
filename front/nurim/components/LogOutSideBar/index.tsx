@@ -7,6 +7,7 @@ import {styled} from '@mui/styles';
 import {Button, Text, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
+import {signInWithKakao} from '../../modules/kakao';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -62,7 +63,8 @@ const LogOutSideBar = () => {
       <Text style={styles.Text.nameText}>로그인 해주세요.</Text>
       <Button
         buttonStyle={styles.Button.kakaoButton}
-        containerStyle={styles.Button.ButtonContainer}>
+        containerStyle={styles.Button.ButtonContainer}
+        onPress={() => signInWithKakao()}>
         <Avatar
           source={require('../../assets/images/KAKAO_LOGO_EDGE.png')}
           name="home"

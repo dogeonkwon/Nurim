@@ -40,13 +40,19 @@ public class Review {
     @JoinColumn(name = "locationId")
     private Location location;
 
+    public void report(){
+        this.reported=true;
+    }
+    public void update(String content){
+        this.content = content;
+    }
     public ReviewDto toDto(){
         return ReviewDto.builder()
                 .reviewId(this.reviewId)
                 .content(this.content)
                 .type(this.type)
+                .locationDto(this.location.toDto())
                 .createdDate(this.createdDate)
-                .reported(this.reported)
                 .nickname(this.user.getNickname())
                 .build();
     }

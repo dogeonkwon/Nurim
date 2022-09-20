@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -29,17 +31,18 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final LocationRepository locationRepository;
+
     @Transactional
     public ResponseEntity<String> register(HttpServletRequest request, ReviewWriteDto reviewWriteDto){
 
-        String token = request.getHeader("access-token");
-        User findUser = null;
+        String token = request.getHeader("jwt-token");
+        User user = null;
         if (!tokenProvider.validateToken(token)) {
             return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
         }
         String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
 
-        findUser = userRepository.findByEmail(userEmail).get();
+        user = userRepository.findByEmail(userEmail).get();
 
         Location location = locationRepository.findById(reviewWriteDto.getLocationId()).get();
 
@@ -52,12 +55,76 @@ public class ReviewService {
         reviewDto.setCreatedDate(createdDate);
         reviewDto.setReported(false);
         reviewDto.setType(reviewWriteDto.getType());
-        reviewDto.setNickname(findUser.getNickname());
+        reviewDto.setNickname(user.getNickname());
 
-        Review review = reviewDto.toEntity(findUser,location);
+        Review review = reviewDto.toEntity(user,location);
 
         reviewRepository.save(review);
 
         return new ResponseEntity<>("리뷰가 등록되었습니다.", HttpStatus.OK);
     }
+    @Transactional
+    public ResponseEntity<String> update(HttpServletRequest request,int review_id,String content){
+        String token = request.getHeader("jwt-token");
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
+        }
+        Review review = reviewRepository.findById(review_id).get();
+
+        review.update(content);
+        
+        reviewRepository.save(review);
+
+        return new ResponseEntity<>("리뷰가 수정되었습니다.", HttpStatus.OK);
+    }
+    @Transactional
+    public ResponseEntity<String> delete(HttpServletRequest request,int review_id){
+        String token = request.getHeader("jwt-token");
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
+        }
+        Review review = reviewRepository.findById(review_id).get();
+        reviewRepository.delete(review);
+        if(reviewRepository.findById(review_id).orElse(null) != null) {
+            return new ResponseEntity<>("삭제실패", HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>("삭제완료", HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<String> report(int review_id){
+        Review review = reviewRepository.findById(review_id).get();
+        review.report();
+        reviewRepository.save(review);
+        return new ResponseEntity<>("리뷰가 신고되었습니다.", HttpStatus.OK);
+    }
+    public ResponseEntity<?> getMyReview(HttpServletRequest request){
+        String token = request.getHeader("jwt-token");
+        User user = null;
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
+        }
+        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
+
+        user = userRepository.findByEmail(userEmail).get();
+
+        List<Review> reviews = user.getReviews();
+        List<ReviewDto> result = new ArrayList<>();
+
+        for(Review review:reviews){
+            result.add(review.toDto());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    public ResponseEntity<List<ReviewDto>> getLocationReview(int location_id){
+        Location location = locationRepository.findById(location_id).get();
+
+        List<Review> reviews = location.getReviews();
+        List<ReviewDto> result = new ArrayList<>();
+        for(Review review:reviews){
+            result.add(review.toDto());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

@@ -18,7 +18,7 @@ public class ReviewDto {
     private Boolean reported;
     private String nickname;
     private int type;
-
+    private LocationDto locationDto;
     public Review toEntity(User user, Location location){
         return Review.builder()
                 .content(this.content)

@@ -65,6 +65,7 @@ public class KakaoUserService implements SocialUserService {
         UserDto userDto = getUserInfoByAccessToken(access_token);
 
         LoginDto loginDto = new LoginDto();
+        loginDto.setEmail(userDto.getEmail());
         loginDto.setPassword(userDto.getPassword());
         return userService.login(loginDto,userDto.getIsFirst());
     }
@@ -80,7 +81,6 @@ public class KakaoUserService implements SocialUserService {
             JSONObject kakao_account = (JSONObject) jsonObj.get("kakao_account");
             JSONObject profile = (JSONObject) kakao_account.get("profile");
             userDto.setRole(Role.USER);
-
             String email = jsonObj.get("id").toString()+"KAKAO_NURIM";
             userDto.setEmail(email);
             userDto.setPassword(jsonObj.get("id").toString());

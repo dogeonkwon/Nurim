@@ -7,8 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenDto {
-
-    private String token;
-    private Boolean isFirst;
+public class FirstLoginInfoDto {
+    private String phone;
+    private String emergency;
 }

@@ -27,14 +27,17 @@ public class UserController {
 
     @PostMapping("/kakao-login")
     public HttpEntity<?> kakaoLogin(@RequestBody HashMap<String, String> param) {
-        return kakaoUserService.login(param.get("access_token"));
+        kakaoUserService.getUserInfoByAccessToken(param.get("access_token"));
+        UserDto userDto = kakaoUserService.getUserInfoByAccessToken(param.get("access_token"));
+        return kakaoUserService.login(userDto);
     }
     @PostMapping("/naver-login")
     public HttpEntity<?> naverLogin(@RequestBody HashMap<String, String> param) {
-        return naverUserService.login(param.get("access_token"));
+        UserDto userDto = naverUserService.getUserInfoByAccessToken(param.get("access_token"));
+        return naverUserService.login(userDto);
     }
     @GetMapping
-    public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {
+    public ResponseEntity<?> getInfo(HttpServletRequest request) {
         return userService.getInfo(request);
     }
     @DeleteMapping
@@ -42,13 +45,17 @@ public class UserController {
         return userService.delete(request);
     }
     @PutMapping
-    public ResponseEntity<String> modify(@RequestPart(value = "file", required = false) MultipartFile file,
-                                         @RequestPart(value = "userDto", required = false) ModifyUserInfoDto modifyUserInfoDto,
-                                         HttpServletRequest request) {
+    public ResponseEntity<?> modify(@RequestPart(value = "file", required = false) MultipartFile file,
+                                    @RequestPart(value = "userInfo", required = false) ModifyUserInfoDto modifyUserInfoDto,
+                                    HttpServletRequest request) {
         return userService.modify(modifyUserInfoDto, file,request);
     }
     @PostMapping("/nickname-check")
     public ResponseEntity<NicknameCheckResultDto> nicknameCheck(@RequestBody HashMap<String, String> param){
         return userService.nicknameCheck(param.get("nickname"));
+    }
+    @PostMapping("/write-moreInfo")
+    public ResponseEntity<String> wirteMoreInfo(@RequestBody FirstLoginInfoDto firstLoginInfoDto,HttpServletRequest request){
+        return userService.firstLogin(request,firstLoginInfoDto);
     }
 }

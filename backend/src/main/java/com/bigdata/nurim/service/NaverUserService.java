@@ -14,7 +14,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +33,6 @@ public class NaverUserService implements SocialUserService {
     private final String defaultImg = "https://nurim.s3.ap-northeast-2.amazonaws.com/pngegg.png";
 
     @Override
-    @Transactional
     public UserDto getUserInfoByAccessToken(String access_token) {
         String reqURL = "https://openapi.naver.com/v1/nid/me";
         String result = "";
@@ -65,17 +63,21 @@ public class NaverUserService implements SocialUserService {
             e.printStackTrace();
         }
 
-        return StringToDto(result);
+        UserDto userDto = StringToDto(result);
+        Optional<User> user = userRepository.findByEmail(userDto.getEmail());
+        if (!user.isPresent()){
+            userService.signup(userDto,LoginType.NAVER);
+        }
+        return userDto;
     }
     @Override
-    public HttpEntity<? extends Object> login(String access_token) {
-        UserDto userDto = getUserInfoByAccessToken(access_token);
+    public HttpEntity<? extends Object> login(UserDto userDto) {
 
         LoginDto loginDto = new LoginDto();
         loginDto.setEmail(userDto.getEmail());
         loginDto.setPassword(userDto.getPassword());
 
-        return userService.login(loginDto, userDto.getIsFirst());
+        return userService.login(loginDto);
     }
     @Override
     public UserDto StringToDto(String userInfo) {
@@ -92,16 +94,6 @@ public class NaverUserService implements SocialUserService {
             userDto.setEmail(email);
             userDto.setPassword(account.get("id").toString());
 
-            Optional user = userRepository.findByEmail(email);
-            if(user.isPresent()){
-                User findUser = (User) user.get();
-                if(findUser.getIsFirst()){
-                    findUser.updateIsFirst();
-                    userRepository.save(findUser);
-                    userDto.setIsFirst(false);
-                }
-                return userDto;
-            }
             String nickname;
             String temp_nickname = UUID.randomUUID().toString().replaceAll("-", "");
             temp_nickname = "User"+temp_nickname.substring(0, 10);
@@ -111,7 +103,6 @@ public class NaverUserService implements SocialUserService {
             String profile_image_url= (String)account.getOrDefault("profile_image",defaultImg);
             userDto.setImgUrl(profile_image_url);
             userDto.setIsFirst(true);
-            userService.signup(userDto, LoginType.NAVER);
 
         } catch (ParseException e) {
             e.printStackTrace();

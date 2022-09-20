@@ -36,41 +36,34 @@ public class UserService {
     private final String defaultImg = "https://nurim.s3.ap-northeast-2.amazonaws.com/pngegg.png";
 
     @Transactional
-    public ResponseEntity<String> signup(UserDto userDto, LoginType loginType) {
+    public void signup(UserDto userDto, LoginType loginType) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = userDto.toEntity(loginType);
         userRepository.save(user);
-        return new ResponseEntity<>("가입 성공", HttpStatus.OK);
     }
 
-    public ResponseEntity<TokenDto> login(LoginDto loginDto, boolean isFirst) {
+    public ResponseEntity<LoginResDto> login(LoginDto loginDto) {
         //  LoginDto의 userName,Password를 받아서 UsernamePasswordAuthenticationToken 객체를 생성한다
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-
+        log.info(authenticationToken.toString());
         // authenticationToken 을 이용해서 Authentication 객체를 생성하려고 authenticate메서드가 실행될때
         // CustomUserDetailsService 의 loadUserByUsername 메서드가 실행된다.
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
         // 생성된 Authentication 객체를 SecurityContextHolder에 저장하고,
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // 그 인증정보를 기반으로 토큰을 생성한다
         String jwt = tokenProvider.createToken(authentication);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        // 생성한 토큰을 Response 헤더에 넣어주고,
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        TokenDto tokenDto = new TokenDto();
-        tokenDto.setToken(jwt);
-        tokenDto.setIsFirst(isFirst);
-        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+        LoginResDto loginResDto = getLoginResDto(loginDto.getEmail(),jwt);
+
+        return new ResponseEntity<>(loginResDto, HttpStatus.OK);
     }
 
-    public ResponseEntity<UserDto> getInfo(HttpServletRequest request) {
+    public ResponseEntity<?> getInfo(HttpServletRequest request) {
         String token = request.getHeader("jwt-token");
         if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>(new UserDto(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
         }
 
         String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
@@ -96,26 +89,26 @@ public class UserService {
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<String> modify(ModifyUserInfoDto modifyUserInfoDto, MultipartFile file, HttpServletRequest request) {
+    public ResponseEntity<?> modify(ModifyUserInfoDto modifyUserInfoDto, MultipartFile file, HttpServletRequest request) {
         String token = request.getHeader("jwt-token");
         if (!tokenProvider.validateToken(token)) {
             return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
         }
         String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
         User findUser = userRepository.findByEmail(userEmail).get();
-
-        if(!file.isEmpty()){
+        if(file!=null){
             if (!findUser.getImgUrl().equals(defaultImg)) {
                 imageUploadService.delete(findUser.getImgUrl());
             }
-            modifyUserInfoDto.setImgUrl(imageUploadService.uploadImge(file));
+            findUser.updateImg(imageUploadService.uploadImge(file));
         }else{
-            modifyUserInfoDto.setImgUrl(findUser.getImgUrl());
+            findUser.updateImg(findUser.getImgUrl());
         }
         findUser.update(modifyUserInfoDto);
 
         userRepository.save(findUser);
-        return new ResponseEntity<>("수정완료", HttpStatus.OK);
+        LoginResDto loginResDto = getLoginResDto(userEmail,token);
+        return new ResponseEntity<>(loginResDto, HttpStatus.OK);
     }
     public ResponseEntity<NicknameCheckResultDto> nicknameCheck(String nickname){
         NicknameCheckResultDto nicknameCheckResultDto = new NicknameCheckResultDto(true);
@@ -123,5 +116,34 @@ public class UserService {
             nicknameCheckResultDto.setAvailability(false);
         }
         return new ResponseEntity<>(nicknameCheckResultDto, HttpStatus.OK);
+    }
+    @Transactional
+    public ResponseEntity<String> firstLogin(HttpServletRequest request, FirstLoginInfoDto firstLoginInfoDto){
+        String token = request.getHeader("jwt-token");
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
+        }
+
+        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
+        User findUser = userRepository.findByEmail(userEmail).get();
+
+        findUser.updateFirst(firstLoginInfoDto);
+
+        userRepository.save(findUser);
+        return new ResponseEntity<>("저장 완료", HttpStatus.OK);
+    }
+
+    public LoginResDto getLoginResDto(String email,String jwt){
+        User findUser = userRepository.findByEmail(email).get();
+        LoginResDto loginResDto = new LoginResDto();
+
+        loginResDto.setToken(jwt);
+        loginResDto.setNickname(findUser.getNickname());
+        loginResDto.setLoginType(findUser.getLoginType().toString());
+        loginResDto.setImgUrl(findUser.getImgUrl());
+        loginResDto.setEmergency(findUser.getEmergency());
+        loginResDto.setIsFirst(findUser.getIsFirst());
+        loginResDto.setPhone(findUser.getPhone());
+        return loginResDto;
     }
 }

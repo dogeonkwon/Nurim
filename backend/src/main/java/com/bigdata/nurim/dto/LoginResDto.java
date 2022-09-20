@@ -5,11 +5,15 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModifyUserInfoDto {
+public class LoginResDto {
+
+    private String token;
+    private Boolean isFirst;
     private String nickname;
     private String phone;
     private String emergency;
+    private String loginType;
+    private String imgUrl;
 }

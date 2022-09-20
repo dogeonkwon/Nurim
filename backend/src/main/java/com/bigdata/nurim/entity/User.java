@@ -1,11 +1,9 @@
 package com.bigdata.nurim.entity;
 
+import com.bigdata.nurim.dto.FirstLoginInfoDto;
 import com.bigdata.nurim.dto.ModifyUserInfoDto;
 import com.bigdata.nurim.dto.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -64,16 +63,20 @@ public class User {
         this.nickname = modifyUserInfoDto.getNickname();
         this.phone = modifyUserInfoDto.getPhone();
         this.emergency = modifyUserInfoDto.getEmergency();
-        this.imgUrl = modifyUserInfoDto.getImgUrl();
     }
-
-    public void updateIsFirst(){
-        this.isFirst=true;
+    public void updateFirst(FirstLoginInfoDto firstLoginInfoDto){
+        this.phone = firstLoginInfoDto.getPhone();
+        this.emergency = firstLoginInfoDto.getEmergency();
+        this.isFirst=false;
     }
-
+    public void updateImg(String imgUrl){
+        this.imgUrl = imgUrl;
+    }
     public UserDto toDto() {
         return UserDto.builder()
                 .nickname(this.getNickname())
+                .email(this.getEmail())
+                .password(this.getPassword())
                 .imgUrl(this.getImgUrl())
                 .emergency(this.getEmergency())
                 .phone(this.getPhone())

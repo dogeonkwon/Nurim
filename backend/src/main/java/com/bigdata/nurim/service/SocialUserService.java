@@ -6,5 +6,5 @@ import org.springframework.http.HttpEntity;
 public interface SocialUserService {
     UserDto getUserInfoByAccessToken(String access_token);
     UserDto StringToDto(String userInfo);
-    HttpEntity<? extends Object> login(String access_token);
+    HttpEntity<? extends Object> login(UserDto userDto);
 }

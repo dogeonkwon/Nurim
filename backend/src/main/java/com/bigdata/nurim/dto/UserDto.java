@@ -15,6 +15,7 @@ import java.util.Collections;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserDto {
 
     private String nickname;

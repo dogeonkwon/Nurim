@@ -11,7 +11,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Box} from '@react-native-material/core';
 
 // Screen import
-import Map from './Map';
+import Main from './Main';
 import MyPage from './MyPage';
 
 import {
@@ -34,7 +34,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 /* 스택 내비게이션 사용 파트 */
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
 export type RootStackParams = {
-  Map: undefined;
+  Main: undefined;
   MyPage: undefined;
   SignUp: undefined;
   logoutsidebar: undefined;
@@ -42,7 +42,7 @@ export type RootStackParams = {
 };
 const StackNavi = createDrawerNavigator<RootStackParams>();
 
-// Map Component Stack Navigator 구현
+// Main Component Stack Navigator 구현
 export type MyReviewFavorParams = {
   MyReviewFavor: undefined;
 };
@@ -70,7 +70,7 @@ const RootStack = () => {
   const isLogin = false;
   return (
     <StackNavi.Navigator
-      initialRouteName="Map"
+      initialRouteName="Main"
       screenOptions={{
         // 색상 변경
         drawerActiveBackgroundColor: '#fb8c00',
@@ -104,8 +104,8 @@ const RootStack = () => {
       )}
       {/* 메인 맵 스크린  */}
       <StackNavi.Screen
-        component={Map}
-        name="Map"
+        component={Main}
+        name="Main"
         // 헤더 없애기
         options={{
           headerShown: false,

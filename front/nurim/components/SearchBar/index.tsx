@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = NativeStackScreenProps<RootStackParams, 'Map'>;
+type Props = NativeStackScreenProps<RootStackParams, 'Main'>;
 
 const SearchBar = ({openDrawer}: Props) => {
   return (

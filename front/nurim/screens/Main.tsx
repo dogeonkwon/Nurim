@@ -12,9 +12,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = NativeStackScreenProps<RootStackParams, 'Map'>;
+type Props = NativeStackScreenProps<RootStackParams, 'Main'>;
 
-const Map = ({navigation}: Props) => {
+const Main = ({navigation}: Props) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
@@ -28,4 +28,4 @@ const Map = ({navigation}: Props) => {
   );
 };
 
-export default Map;
+export default Main;

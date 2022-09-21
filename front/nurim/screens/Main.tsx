@@ -1,10 +1,8 @@
 import {StyleSheet} from 'react-native';
-import SearchBar from '../components/SearchBar';
-import MainWidget from '../components/MainWidget';
-import FilterBar from '../components/FilterBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from './RootStack';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Map from '../components/Map';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,20 +10,18 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = NativeStackScreenProps<RootStackParams, 'Map'>;
+type Props = NativeStackScreenProps<RootStackParams, 'Main'>;
 
-const Map = ({navigation}: Props) => {
+const Main = ({navigation}: Props) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBar openDrawer={openDrawer} />
-      <FilterBar />
-      <MainWidget />
+      <Map openDrawer={openDrawer} />
     </SafeAreaView>
   );
 };
 
-export default Map;
+export default Main;

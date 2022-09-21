@@ -119,7 +119,7 @@ public class ReviewService {
     public ResponseEntity<List<ReviewDto>> getLocationReview(int location_id){
         Location location = locationRepository.findById(location_id).get();
 
-        List<Review> reviews = location.getReviews();
+        List<Review> reviews = reviewRepository.findReviewByLocationFetchJoin(location);
         List<ReviewDto> result = new ArrayList<>();
         for(Review review:reviews){
             result.add(review.toDto());

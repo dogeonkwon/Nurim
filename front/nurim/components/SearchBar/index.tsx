@@ -1,23 +1,21 @@
 import {StyleSheet, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../screens/RootStack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   // 검색창 스타일
-  container: {
-    marginTop: 20,
+  header: {
     alignSelf: 'center',
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 15,
     paddingVertical: 5,
-    width: 280,
+    width: '850%',
     flexDirection: 'row',
+    backgroundColor: 'white',
   },
-  header: {
+  search: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -29,12 +27,12 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = NativeStackScreenProps<RootStackParams, 'Main'>;
+type Props = {openDrawer: void};
 
 const SearchBar = ({openDrawer}: Props) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.header}>
+      <View style={styles.search}>
         <Icon
           name="bars"
           size={30}

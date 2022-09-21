@@ -35,5 +35,8 @@
           android:scheme="kakao5933c8d66fade57b1406352b1211ec03" />
         </intent-filter>
       </activity>
+        <meta-data
+        android:name="com.naver.maps.map.CLIENT_ID"
+        android:value="2688v2vgx3" />
     </application>
 </manifest>

@@ -9,7 +9,7 @@ target 'nurim' do
 
   # Flags change depending on the env values.
   flags = get_default_flags()
-
+  pod 'NMapsMap','3.14.1'
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.

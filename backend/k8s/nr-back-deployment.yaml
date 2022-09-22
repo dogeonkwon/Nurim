@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nurim-back-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nurim-back
+  template:
+    metadata:
+      labels:
+        app: nurim-back
+    spec:
+      containers:
+        - name: nurim-back
+          image: pudingles94/project-nurim:nurim-back
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          env:
+            - name: DATE
+              value: 'DATE_STRING'
+      imagePullSecrets:
+        - name: my-secret

@@ -8,15 +8,15 @@ def DISCORD_CHANNEL = "https://discord.com/api/webhooks/1022495693950160916/jNt8
 
 /* Discord 시작 알람 함수 */
 def notifyStarted(discord_channel) {
-    discordSend (webhookURL: "${discord_channel}", result: "SUCCESS" , link: "${env.BUILD_URL}", description: "Build Started")
+    discordSend (webhookURL: "${discord_channel}", title: "${JOB_NAME}", result: "SUCCESS" , link: "${BUILD_URL}", description: "Build Started")
 }
 /* Discord 성공 알람 함수 */
 def notifySuccessful(discord_channel) {
-    discordSend (webhookURL: "${discord_channel}", result: currentBuild.currentResult, link: "${env.BUILD_URL}", description: "Build ${currentBuild.currentResult}")
+    discordSend (webhookURL: "${discord_channel}", title: "${JOB_NAME}", result: currentBuild.currentResult, link: "${BUILD_URL}", description: "Build ${currentBuild.currentResult}")
 }
 /* Discord 실패 알람 함수 */
 def notifyFailed(discord_channel) {
-  discordSend (webhookURL: "${discord_channel}", result: currentBuild.currentResult, link: "${env.BUILD_URL}", description: "Build ${currentBuild.currentResult}")
+  discordSend (webhookURL: "${discord_channel}", title: "${JOB_NAME}", result: currentBuild.currentResult, link: "${BUILD_URL}", description: "Build ${currentBuild.currentResult}")
 }
 
 podTemplate(label: 'builder',

@@ -19,8 +19,6 @@ podTemplate(label: 'builder',
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
-             sh "ls /etc/spring/properties"
-             sh "ls /etc/letsencrypt"
              sh "cp -r /etc/spring/properties ./backend/src/main/resources/properties"
         }
         stage('Docker build') {
@@ -57,6 +55,7 @@ podTemplate(label: 'builder',
                         """
 
                         /* ssl secret 존재여부 확인. 미존재시 secret 생성 */
+                        sh "ls /etc/letsencrypt/j7e105.p.ssafy.io -al"
                         sh """
                             kubectl get secret ssafy.io -n ${NAMESPACE} || \
                             kubectl create secret tls ssafy.io \

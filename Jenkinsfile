@@ -58,8 +58,8 @@ podTemplate(label: 'builder',
                         sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./k8s/nr-back-deployment.yaml" */
 
                         /* yaml파일로 배포를 수행한다 */
-                        sh "kubectl apply -f ./k8s/nr-back-deployment.yaml -n ${NAMESPACE}"
-                        sh "kubectl apply -f ./k8s/nr-back-service.yaml -n ${NAMESPACE}"
+                        sh "kubectl apply -f ./backend/k8s/nr-back-deployment.yaml -n ${NAMESPACE}"
+                        sh "kubectl apply -f ./backend/k8s/nr-back-service.yaml -n ${NAMESPACE}"
                 }
             }
         }

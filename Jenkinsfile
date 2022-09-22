@@ -71,6 +71,7 @@ podTemplate(label: 'builder',
                         /* yaml파일로 배포를 수행한다 */
                         sh "kubectl apply -f ./backend/k8s/nr-back-deployment.yaml -n ${NAMESPACE}"
                         sh "kubectl apply -f ./backend/k8s/nr-back-service.yaml -n ${NAMESPACE}"
+                        sh "kubectl apply -f ./backend/k8s/nr-back-ingress.yaml"
                 }
             }
         }

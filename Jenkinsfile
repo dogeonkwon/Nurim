@@ -55,8 +55,8 @@ podTemplate(label: 'builder',
                         sh """
                             kubectl get secret ssafy.io -n ${NAMESPACE} || \
                             kubectl create secret tls ssafy.io \
-                            --key=letsencrypt/live/j7e105.p.ssafy.io/privkey.pem \
-                            --cert=letsencrypt/live/j7e105.p.ssafy.io/fullchain.pem \
+                            --key=/home/ubuntu/letsencrypt/live/j7e105.p.ssafy.io/privkey.pem \
+                            --cert=/home/ubuntu/letsencrypt/live/j7e105.p.ssafy.io/fullchain.pem \
                             -n ${NAMESPACE}
                         """
 

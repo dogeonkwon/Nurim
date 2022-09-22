@@ -13,6 +13,7 @@ podTemplate(label: 'builder',
             volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
                 hostPathVolume(mountPath: '/home/jenkins/agent/workspace/properties', hostPath: '/home/ubuntu/properties'),
+                hostPathVolume(mountPath: '/etc/letsencrypt/j7e105.p.ssafy.io', hostPath: '/home/ubuntu/letsencrypt/live/j7e105.p.ssafy.io'),
                 //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
@@ -53,6 +54,14 @@ podTemplate(label: 'builder',
                             -n ${NAMESPACE}
                         """
 
+                        /* ssl secret 존재여부 확인. 미존재시 secret 생성 */
+                        sh """
+                            kubectl get secret ssafy.io -n ${NAMESPACE} || \
+                            kubectl create secret tls ssafy.io \
+                            --key=/etc/letsencrypt/j7e105.p.ssafy.io/privkey.pem \
+                            --cert=/etc/letsencrypt/j7e105.p.ssafy.io/fullchain.pem \
+                            -n ${NAMESPACE}
+                        """
                         /* k8s-deployment.yaml 의 env값을 수정해준다(DATE로). 배포시 수정을 해주지 않으면 변경된 내용이 정상 배포되지 않는다. */
                         /*sh "echo ${VERSION}"
                         sh "sed -i.bak 's#VERSION_STRING#${VERSION}#' ./k8s/k8s-deployment.yaml"*/

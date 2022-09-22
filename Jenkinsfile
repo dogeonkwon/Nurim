@@ -19,6 +19,8 @@ podTemplate(label: 'builder',
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
+             sh "ls /etc/spring/properties"
+             sh "ls /etc/letsencrypt"
              sh "cp -r /etc/spring/properties ./backend/src/main/resources/properties"
         }
         stage('Docker build') {

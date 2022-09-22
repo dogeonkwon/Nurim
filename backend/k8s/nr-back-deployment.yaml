@@ -16,7 +16,7 @@ spec:
         - name: nurim-back
           image: pudingles94/project-nurim:nurim-back
           ports:
-            - containerPort: 8081
+            - containerPort: 8080
           imagePullPolicy: Always
           env:
             - name: DATE

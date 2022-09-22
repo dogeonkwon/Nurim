@@ -17,7 +17,6 @@ podTemplate(label: 'builder',
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
-             sh "cd backend" // Spring Project 내부로 이동
         }
         stage('Docker build') {
             container('docker') {
@@ -25,8 +24,8 @@ podTemplate(label: 'builder',
                     credentialsId: 'docker_hub_auth',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD')]) {
-                        /* ./build/libs 생성된 jar파일을 도커파일을 활용하여 도커 빌드를 수행한다 */
-                        sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS} ."
+                        /* 도커 빌드를 수행한다 */
+                        sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS} ./backend"
                         sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                         sh "docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS}"
                 }

@@ -7,25 +7,19 @@ def DATE = new Date();
 
 podTemplate(label: 'builder',
             containers: [
-                containerTemplate(name: 'gradle', image: 'gradle:7.5-jdk8', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.25.0', command: 'cat', ttyEnabled: true)
             ],
             volumes: [
-                hostPathVolume(mountPath: '/home/gradle/.gradle', hostPath: '/home/ubuntu/k8s/jenkins/.gradle'),
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+                hostPathVolume(mountPath: '/etc/spring/properties', hostPath: '/home/ubuntu/properties'),
+                hostPathVolume(mountPath: '/etc/letsencrypt', hostPath: '/home/ubuntu/letsencrypt'),
                 //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
-        }
-        stage('Build') {
-            container('gradle') {
-                /* 도커 이미지를 활용하여 gradle 빌드를 수행하여 ./build/libs에 jar파일 생성 */
-                sh "cd backend"
-                sh "gradle -x test build"
-            }
+             sh "cp -r /etc/spring/properties ./backend/src/main/resources/properties"
         }
         stage('Docker build') {
             container('docker') {
@@ -33,8 +27,8 @@ podTemplate(label: 'builder',
                     credentialsId: 'docker_hub_auth',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD')]) {
-                        /* ./build/libs 생성된 jar파일을 도커파일을 활용하여 도커 빌드를 수행한다 */
-                        sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS} ."
+                        /* 도커 빌드를 수행한다 */
+                        sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS} ./backend"
                         sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                         sh "docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAGS}"
                 }
@@ -64,20 +58,19 @@ podTemplate(label: 'builder',
                         sh """
                             kubectl get secret ssafy.io -n ${NAMESPACE} || \
                             kubectl create secret tls ssafy.io \
-                            --key=letsencrypt/live/j7e105.p.ssafy.io/privkey.pem \
-                            --cert=letsencrypt/live/j7e105.p.ssafy.io/fullchain.pem \
+                            --key=/etc/letsencrypt/live/j7e105.p.ssafy.io/privkey.pem \
+                            --cert=/etc/letsencrypt/live/j7e105.p.ssafy.io/fullchain.pem \
                             -n ${NAMESPACE}
                         """
-
                         /* k8s-deployment.yaml 의 env값을 수정해준다(DATE로). 배포시 수정을 해주지 않으면 변경된 내용이 정상 배포되지 않는다. */
                         /*sh "echo ${VERSION}"
                         sh "sed -i.bak 's#VERSION_STRING#${VERSION}#' ./k8s/k8s-deployment.yaml"*/
-                        /* sh "echo ${DATE}"
-                        sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./k8s/nr-back-deployment.yaml" */
+                        sh "echo ${DATE}"
+                        sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./backend/k8s/nr-back-deployment.yaml"
 
                         /* yaml파일로 배포를 수행한다 */
-                        sh "kubectl apply -f ./k8s/nr-back-deployment.yaml -n ${NAMESPACE}"
-                        sh "kubectl apply -f ./k8s/nr-back-service.yaml -n ${NAMESPACE}"
+                        sh "kubectl apply -f ./backend/k8s/nr-back-deployment.yaml -n ${NAMESPACE}"
+                        sh "kubectl apply -f ./backend/k8s/nr-back-service.yaml -n ${NAMESPACE}"
                 }
             }
         }

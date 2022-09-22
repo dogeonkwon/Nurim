@@ -7,25 +7,16 @@ def DATE = new Date();
 
 podTemplate(label: 'builder',
             containers: [
-                containerTemplate(name: 'gradle', image: 'gradle:7.5-jdk8', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.25.0', command: 'cat', ttyEnabled: true)
             ],
             volumes: [
-                hostPathVolume(mountPath: '/home/gradle/.gradle', hostPath: '/home/ubuntu/k8s/jenkins/.gradle'),
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
                 //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
-        }
-        stage('Build') {
-            container('gradle') {
-                /* 도커 이미지를 활용하여 gradle 빌드를 수행하여 ./build/libs에 jar파일 생성 */
-                sh "ls"
-                sh "gradle -x test build"
-            }
         }
         stage('Docker build') {
             container('docker') {

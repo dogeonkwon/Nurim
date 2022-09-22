@@ -12,11 +12,13 @@ podTemplate(label: 'builder',
             ],
             volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+                hostPathVolume(mountPath: '/home/jenkins/agent/workspace/properties', hostPath: '/home/ubuntu/properties'),
                 //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
+             sh "cp -r /home/jenkins/agent/workspace/properties ./backend/src/main/resources/properties"
         }
         stage('Docker build') {
             container('docker') {
@@ -54,8 +56,8 @@ podTemplate(label: 'builder',
                         /* k8s-deployment.yaml 의 env값을 수정해준다(DATE로). 배포시 수정을 해주지 않으면 변경된 내용이 정상 배포되지 않는다. */
                         /*sh "echo ${VERSION}"
                         sh "sed -i.bak 's#VERSION_STRING#${VERSION}#' ./k8s/k8s-deployment.yaml"*/
-                        /* sh "echo ${DATE}"
-                        sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./k8s/nr-back-deployment.yaml" */
+                        sh "echo ${DATE}"
+                        sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./k8s/nr-back-deployment.yaml"
 
                         /* yaml파일로 배포를 수행한다 */
                         sh "kubectl apply -f ./backend/k8s/nr-back-deployment.yaml -n ${NAMESPACE}"

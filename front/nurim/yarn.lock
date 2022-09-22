@@ -1659,6 +1659,13 @@
   dependencies:
     "dooboolab-welcome" "^1.3.2"
 
+"@react-native-seoul/naver-login@^2.3.0":
+  "integrity" "sha512-TXblGB4jN2Rr8v5ynwLXl0ZJSO8M8oXS+aTltjtu1sAZJXnbue0pXp75O8gyF92hMu4LsyuGAWOaPhvOxZd+bw=="
+  "resolved" "https://registry.npmjs.org/@react-native-seoul/naver-login/-/naver-login-2.3.0.tgz"
+  "version" "2.3.0"
+  dependencies:
+    "dooboolab-welcome" "^1.1.1"
+
 "@react-native/assets@1.0.0":
   "integrity" "sha512-KrwSpS1tKI70wuKl68DwJZYEvXktDHdZMG0k2AXD/rJVSlB23/X2CB2cutVR0HwNMJIal9HOUOBB2rVfa6UGtQ=="
   "resolved" "https://registry.npmjs.org/@react-native/assets/-/assets-1.0.0.tgz"
@@ -3250,7 +3257,7 @@
   dependencies:
     "webidl-conversions" "^5.0.0"
 
-"dooboolab-welcome@^1.3.2":
+"dooboolab-welcome@^1.1.1", "dooboolab-welcome@^1.3.2":
   "integrity" "sha512-2NbMaIIURElxEf/UAoVUFlXrO+7n/FRhLCiQlk4fkbGRh9cJ3/f8VEMPveR9m4Ug2l2Zey+UCXjd6EcBqHJ5bw=="
   "resolved" "https://registry.npmjs.org/dooboolab-welcome/-/dooboolab-welcome-1.3.2.tgz"
   "version" "1.3.2"
@@ -6619,6 +6626,11 @@
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.2.tgz"
   "version" "0.70.2"
 
+"react-native-nmap@^0.0.66":
+  "integrity" "sha512-+XMJOqn4zZ6PWO0UH478yj0b9PjYGHQcLUd0W5gJQ3DqGeJEb3vvWVDMbkzcuHsh59hkhGPsE9Q6pZkXxKsYtQ=="
+  "resolved" "https://registry.npmjs.org/react-native-nmap/-/react-native-nmap-0.0.66.tgz"
+  "version" "0.0.66"
+
 "react-native-ratings@^8.1.0":
   "integrity" "sha512-+QOJ4G3NjVkI1D+tk4EGx1dCvVfbD2nQdkrj9cXrcAoEiwmbep4z4bZbCKmWMpQ5h2dqbxABU8/eBnbDmvAc3g=="
   "resolved" "https://registry.npmjs.org/react-native-ratings/-/react-native-ratings-8.1.0.tgz"
@@ -6665,7 +6677,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@0.70.0":
+"react-native@*", "react-native@0.60.5", "react-native@0.70.0":
   "integrity" "sha512-QjXLbrK9f+/B2eCzn6kAvglLV/8nwPuFGaFv7ggPpAzFRyx5bVN1dwQLHL3MrP7iXR/M7Jc6Nnid7tmRSic6vA=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.70.0.tgz"
   "version" "0.70.0"
@@ -6725,7 +6737,7 @@
     "react-shallow-renderer" "^16.15.0"
     "scheduler" "^0.22.0"
 
-"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^18.1.0", "react@^18.2.0", "react@>= 16.8.0", "react@>=17.0.0", "react@18.1.0":
+"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^18.1.0", "react@^18.2.0", "react@>= 16.8.0", "react@>=17.0.0", "react@16.8.6", "react@18.1.0":
   "integrity" "sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.1.0.tgz"
   "version" "18.1.0"

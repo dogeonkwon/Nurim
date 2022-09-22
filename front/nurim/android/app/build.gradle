@@ -277,6 +277,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // naver login
+    implementation project(':react-native-seoul-naver-login')
 }
 
 if (isNewArchitectureEnabled()) {

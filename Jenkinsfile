@@ -66,7 +66,7 @@ podTemplate(label: 'builder',
                         /*sh "echo ${VERSION}"
                         sh "sed -i.bak 's#VERSION_STRING#${VERSION}#' ./k8s/k8s-deployment.yaml"*/
                         sh "echo ${DATE}"
-                        sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./k8s/nr-back-deployment.yaml"
+                        sh "sed -i.bak 's#DATE_STRING#${DATE}#' ./backend/k8s/nr-back-deployment.yaml"
 
                         /* yaml파일로 배포를 수행한다 */
                         sh "kubectl apply -f ./backend/k8s/nr-back-deployment.yaml -n ${NAMESPACE}"

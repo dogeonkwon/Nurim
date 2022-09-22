@@ -13,7 +13,7 @@ podTemplate(label: 'builder',
             volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
                 hostPathVolume(mountPath: '/etc/spring/properties', hostPath: '/home/ubuntu/properties'),
-                hostPathVolume(mountPath: '/etc/letsencrypt/j7e105.p.ssafy.io', hostPath: '/home/ubuntu/letsencrypt/live/j7e105.p.ssafy.io'),
+                hostPathVolume(mountPath: '/etc/letsencrypt', hostPath: '/home/ubuntu/letsencrypt'),
                 //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
@@ -55,7 +55,6 @@ podTemplate(label: 'builder',
                         """
 
                         /* ssl secret 존재여부 확인. 미존재시 secret 생성 */
-                        sh "ls /etc/letsencrypt/j7e105.p.ssafy.io -al"
                         sh """
                             kubectl get secret ssafy.io -n ${NAMESPACE} || \
                             kubectl create secret tls ssafy.io \

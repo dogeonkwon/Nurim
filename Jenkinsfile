@@ -12,14 +12,14 @@ podTemplate(label: 'builder',
             ],
             volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-                hostPathVolume(mountPath: '/home/jenkins/agent/workspace/properties', hostPath: '/home/ubuntu/properties'),
+                hostPathVolume(mountPath: '/etc/spring/properties', hostPath: '/home/ubuntu/properties'),
                 hostPathVolume(mountPath: '/etc/letsencrypt/j7e105.p.ssafy.io', hostPath: '/home/ubuntu/letsencrypt/live/j7e105.p.ssafy.io'),
                 //hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
             ]) {
     node('builder') {
         stage('Checkout') {
              checkout scm   // gitlab으로부터 소스 다운
-             sh "cp -r /home/jenkins/agent/workspace/properties ./backend/src/main/resources/properties"
+             sh "cp -r /etc/spring/properties ./backend/src/main/resources/properties"
         }
         stage('Docker build') {
             container('docker') {

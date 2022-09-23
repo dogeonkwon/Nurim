@@ -38,7 +38,7 @@ public class FavoriteService {
         String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
         User user = userRepository.findByEmail(userEmail).get();
 
-        List<Favorite> favoriteList = favoriteRepository.findFavoriteFetchJoin();
+        List<Favorite> favoriteList = favoriteRepository.findFavoriteFetchJoin(user);
 
         List<FavoriteDto> FavoriteDtoList = new ArrayList<>();
 
@@ -68,7 +68,6 @@ public class FavoriteService {
         User user = userRepository.findByEmail(userEmail).get();
 
         Location location = locationRepository.findById(location_id).get();
-
         if(favoriteRepository.findFavoriteByUserAndLocation(user, location).isPresent()) {
             return new ResponseEntity<>("이미 즐겨찾기 중입니다.", HttpStatus.NO_CONTENT);
         }

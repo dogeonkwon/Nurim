@@ -108,7 +108,7 @@ public class ReviewService {
 
         user = userRepository.findByEmail(userEmail).get();
 
-        List<Review> reviews = user.getReviews();
+        List<Review> reviews = reviewRepository.findReviewByUserFetchJoin(user);
         List<ReviewDto> result = new ArrayList<>();
 
         for(Review review:reviews){
@@ -117,9 +117,8 @@ public class ReviewService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     public ResponseEntity<List<ReviewDto>> getLocationReview(int location_id){
-        Location location = locationRepository.findById(location_id).get();
 
-        List<Review> reviews = location.getReviews();
+        List<Review> reviews = reviewRepository.findReviewByLocationFetchJoin(location_id);
         List<ReviewDto> result = new ArrayList<>();
         for(Review review:reviews){
             result.add(review.toDto());

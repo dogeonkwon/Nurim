@@ -12,7 +12,9 @@ import {Box} from '@react-native-material/core';
 
 // Screen import
 import Main from './Main';
+import PlaceDetail from './PlaceDetail';
 import MyPage from './MyPage';
+import MyFavor from './MyFavor';
 
 import {
   createDrawerNavigator,
@@ -38,44 +40,70 @@ export type RootStackParams = {
   MyPage: undefined;
   SignUp: undefined;
   logoutsidebar: undefined;
-  MyReviewFavor: undefined;
+  MyReviewFavor: {type: number};
+  나의리뷰: {type: number};
+  나의장소: {type: number};
 };
 const StackNavi = createDrawerNavigator<RootStackParams>();
 
 // Main Component Stack Navigator 구현
-export type MyReviewFavorParams = {
-  MyReviewFavor: undefined;
+type MainParams = {
+  Main: undefined;
+  PlaceDetail: undefined;
+  openDrawer(): void;
 };
-
-const MyReviewFavorStack = createNativeStackNavigator<MyReviewFavorParams>();
-const MyReviewFavorScreenStack = navigation => {
+export type MainStackNavigationProp = NativeStackNavigationProp<MainParams>;
+const MainStack = createNativeStackNavigator<MainParams>();
+const MainScreenStack = () => {
   return (
-    <MyReviewFavorStack.Navigator initialRouteName="MyReviewFavor">
-      <MyReviewFavorStack.Screen
-        name="MyReviewFavor"
-        component={MyReviewFavor}
+    <MainStack.Navigator initialRouteName="Main">
+      {/* 지도 메인 페이지 */}
+      <MainStack.Screen
+        name="Main"
+        component={Main}
         options={{
-          headerLeft: ({onPress}) => (
-            <TouchableOpacity>
-              <Text>Left</Text>
-            </TouchableOpacity>
-          ),
+          headerShown: false,
         }}
       />
-    </MyReviewFavorStack.Navigator>
+      {/* 장소 상세보기 페이지 */}
+      <MainStack.Screen component={PlaceDetail} name="PlaceDetail" />
+    </MainStack.Navigator>
   );
 };
 
+/*
+// Main Component Stack Navigator 구현
+export type MyReviewFavorParams = {
+  MyReviewFavor: {type: number};
+};
+
+const MyReviewFavorStack = createNativeStackNavigator<MyReviewFavorParams>();
+const MyReviewFavorScreenStack = () => {
+  return (
+    <MyReviewFavorStack.Navigator initialRouteName="MyReview">
+      <MyReviewFavorStack.Screen
+        name="MyReview"
+        component={MyReviewFavor}
+        options={{headerShown: false}}
+      />
+    </MyReviewFavorStack.Navigator>
+  );
+};*/
+
 const RootStack = () => {
-  const isLogin = false;
+  const isLogin = true;
   return (
     <StackNavi.Navigator
       initialRouteName="Main"
-      screenOptions={{
+      screenOptions={
+        {
+          /*
         // 색상 변경
         drawerActiveBackgroundColor: '#fb8c00',
         drawerActiveTintColor: 'white',
-      }}
+        */
+        }
+      }
       drawerContent={props => (
         <DrawerContentScrollView {...props}>
           {isLogin ? <LogInSideBar /> : <LogOutSideBar />}
@@ -85,37 +113,29 @@ const RootStack = () => {
       {isLogin && (
         <>
           <StackNavi.Screen
-            component={MyReviewFavorScreenStack}
-            name="리뷰보기"
+            component={MyReviewFavor}
+            name="나의리뷰"
+            initialParams={{type: 1}}
             // 헤더 없애기
-            options={{
-              headerShown: false,
-            }}
+            options={{headerShown: false}}
           />
           <StackNavi.Screen
-            component={MyReviewFavorScreenStack}
-            name="즐겨찾기"
+            component={MyReviewFavor}
+            name="나의장소"
+            initialParams={{type: 2}}
             // 헤더 없애기
-            options={{
-              headerShown: false,
-            }}
+            options={{headerShown: false}}
           />
         </>
       )}
       {/* 메인 맵 스크린  */}
       <StackNavi.Screen
-        component={Main}
+        component={MainScreenStack}
         name="Main"
         // 헤더 없애기
         options={{
           headerShown: false,
           title: '지도보기',
-        }}
-        screenOptions={{
-          drawerStyle: {
-            backgroundColor: '#c6cbef',
-            width: 240,
-          },
         }}
       />
       <StackNavi.Screen component={MyPage} name="MyPage" />

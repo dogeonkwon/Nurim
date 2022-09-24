@@ -5,12 +5,30 @@ import {
   logout,
   unlink,
 } from '@react-native-seoul/kakao-login';
+import {serverIP, apis} from '../common/urls';
+import {useNavigation} from '@react-navigation/native';
 
-export const signInWithKakao = async (): Promise<void> => {
+import {RootStackParams, MainStackNavigationProp} from '../screens/RootStack';
+
+export const signInWithKakao = async (navigation): Promise<void> => {
   try {
     const token = await login();
-    console.log(token);
-    console.log(JSON.stringify(token));
+    const requestHeaders = new Headers();
+    //requestHeaders.set('Content-Type', 'application/json');
+    //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    fetch(serverIP + apis.kakaoLogin, {
+      method: 'POST',
+      headers: requestHeaders,
+      body: JSON.stringify({
+        access_token: JSON.stringify(token.accessToken),
+      }),
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.isFirst) navigation.navigate('SignUp');
+        else return true;
+      });
     getProfile();
   } catch (err) {
     // eslint-disable-next-line no-console

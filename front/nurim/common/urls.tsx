@@ -3,7 +3,7 @@
 export const serverIP = 'https://j7e105.p.ssafy.io/';
 
 export const apis = {
-  userInfo: 'api/user', // 회원정보 조회
+  userInfo: 'api/user/', // 회원정보 조회
   userUpdate: 'api/user', // 회원정보 수정
   nicknameCheck: 'api/user/nickname-check', // 닉네임 중복 확인
   kakaoLogin: 'api/user/kakao-login', // 카카오 로그인

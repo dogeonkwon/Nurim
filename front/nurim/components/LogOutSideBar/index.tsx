@@ -54,14 +54,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const LogOutSideBar = () => {
+const LogOutSideBar = props => {
+  // 카카오 로그인 버튼 클릭 이벤트
+  const kakaoLoginButtonClicked = () => {
+    signInWithKakao(props.navigation);
+  };
+
+  // 네이버 로그인 버튼 클릭 이벤트
+  const naverLoginButtonClicked = () => {
+    naverLogin();
+  };
   return (
     <Divider style={styles.Divider}>
       <Text style={styles.nameText}>로그인 해주세요.</Text>
       <Button
         buttonStyle={styles.kakaoButton}
         containerStyle={styles.ButtonContainer}
-        onPress={() => signInWithKakao()}>
+        onPress={() => kakaoLoginButtonClicked()}>
         <Avatar source={require('../../assets/images/KAKAO_LOGO_EDGE.png')} />
         <Text style={[styles.kakaoButtomText, styles.ButtonText]}>
           카카오 로그인
@@ -70,7 +79,7 @@ const LogOutSideBar = () => {
       <Button
         buttonStyle={styles.naverButton}
         containerStyle={[styles.ButtonContainer, {marginBottom: 20}]}
-        onPress={() => naverLogin(Platform.OS)}>
+        onPress={() => naverLoginButtonClicked()}>
         <Avatar source={require('../../assets/images/NAVER_LOGO.png')} />
         <Text style={[styles.naverButtonText, styles.ButtonText]}>
           네이버 로그인

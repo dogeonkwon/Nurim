@@ -14,7 +14,7 @@ import {Box} from '@react-native-material/core';
 import Main from './Main';
 import PlaceDetail from './PlaceDetail';
 import MyPage from './MyPage';
-import MyFavor from './MyFavor';
+import SignUp from './SignUp';
 
 import {
   createDrawerNavigator,
@@ -91,7 +91,7 @@ const MyReviewFavorScreenStack = () => {
 };*/
 
 const RootStack = () => {
-  const isLogin = true;
+  const isLogin = false;
   return (
     <StackNavi.Navigator
       initialRouteName="Main"
@@ -106,7 +106,7 @@ const RootStack = () => {
       }
       drawerContent={props => (
         <DrawerContentScrollView {...props}>
-          {isLogin ? <LogInSideBar /> : <LogOutSideBar />}
+          {isLogin ? <LogInSideBar /> : <LogOutSideBar {...props} />}
           <DrawerItemList {...props} />
         </DrawerContentScrollView>
       )}>
@@ -139,15 +139,14 @@ const RootStack = () => {
         }}
       />
       <StackNavi.Screen component={MyPage} name="MyPage" />
-      {/* */}
-      {/* */}
-      {/* */}
-      {/* */}
-      {/* */}
-      {/* */}
-      {/* */}
-      {/* */}
-      {/* */}
+      <StackNavi.Screen
+        component={SignUp}
+        name="SignUp"
+        options={{
+          drawerItemStyle: {height: 0},
+          headerShown: false,
+        }}
+      />
     </StackNavi.Navigator>
   );
 };

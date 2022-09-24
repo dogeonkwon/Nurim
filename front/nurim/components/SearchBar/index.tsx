@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 15,
     paddingVertical: 5,
-    width: '850%',
+    width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
   },
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingHorizontal: 3,
-    width: 160,
+    width: '70%',
   },
 });
 

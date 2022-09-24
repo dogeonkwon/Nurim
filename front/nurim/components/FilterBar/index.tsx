@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 5,
     marginVertical: 5,
+    marginHorizontal: 4,
   },
 });
 
@@ -63,15 +64,7 @@ const FilterBar = () => {
         </TouchableOpacity>
       ))}
       {/* 더보기 */}
-      <TouchableOpacity style={styles.button}>
-        <Icon
-          style={{paddingHorizontal: 2}}
-          name="caret-down"
-          size={20}
-          color="black"
-        />
-        <Text style={{fontWeight: '700', paddingHorizontal: 2}}>더보기</Text>
-      </TouchableOpacity>
+      <More />
     </SafeAreaView>
   );
 };

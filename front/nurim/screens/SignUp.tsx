@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Input, Text, Button} from '@rneui/themed';
 import {serverIP, apis} from '../common/urls';
+import {useSelector} from 'react-redux';
+import {RootState} from '../slices';
 
 const styles = StyleSheet.create({
   avatarSize: {
@@ -32,28 +34,44 @@ const styles = StyleSheet.create({
 });
 
 const SignUp = () => {
-  const [nickname, setNickname] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [emergency, setEmergency] = useState<string>('');
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const [nickname, setNickname] = useState<string>('김국진');
+  const [phone, setPhone] = useState<string>('010-4853-5704');
+  const [emergency, setEmergency] = useState<string>('010-4853-5704');
   // 등록하기 버튼 클릭
   const buttonClicked = (): void => {
-    console.log('button clicked');
+    // 통신 헤더 정의
     const requestHeaders = new Headers();
-    //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
-    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
-    fetch(serverIP + apis.userUpdate, {
+    //requestHeaders.set('jwt-token', user?.token);
+    //requestHeaders.set('jwt-token', user?.token);
+    requestHeaders.set('Content-Type', 'multipart/form-data;charset=utf-8');
+    //requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    //form Data
+    const formData = new FormData();
+    const userInfo = {
+      nickname,
+      phone,
+      emergency,
+    };
+    formData.append(
+      'userInfo',
+      new Blob([JSON.stringify(userInfo)], {
+        type: 'application/json',
+      }),
+    );
+    formData.append('userInfo', userInfo);
+    console.log(userInfo);
+    console.log(formData);
+    fetch('https://j7e105.p.ssafy.io/api/user', {
       method: 'PUT',
       headers: requestHeaders,
-      body: JSON.stringify({
-        nickname: nickname,
-        phone: phone,
-        emergency: emergency,
-      }),
+      body: formData,
     })
-      //.then(response => response.json())
       .then(response => {
         console.log(response);
-      });
+      })
+      .catch(e => console.log('error:', e));
   };
   return (
     <>

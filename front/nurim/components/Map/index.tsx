@@ -5,9 +5,10 @@ import NaverMapView, {
   Polyline,
   Polygon,
 } from 'react-native-nmap';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import SearchBar from '../SearchBar';
+import FilterBar from '../FilterBar';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
   absolute_view: {
     position: 'absolute',
     top: '3%',
-    left: '45%',
+    left: '5%',
   },
   relative_view: {
     position: 'relative',
@@ -28,9 +29,9 @@ type MapProps = {
 };
 
 const Map = ({openDrawer}: MapProps) => {
-  const P0 = {latitude: 37.564362, longitude: 126.977011};
-  const P1 = {latitude: 37.565051, longitude: 126.978567};
-  const P2 = {latitude: 37.565383, longitude: 126.976292};
+  const P0 = {latitude: 35.0974162, longitude: 128.9224885};
+  const P1 = {latitude: 35.0980062, longitude: 128.9244885};
+  const P2 = {latitude: 35.0959062, longitude: 128.9234885};
 
   return (
     <View style={styles.container}>
@@ -50,35 +51,36 @@ const Map = ({openDrawer}: MapProps) => {
             pinColor="blue"
             onClick={() => console.warn('onClick! p1')}
           />
-          <Marker
-            coordinate={P2}
-            pinColor="red"
-            onClick={() => console.warn('onClick! p2')}
-          />
           <Path
             coordinates={[P0, P1]}
             onClick={() => console.warn('onClick! path')}
             width={10}
           />
-          <Polyline
+          {/* <Marker
+            coordinate={P2}
+            pinColor="red"
+            onClick={() => console.warn('onClick! p2')}
+          /> */}
+          {/* <Polyline
             coordinates={[P1, P2]}
             onClick={() => console.warn('onClick! polyline')}
-          />
-          <Circle
+          /> */}
+          {/* <Circle
             coordinate={P0}
             color={'rgba(255,0,0,0.3)'}
             radius={200}
             onClick={() => console.warn('onClick! circle')}
-          />
-          <Polygon
+          /> */}
+          {/* <Polygon
             coordinates={[P0, P1, P2]}
             color={'rgba(0, 0, 0, 0.5)'}
             onClick={() => console.warn('onClick! polygon')}
-          />
+          /> */}
         </NaverMapView>
       </View>
       <View style={styles.absolute_view}>
         <SearchBar openDrawer={openDrawer} />
+        <FilterBar />
       </View>
     </View>
   );

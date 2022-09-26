@@ -3,12 +3,20 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 //import styled from 'styled-components/native';
-import {styled} from '@mui/styles';
 import {Button, Text, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
 import {signInWithKakao} from '../../modules/kakao';
 import {naverLogin} from '../../modules/naver';
+import {
+  getProfile as getKakaoProfile,
+  login,
+  logout,
+  unlink,
+} from '@react-native-seoul/kakao-login';
+import {serverIP, apis} from '../../common/urls';
+import {useDispatch, useSelector} from 'react-redux';
+import {authorize} from '../../slices/auth';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -55,9 +63,40 @@ const styles = StyleSheet.create({
 });
 
 const LogOutSideBar = props => {
+  const dispatch = useDispatch();
   // 카카오 로그인 버튼 클릭 이벤트
-  const kakaoLoginButtonClicked = () => {
-    signInWithKakao(props.navigation);
+  const kakaoLoginButtonClicked = async () => {
+    try {
+      const token = await login();
+      const requestHeaders = new Headers();
+      //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
+      requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+      fetch(serverIP + apis.kakaoLogin, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify({
+          access_token: JSON.stringify(token.accessToken),
+        }),
+      })
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+          dispatch(
+            authorize({
+              nickname: response.nickname, // 닉네임
+              phone: response.phone, // 휴대폰번호
+              emergency: response.emergency, // 비상연락번호
+              token: response.token, // 액세스토큰
+              profile: response.profileImageUrl,
+            }),
+          );
+          if (response.isFirst) props.navigation.navigate('SignUp');
+          else return true;
+        });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('login err', err);
+    }
   };
 
   // 네이버 로그인 버튼 클릭 이벤트

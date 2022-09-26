@@ -11,12 +11,18 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import RootStack from './screens/RootStack';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import rootReducer from './slices';
 
+const store = createStore(rootReducer);
 const App = () => {
   return (
-    <NavigationContainer>
-      <RootStack />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootStack />
+      </NavigationContainer>
+    </Provider>
   );
 };
 

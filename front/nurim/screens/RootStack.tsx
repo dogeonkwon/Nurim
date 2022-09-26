@@ -32,12 +32,14 @@ import LogInSideBar from '../components/LogInSideBar';
 import CustomDrawer from '../components/CustomDrawer';
 import MyReviewFavor from './MyReviewFavor';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
 
 /* 스택 내비게이션 사용 파트 */
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
 export type RootStackParams = {
   Main: undefined;
-  MyPage: undefined;
+  내정보보기: undefined;
   SignUp: undefined;
   logoutsidebar: undefined;
   MyReviewFavor: {type: number};
@@ -91,6 +93,7 @@ const MyReviewFavorScreenStack = () => {
 };*/
 
 const RootStack = () => {
+  const user = useSelector((state: RootState) => state.auth.user);
   const isLogin = false;
   return (
     <StackNavi.Navigator
@@ -106,12 +109,13 @@ const RootStack = () => {
       }
       drawerContent={props => (
         <DrawerContentScrollView {...props}>
-          {isLogin ? <LogInSideBar /> : <LogOutSideBar {...props} />}
+          {user ? <LogInSideBar /> : <LogOutSideBar {...props} />}
           <DrawerItemList {...props} />
         </DrawerContentScrollView>
       )}>
-      {isLogin && (
+      {user && (
         <>
+          <StackNavi.Screen component={MyPage} name="내정보보기" />
           <StackNavi.Screen
             component={MyReviewFavor}
             name="나의리뷰"
@@ -138,7 +142,7 @@ const RootStack = () => {
           title: '지도보기',
         }}
       />
-      <StackNavi.Screen component={MyPage} name="MyPage" />
+
       <StackNavi.Screen
         component={SignUp}
         name="SignUp"

@@ -7,14 +7,16 @@ import {
 } from '@react-native-seoul/kakao-login';
 import {serverIP, apis} from '../common/urls';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {authorize} from '../slices/auth';
 
 import {RootStackParams, MainStackNavigationProp} from '../screens/RootStack';
 
 export const signInWithKakao = async (navigation): Promise<void> => {
+  const dispatch = useDispatch();
   try {
     const token = await login();
     const requestHeaders = new Headers();
-    //requestHeaders.set('Content-Type', 'application/json');
     //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
     requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
     fetch(serverIP + apis.kakaoLogin, {
@@ -26,6 +28,18 @@ export const signInWithKakao = async (navigation): Promise<void> => {
     })
       .then(response => response.json())
       .then(response => {
+        console.log(response);
+        /*
+        dispatch(
+          authorize({
+            nickname: response.nickname, // 닉네임
+            phone: '', // 휴대폰번호
+            emergency: '', // 비상연락번호
+            token: JSON.stringify(token.accessToken), // 액세스토큰
+            profile: response.profileImageUrl,
+          }),
+        );
+        */
         if (response.isFirst) navigation.navigate('SignUp');
         else return true;
       });

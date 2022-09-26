@@ -39,7 +39,7 @@ import {RootState} from '../../slices';
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
 export type RootStackParams = {
   Main: undefined;
-  내정보보기: undefined;
+  마이페이지: undefined;
   SignUp: undefined;
   logoutsidebar: undefined;
   MyReviewFavor: {type: number};
@@ -47,6 +47,7 @@ export type RootStackParams = {
   나의장소: {type: number};
 };
 const StackNavi = createDrawerNavigator<RootStackParams>();
+export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 
 // Main Component Stack Navigator 구현
 type MainParams = {
@@ -115,18 +116,22 @@ const RootStack = () => {
       )}>
       {user && (
         <>
-          <StackNavi.Screen component={MyPage} name="내정보보기" />
+          <StackNavi.Screen
+            component={MyPage}
+            name="마이페이지"
+            options={{headerShown: false}}
+          />
           <StackNavi.Screen
             component={MyReviewFavor}
             name="나의리뷰"
-            initialParams={{type: 1}}
+            initialParams={{type: 0}}
             // 헤더 없애기
             options={{headerShown: false}}
           />
           <StackNavi.Screen
             component={MyReviewFavor}
             name="나의장소"
-            initialParams={{type: 2}}
+            initialParams={{type: 1}}
             // 헤더 없애기
             options={{headerShown: false}}
           />

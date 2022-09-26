@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParams, MainStackNavigationProp} from './RootStack';
@@ -9,6 +9,7 @@ import {
 import MyReviewHeader from '../components/MyReviewHeader';
 import MyReview from '../components/MyReview';
 import MyFavor from '../components/MyFavor';
+import {useIsFocused} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,16 +30,25 @@ type MyReviewFavorProps = {
 const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
   const {params} = useRoute<MyReviewFavorRouteProp>();
 
-  const [viewType, setViewType] = useState<number>(params?.type);
+  const [selectedMenu, setSelectedMenu] = useState<number>(params?.type);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setSelectedMenu(0);
+  }, [isFocused]);
 
   return (
     <View style={styles.container}>
       <View style={styles.titleHeight}>
-        <Button title="<" onPress={() => navigation.navigate('Main')}></Button>
-        <MyReviewHeader />
+        <MyReviewHeader
+          navigation={navigation}
+          selectedMenu={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+        />
       </View>
       <View style={styles.contentHeight}>
-        {params.type === 1 ? <MyReview /> : <MyFavor />}
+        {selectedMenu === 0 ? <MyReview /> : <MyFavor />}
       </View>
     </View>
   );

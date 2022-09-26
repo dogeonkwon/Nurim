@@ -6,6 +6,8 @@ const getColor = (name: string): string => {
       return '#FAE100';
     case 'NAVER':
       return '#1EC800';
+    case 'HEADER':
+      return '#36BC9B';
     default:
       return '';
   }

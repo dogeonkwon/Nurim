@@ -6,6 +6,8 @@ import {View, ScrollView, StyleSheet} from 'react-native';
 import {styled} from '@mui/styles';
 import {Button, Text, Avatar, Divider} from '@rneui/themed';
 import {getFont} from '../../common/font';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -20,28 +22,32 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     overflow: 'hidden',
   },
-  Text: {
-    nameText: {
-      marginTop: 15,
-      marginBottom: 15,
-      fontSize: 16,
-      fontFamily: getFont(3),
-    },
+  nameText: {
+    marginTop: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    fontFamily: getFont(3),
   },
 });
 
 const LogInSideBar = () => {
-  const name = '김국진';
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log(user?.profile);
   return (
-    <Divider style={styles.Divider} fill center spacing={4}>
+    <Divider style={styles.Divider}>
       <Avatar
+        size="xlarge"
         rounded
-        style={styles.Avatar}
         source={{
-          uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg',
+          uri: `${user?.profile}`,
+        }}
+        containerStyle={{
+          borderColor: 'rgba(0, 0, 0, 0.4)',
+          borderStyle: 'solid',
+          borderWidth: 3,
         }}
       />
-      <Text style={styles.Text.nameText}>{name} 님. 환영합니다.</Text>
+      <Text style={styles.nameText}>{user?.nickname} 님. 환영합니다.</Text>
     </Divider>
   );
 };

@@ -3,7 +3,7 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 //import styled from 'styled-components/native';
-import {Button, Text, Avatar, Divider, Icon} from '@rneui/themed';
+import {Button, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
 import {signInWithKakao} from '../../modules/kakao';
@@ -17,6 +17,11 @@ import {
 import {serverIP, apis} from '../../common/urls';
 import {useDispatch, useSelector} from 'react-redux';
 import {authorize} from '../../slices/auth';
+import {
+  MainStackNavigationProp,
+  MainDrawerNavigationProp,
+} from './../../screens/RootStack';
+import {Tab, Text, TabView} from '@rneui/themed';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -62,12 +67,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const LogOutSideBar = props => {
+type LogOutSideBarProps = {
+  navigation: MainDrawerNavigationProp;
+};
+const LogOutSideBar = (props: LogOutSideBarProps) => {
   const dispatch = useDispatch();
   // 카카오 로그인 버튼 클릭 이벤트
   const kakaoLoginButtonClicked = async () => {
     try {
-      const token = await login();
+      const token: any = await login();
       const requestHeaders = new Headers();
       //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
       requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
@@ -87,9 +95,10 @@ const LogOutSideBar = props => {
               phone: response.phone, // 휴대폰번호
               emergency: response.emergency, // 비상연락번호
               token: response.token, // 액세스토큰
-              profile: response.profileImageUrl,
+              profile: response.imgUrl,
             }),
           );
+          console.log(response.imgUrl);
           if (response.isFirst) props.navigation.navigate('SignUp');
           else return true;
         });

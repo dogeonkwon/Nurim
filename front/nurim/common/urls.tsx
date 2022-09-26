@@ -9,6 +9,7 @@ export const apis = {
   kakaoLogin: 'api/user/kakao-login', // 카카오 로그인
   naverLogin: 'api/user/naver-login', // 네이버 로그인
   userDelete: 'api/user', // 회원 탈퇴
+  wirteMoreInfo: 'api/user/write-moreInfo', // 초기 정보
   reviewWrite: 'api/review/write', // 리뷰 작성
   reviewUpdate: 'api/review/', // 리뷰 수정
   reviewDelete: 'api/review/', // 리뷰 삭제

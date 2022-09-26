@@ -98,7 +98,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
               profile: response.imgUrl,
             }),
           );
-          console.log(response.imgUrl);
           if (response.isFirst) props.navigation.navigate('SignUp');
           else return true;
         });

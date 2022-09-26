@@ -45,29 +45,16 @@ const SignUp = () => {
     const requestHeaders = new Headers();
     //requestHeaders.set('jwt-token', user?.token);
     requestHeaders.set('jwt-token', user?.token);
-    requestHeaders.set('Content-Type', 'multipart/form-data;charset=utf-8');
-    //requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
-    //form Data
-    const formData = new FormData();
+    //requestHeaders.set('Content-Type', 'multipart/form-data;charset=utf-8');
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
 
-    const userInfo = {
-      nickname,
-      phone,
-      emergency,
-    };
-    formData.append(
-      'userInfo',
-      new Blob([JSON.stringify(userInfo)], {
-        type: 'application/json',
-      }),
-    );
-    formData.append('userInfo', userInfo);
-    console.log(userInfo);
-    console.log(formData);
-    fetch('https://j7e105.p.ssafy.io/api/user', {
-      method: 'PUT',
+    fetch(serverIP + apis.wirteMoreInfo, {
+      method: 'POST',
       headers: requestHeaders,
-      body: formData,
+      body: JSON.stringify({
+        phone,
+        emergency,
+      }),
     })
       .then(response => {
         console.log(response);

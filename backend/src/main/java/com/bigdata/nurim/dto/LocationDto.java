@@ -29,5 +29,6 @@ public class LocationDto {
     private String openingHours;
     private String subCategoryName;
     private String mainCategoryName;
+    private String mainCategoryId;
     private List<String> facilities = new ArrayList<>();
 }

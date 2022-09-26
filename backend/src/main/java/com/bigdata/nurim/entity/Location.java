@@ -68,6 +68,7 @@ public class Location {
                 .lat(this.lat)
                 .lng(this.lng)
                 .openingHours(this.openingHours)
+                .mainCategoryId(this.subCategory.getMainCategory().getMainCategoryId())
                 .mainCategoryName(this.subCategory.getMainCategory().getMainCategoryName())
                 .subCategoryName(this.subCategory.getSubCategoryName())
                 .facilities(facilities)

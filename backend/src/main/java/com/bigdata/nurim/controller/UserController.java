@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,29 +36,33 @@ public class UserController {
     }
     @PostMapping("/naver-login")
     public HttpEntity<?> naverLogin(@RequestBody HashMap<String, String> param) {
+        naverUserService.getUserInfoByAccessToken(param.get("access_token"));
         UserDto userDto = naverUserService.getUserInfoByAccessToken(param.get("access_token"));
         return naverUserService.login(userDto);
     }
     @GetMapping
-    public ResponseEntity<?> getInfo(HttpServletRequest request) {
-        return userService.getInfo(request);
+    public ResponseEntity<?> getInfo(@AuthenticationPrincipal String email) {
+        return userService.getInfo(email);
     }
     @DeleteMapping
-    public ResponseEntity<String> delete(HttpServletRequest request) {
-        return userService.delete(request);
+    public ResponseEntity<String> delete(@AuthenticationPrincipal String email) {
+        return userService.delete(email);
     }
     @PutMapping
     public ResponseEntity<?> modify(@RequestPart(value = "file", required = false) MultipartFile file,
                                     @RequestPart(value = "userInfo", required = false) ModifyUserInfoDto modifyUserInfoDto,
+                                    @AuthenticationPrincipal String email,
                                     HttpServletRequest request) {
-        return userService.modify(modifyUserInfoDto, file,request);
+        String token = request.getHeader("jwt-token");
+        return userService.modify(modifyUserInfoDto, file, email,token);
     }
     @PostMapping("/nickname-check")
     public ResponseEntity<NicknameCheckResultDto> nicknameCheck(@RequestBody HashMap<String, String> param){
         return userService.nicknameCheck(param.get("nickname"));
     }
     @PostMapping("/write-moreInfo")
-    public ResponseEntity<String> wirteMoreInfo(@RequestBody FirstLoginInfoDto firstLoginInfoDto,HttpServletRequest request){
-        return userService.firstLogin(request,firstLoginInfoDto);
+    public ResponseEntity<String> writeMoreInfo(@RequestBody FirstLoginInfoDto firstLoginInfoDto,
+                                                @AuthenticationPrincipal String email){
+        return userService.firstLogin(firstLoginInfoDto,email);
     }
 }

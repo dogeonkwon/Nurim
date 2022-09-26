@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nurim-back-ingress
+  namespace: nr-back
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: j7e105.p.ssafy.io
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: nurim-back-service
+                port:
+                  number: 443
+
+  tls:
+    - hosts:
+        - j7e105.p.ssafy.io
+      secretName: ssafy.io

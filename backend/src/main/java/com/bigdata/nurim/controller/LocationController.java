@@ -31,4 +31,8 @@ public class LocationController {
         String locationName = locationNameMap.get("locationName");
         return locationService.getSearchedLocationInfo(locationName);
     }
+    @PostMapping
+    public ResponseEntity<List<LocationDto>> getCategoryLocationInfo(@PathVariable String mainCategoryId){
+        return locationService.getCategoryLocationInfo(mainCategoryId);
+    }
 }

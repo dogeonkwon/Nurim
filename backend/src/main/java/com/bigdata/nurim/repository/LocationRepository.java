@@ -12,4 +12,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     List<Location> findAll();
     @Query("select l from Location l join fetch l.subCategory s join fetch s.mainCategory m where l.locationName like %:#{#locationName}%")
     List<Location> findByLocationNameContaining(@Param("locationName") String locationName);
+    @Query("select l from Location l join fetch l.subCategory s join fetch s.mainCategory m where s.subCategoryId = :#{#mainCategoryId}")
+    List<Location>findByLocationMainCategory(@Param("mainCategoryId")String mainCategoryId);
 }

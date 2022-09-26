@@ -40,7 +40,6 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
-
         // 토큰의 유효성을 검사하고 (validateToken(jwt))
         if (jwt!=null&&StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             // 정상이면 Authentication 객체를 받아와서
@@ -50,12 +49,11 @@ public class JwtFilter extends GenericFilterBean {
             String email = (String) authentication.getPrincipal();
 
             Optional<User> user = userRepository.findByEmail(email);
-            System.out.println(email+" "+user.toString());
             if (!user.isPresent()) throw new UserNotFoundException();
 
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+            logger.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
         } else {
-            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+            logger.info("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
@@ -64,14 +62,9 @@ public class JwtFilter extends GenericFilterBean {
     // Request Header에서 토큰 정보를 꺼내오는 메서드
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-//        if (StringUtils.hasText(bearerToken)) {
-//            return bearerToken;
-//        }
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        if (StringUtils.hasText(bearerToken)) {
+            return bearerToken;
         }
-
         return null;
     }
 }

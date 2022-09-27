@@ -29,45 +29,19 @@ const styles = StyleSheet.create({
   },
 });
 
-interface ILocation {
-  latitude: number;
-  longitude: number;
-}
+type MainWidgetProps = {
+  getCurrentLocation: () => void;
+};
 
-const MainWidget = ({}) => {
-  const [location, setLocation] = useState<ILocation | undefined>(undefined);
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setLocation({
-          latitude,
-          longitude,
-        });
-        console.log(location);
-        console.log(latitude, longitude);
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
-  }, []);
+const MainWidget = ({getCurrentLocation}: MainWidgetProps) => {
   return (
     <SafeAreaView style={styles.wrap}>
-      {/* {location ? (
-        <>
-          <Text>{location}</Text>
-          <Text>Latitude: {location.latitude}</Text>
-          <Text>longitude: {location.longitude}</Text>
-        </>
-      ) : (
-        <Text>Loading...</Text>
-      )} */}
       <TouchableOpacity style={styles.button}>
         <Icon name={'car-emergency'} size={30} color="#01a699" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => getCurrentLocation()}>
         <Icon2 name={'my-location'} size={30} color="#01a699" />
       </TouchableOpacity>
     </SafeAreaView>

@@ -28,9 +28,9 @@ public class SparkService {
         Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
         //UserDic 적용
         komoran.setUserDic(userDicPath);
-
         //words 분석
         KomoranResult analyzeResultList = komoran.analyze(contents);
+        
         //명사 추출
         List<String> list = analyzeResultList.getNouns();
         //추출한 명사 내 공백 제거

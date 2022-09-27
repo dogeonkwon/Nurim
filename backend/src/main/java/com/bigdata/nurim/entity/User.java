@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -55,9 +54,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Authority> authorities;
 
     public void update(ModifyUserInfoDto modifyUserInfoDto){
         this.nickname = modifyUserInfoDto.getNickname();

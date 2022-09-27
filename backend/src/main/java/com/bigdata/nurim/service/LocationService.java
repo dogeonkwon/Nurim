@@ -48,4 +48,16 @@ public class LocationService {
 
         return new ResponseEntity<>(locationDtoList, HttpStatus.OK);
     }
+    public ResponseEntity<List<LocationDto>>getCategoryLocationInfo(String mainCategoryId){
+
+        List<Location> searchedLocationList = locationRepository.findByLocationMainCategory(mainCategoryId);
+        List<LocationDto> locationDtoList = new ArrayList<>();
+
+        for(Location location: searchedLocationList) {
+            LocationDto locationDto = location.toDto();
+            locationDtoList.add(locationDto);
+        }
+
+        return new ResponseEntity<>(locationDtoList, HttpStatus.OK);
+    }
 }

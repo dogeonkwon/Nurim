@@ -55,9 +55,6 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Authority> authorities;
-
     public void update(ModifyUserInfoDto modifyUserInfoDto){
         this.nickname = modifyUserInfoDto.getNickname();
         this.phone = modifyUserInfoDto.getPhone();

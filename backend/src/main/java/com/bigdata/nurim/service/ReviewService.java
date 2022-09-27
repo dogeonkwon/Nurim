@@ -32,6 +32,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final LocationRepository locationRepository;
 
+    private final SparkService sparkService;
+
     @Transactional
     public ResponseEntity<String> register(HttpServletRequest request, ReviewWriteDto reviewWriteDto){
 
@@ -58,6 +60,9 @@ public class ReviewService {
         reviewDto.setNickname(user.getNickname());
 
         Review review = reviewDto.toEntity(user,location);
+
+        //리뷰 분석 후, WordCloud 용 No SQL Table 에 저장
+        sparkService.getCount(reviewWriteDto.getContent());
 
         reviewRepository.save(review);
 

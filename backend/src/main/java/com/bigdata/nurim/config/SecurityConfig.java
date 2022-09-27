@@ -8,6 +8,7 @@ import com.bigdata.nurim.security.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,6 +41,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/api/swagger-ui/**", "/api/v3/api-docs/**");
+         }
+    @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         JwtFilter customFilter = new JwtFilter(tokenProvider,userRepository);
         httpSecurity
@@ -58,7 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .anyRequest().permitAll()
-
                 .and()
                 .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
                 // 인증없이 접근을 허용하는 path 추가

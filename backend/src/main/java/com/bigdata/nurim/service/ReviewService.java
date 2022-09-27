@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -31,7 +32,6 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final LocationRepository locationRepository;
-
     private final SparkService sparkService;
 
     @Transactional
@@ -62,7 +62,13 @@ public class ReviewService {
         Review review = reviewDto.toEntity(user,location);
 
         //리뷰 분석 후, WordCloud 용 No SQL Table 에 저장
-        sparkService.getCount(reviewWriteDto.getContent());
+        Map<String, Long> mapReduce = sparkService.getCount(reviewWriteDto.getContent());
+        List<String> keyList = new ArrayList<>(mapReduce.keySet());
+        List<Long> countList = new ArrayList<>();
+        for (String key: keyList) {
+            long count = mapReduce.get(key);
+            countList.add(count);
+        }
 
         reviewRepository.save(review);
 

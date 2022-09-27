@@ -29,7 +29,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'

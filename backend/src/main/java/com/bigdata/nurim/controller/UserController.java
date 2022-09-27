@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 @Tag(name = "User", description = "유저 API")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
@@ -40,11 +39,11 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @Parameter(name = "param", description = "카카오 access token", example = "\"access_token\": \"YOUR TOKEN\"")
+    @Parameter(name = "access_token", description = "카카오 access token", example = "\"access_token\": \"YOUR TOKEN\"")
     @PostMapping("/kakao-login")
-    public HttpEntity<?> kakaoLogin(@RequestBody HashMap<String, String> param) {
-        kakaoUserService.getUserInfoByAccessToken(param.get("access_token"));
-        UserDto userDto = kakaoUserService.getUserInfoByAccessToken(param.get("access_token"));
+    public HttpEntity<?> kakaoLogin(@RequestBody TokenDto tokenDto) {
+        kakaoUserService.getUserInfoByAccessToken(tokenDto.getAccess_token());
+        UserDto userDto = kakaoUserService.getUserInfoByAccessToken(tokenDto.getAccess_token());
         return kakaoUserService.login(userDto);
     }
     @Operation(summary = "naver Login", description = "네이버계정으로 로그인")
@@ -54,11 +53,11 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @Parameter(name = "param", description = "네이버 access token", example = "\"access_token\": \"YOUR TOKEN\"")
+    @Parameter(name = "access_token", description = "네이버 access token", example = "\"access_token\": \"YOUR TOKEN\"")
     @PostMapping("/naver-login")
-    public HttpEntity<?> naverLogin(@RequestBody HashMap<String, String> param) {
-        naverUserService.getUserInfoByAccessToken(param.get("access_token"));
-        UserDto userDto = naverUserService.getUserInfoByAccessToken(param.get("access_token"));
+    public HttpEntity<?> naverLogin(@RequestBody TokenDto tokenDto) {
+        naverUserService.getUserInfoByAccessToken(tokenDto.getAccess_token());
+        UserDto userDto = naverUserService.getUserInfoByAccessToken(tokenDto.getAccess_token());
         return naverUserService.login(userDto);
     }
     @Operation(summary = "Get user's info", description = "사용자 정보 조회")
@@ -105,8 +104,8 @@ public class UserController {
     })
     @Parameter(name = "nickname", description = "닉네임", example = "가나다라")
     @PostMapping("/nickname-check")
-    public ResponseEntity<NicknameCheckResultDto> nicknameCheck(@RequestBody HashMap<String, String> param){
-        return userService.nicknameCheck(param.get("nickname"));
+    public ResponseEntity<NicknameCheckResultDto> nicknameCheck(@RequestBody NicknameDto nicknameDto){
+        return userService.nicknameCheck(nicknameDto.getNickname());
     }
     @Operation(summary = "Enter additional information", description = "최초 로그인 시 추가 정보 입력")
     @ApiResponses({

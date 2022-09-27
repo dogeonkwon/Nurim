@@ -44,7 +44,7 @@ const SignUp = () => {
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     //requestHeaders.set('jwt-token', user?.token);
-    requestHeaders.set('jwt-token', user?.token);
+    requestHeaders.set('jwt-token', user?.token ? user.token : '');
     //requestHeaders.set('Content-Type', 'multipart/form-data;charset=utf-8');
     requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
 

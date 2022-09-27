@@ -33,7 +33,7 @@ import CustomDrawer from '../components/CustomDrawer';
 import MyReviewFavor from './MyReviewFavor';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../slices';
+import {RootState} from '../slices';
 
 /* 스택 내비게이션 사용 파트 */
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
@@ -53,7 +53,7 @@ export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 type MainParams = {
   Main: undefined;
   PlaceDetail: undefined;
-  openDrawer(): void;
+  openDrawer: () => void;
 };
 export type MainStackNavigationProp = NativeStackNavigationProp<MainParams>;
 const MainStack = createNativeStackNavigator<MainParams>();
@@ -110,7 +110,11 @@ const RootStack = () => {
       }
       drawerContent={props => (
         <DrawerContentScrollView {...props}>
-          {user ? <LogInSideBar /> : <LogOutSideBar {...props} />}
+          {user ? (
+            <LogInSideBar />
+          ) : (
+            <LogOutSideBar navigation={props.navigation} />
+          )}
           <DrawerItemList {...props} />
         </DrawerContentScrollView>
       )}>

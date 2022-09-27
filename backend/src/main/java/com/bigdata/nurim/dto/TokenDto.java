@@ -6,10 +6,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class NicknameCheckResultDto {
-    @Schema(description = "사용 가능 여부")
-    private Boolean availability;
+public class TokenDto {
+    @Schema(description = "엑세스 토큰")
+    private String access_token;
 }

@@ -77,7 +77,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
     try {
       const token: any = await login();
       const requestHeaders = new Headers();
-      //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
       requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
       fetch(serverIP + apis.kakaoLogin, {
         method: 'POST',

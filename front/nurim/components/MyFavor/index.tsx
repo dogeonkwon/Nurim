@@ -1,10 +1,19 @@
 import React from 'react';
 import {View, Text} from 'react-native';
+import {FavorType} from '../../screens/MyReviewFavor';
 
-const MyFavor = () => {
+type MyFavorProps = {
+  myFavor: FavorType[] | undefined;
+};
+
+const MyFavor = (props: MyFavorProps) => {
   return (
     <View>
-      <Text>즐겨찾기 컴포넌트</Text>
+      {props.myFavor?.map(favor => (
+        <Text>
+          {favor.locationName} {favor.locationAddress}
+        </Text>
+      ))}
     </View>
   );
 };

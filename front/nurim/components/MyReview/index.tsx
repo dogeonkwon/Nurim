@@ -1,10 +1,16 @@
 import React from 'react';
 import {View, Text} from 'react-native';
+import {ReviewType} from '../../screens/MyReviewFavor';
 
-const MyReview = () => {
+type MyReviewProps = {
+  myReview: ReviewType[] | undefined;
+};
+const MyReview = (props: MyReviewProps) => {
   return (
     <View>
-      <Text>리뷰보기 컴포넌트</Text>
+      {props.myReview?.map(review => (
+        <Text>{review.content}</Text>
+      ))}
     </View>
   );
 };

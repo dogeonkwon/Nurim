@@ -27,6 +27,9 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
     contentHeight: {
       height: '60%',
     },
+    tabBackColor: {
+      backgroundColor: getColor('HEADER'),
+    },
   });
 
   return (
@@ -38,13 +41,13 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
       />
       <Text style={styles.titleText}>마이페이지</Text>
       <Tab
+        style={styles.tabBackColor}
         value={props.selectedMenu}
         onChange={e => props.setSelectedMenu(e)}
         indicatorStyle={{
           backgroundColor: 'white',
           height: 2,
-        }}
-        variant="#36BC9B">
+        }}>
         <Tab.Item
           containerStyle={active => ({
             backgroundColor: '#36BC9B',

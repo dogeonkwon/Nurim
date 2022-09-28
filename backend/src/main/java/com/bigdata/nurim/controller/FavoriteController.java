@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
 @Slf4j
-@RequestMapping("/api/favorite")
+@RequestMapping("/favorite")
 @RequiredArgsConstructor
 public class FavoriteController {
     private final FavoriteService favoriteService;

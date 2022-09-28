@@ -43,4 +43,12 @@ public class TaxiDto {
     private String taxiFee;
     @Schema(description = "관리기관 전화번호")
     private String taxiAgencyPhone;
+    @Schema(description = "차량이용대상")
+    private String taxiTarget;
+    @Schema(description = "보유차량대수")
+    private String taxiNumberOfVehicles;
+    @Schema(description = "예약접수인터넷주소")
+    private String taxiReservation;
+    @Schema(description = "앱서비스명")
+    private String taxiAppService;
 }

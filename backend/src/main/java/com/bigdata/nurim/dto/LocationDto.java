@@ -34,6 +34,12 @@ public class LocationDto {
     private String mainCategoryName;
     @Schema(description = "번호 카테코리 식별자")
     private String mainCategoryId;
+    @Schema(description = "시/도")
+    private String sido;
+    @Schema(description = "구")
+    private String gu;
+    @Schema(description = "동")
+    private String dong;
     @Schema(description = "편의 시설 정보")
     private List<String> facilities = new ArrayList<>();
 }

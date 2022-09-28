@@ -20,7 +20,7 @@ import java.util.Map;
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
 @Slf4j
-@RequestMapping("/api/location")
+@RequestMapping("/location")
 @RequiredArgsConstructor
 public class LocationController {
 

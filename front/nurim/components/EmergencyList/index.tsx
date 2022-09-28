@@ -1,14 +1,8 @@
-<<<<<<< Updated upstream
-import React, { useState } from 'react';
-import { Button, Dialog, ListItem, Avatar, Icon } from '@rneui/themed';
-import { View, StyleSheet, Linking } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-=======
 import React, {useState} from 'react';
-import {Button, Dialog, ListItem, Avatar} from '@rneui/themed';
+import {Button, Dialog, ListItem, Avatar, Icon} from '@rneui/themed';
 import {View, StyleSheet, Linking} from 'react-native';
->>>>>>> Stashed changes
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+
 type DialogComponentProps = {};
 
 const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
@@ -58,86 +52,75 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
   }
 
   return (
-    <SafeAreaProvider style={styles.iconContainer}>
-      <SafeAreaProvider>
-        <Icon raised
-          name='alarm-light'
-          type='material-community'
-          color='#f50'
-          onPress={toggleDialog}
-        />
-        {/* <Button
-          title="비상 연락"
-          onPress={toggleDialog}
-          buttonStyle={styles.button}
+    <>
+      <SafeAreaProvider style={styles.iconContainer}>
+        <SafeAreaProvider>
+          <Icon
+            raised
+            name="alarm-light"
+            type="material-community"
+            color="#f50"
+            onPress={toggleDialog}
+          />
+          {/* <Button
+      title="비상 연락"
+      onPress={toggleDialog}
+      buttonStyle={styles.button}
 <<<<<<< Updated upstream
-        /> */}
-        <Button 
-          title={loginButton} //로그인상태에 따라 버튼타이틀이 변화
-          onPress={buttonEvent} //로그인상태에 따라 클릭시 실행되는 함수가 변화
-        />
+    /> */}
+          <Button
+            title={loginButton} //로그인상태에 따라 버튼타이틀이 변화
+            onPress={buttonEvent} //로그인상태에 따라 클릭시 실행되는 함수가 변화
+          />
         </SafeAreaProvider>
-          <Dialog
-            isVisible={visible}
-            onBackdropPress={toggleDialog}
-=======
-        />
+        <Dialog isVisible={visible} onBackdropPress={toggleDialog} />
         <Button
           title={loginButton} //로그인상태에 따라 버튼타이틀이 변화
           onPress={buttonEvent} //로그인상태에 따라 클릭시 실행되는 함수가 변화
         />
-      </View>
-      <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
-        <Dialog.Title title="비상 연락" />
-        {emergencyCallList.map((l, i) => (
-          <ListItem
-            key={i}
-            containerStyle={{
-              marginHorizontal: -10,
-              borderRadius: 8,
-            }}
-            onPress={() => {
-              Linking.openURL(`tel:${l.phoneNumber}`);
-            }} //리스트의 phoneNumber 연락
->>>>>>> Stashed changes
-          >
-            <Avatar source={require('../../assets/images/PHONE_CALL.png')} />
-            <ListItem.Content>
-              <ListItem.Title
-                style={{color: 'red', fontSize: 25, fontWeight: 'bold'}}>
-                {l.name}
-              </ListItem.Title>
-              <ListItem.Subtitle>{l.subTitle}</ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-        ))}
-      </Dialog>
-    </SafeAreaProvider>
+        <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
+          <Dialog.Title title="비상 연락" />
+          {emergencyCallList.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={{
+                marginHorizontal: -10,
+                borderRadius: 8,
+              }}
+              onPress={() => {
+                Linking.openURL(`tel:${l.phoneNumber}`);
+              }} //리스트의 phoneNumber 연락
+            >
+              <Avatar source={require('../../assets/images/PHONE_CALL.png')} />
+              <ListItem.Content>
+                <ListItem.Title
+                  style={{color: 'red', fontSize: 25, fontWeight: 'bold'}}>
+                  {l.name}
+                </ListItem.Title>
+                <ListItem.Subtitle>{l.subTitle}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </Dialog>
+      </SafeAreaProvider>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-<<<<<<< Updated upstream
-button: {
-  borderRadius: 6,
-  width: 220,
-  margin: 20,
-},
-iconContainer: {
-  marginTop : -305
-},
-=======
   button: {
     borderRadius: 6,
     width: 220,
     margin: 20,
+  },
+  iconContainer: {
+    marginTop: -305,
   },
   buttonContainer: {
     margin: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
->>>>>>> Stashed changes
 });
 
 export default EmergencyList;

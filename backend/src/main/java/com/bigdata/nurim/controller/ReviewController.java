@@ -22,6 +22,7 @@ public class ReviewController {
 
     @PostMapping("/write")
     public ResponseEntity<String> register(HttpServletRequest request, @RequestBody ReviewWriteDto reviewWriteDto) {
+        log.warn("##############################################Controller#############################");
         return reviewService.register(request, reviewWriteDto);
     }
     @PutMapping("/{review_id}")

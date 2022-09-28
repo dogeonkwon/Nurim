@@ -1,13 +1,14 @@
-import {Linking, StyleSheet } from 'react-native';
+import {Linking, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { Button, Text, } from '@rneui/themed';
+import { Button, Text, ListItem} from '@rneui/themed';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 type ButtonsComponentProps = {};
 
 const TaxiInfo: React.FunctionComponent<ButtonsComponentProps> = () =>  {
   return (
-    <SafeAreaProvider>
+    <View>
+      <ListItem>
         <Button
             //길어지므로 아래에 const로 정의
             title={<CustomTitle />}
@@ -21,16 +22,18 @@ const TaxiInfo: React.FunctionComponent<ButtonsComponentProps> = () =>  {
             onPress={()=>{Linking.openURL(`tel:01092403692`)}}
             size="lg"
         />
-    </SafeAreaProvider>
+            </ListItem>
+
+    </View>
   );
 };
 
 const CustomTitle = () => {
   return (
-    <SafeAreaProvider>
+    <View>
       <Text style={{ fontWeight: 'bold', fontSize: 17 }}>부산광역시 특별교통총괄본부(부산시설공단)</Text>
       <Text style={{ fontStyle: 'italic', fontSize: 12 }}>전화걸기</Text>
-    </SafeAreaProvider>
+    </View>
   );
 };
 

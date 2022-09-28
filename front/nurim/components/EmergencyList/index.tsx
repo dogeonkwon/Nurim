@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Dialog, ListItem, Avatar } from '@rneui/themed';
+import { Button, Dialog, ListItem, Avatar, Icon } from '@rneui/themed';
 import { View, StyleSheet, Linking } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 type DialogComponentProps = {};
 
 const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
@@ -48,18 +50,24 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
   }
 
   return (
-    <View>
-      <View style={styles.buttonContainer}>
-        <Button
+    <SafeAreaProvider style={styles.iconContainer}>
+      <SafeAreaProvider>
+        <Icon raised
+          name='alarm-light'
+          type='material-community'
+          color='#f50'
+          onPress={toggleDialog}
+        />
+        {/* <Button
           title="비상 연락"
           onPress={toggleDialog}
           buttonStyle={styles.button}
-        />
+        /> */}
         <Button 
           title={loginButton} //로그인상태에 따라 버튼타이틀이 변화
           onPress={buttonEvent} //로그인상태에 따라 클릭시 실행되는 함수가 변화
         />
-        </View>
+        </SafeAreaProvider>
           <Dialog
             isVisible={visible}
             onBackdropPress={toggleDialog}
@@ -84,7 +92,7 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
           </ListItem>
         ))}
       </Dialog>
-    </View>
+    </SafeAreaProvider>
   );
 };
 
@@ -94,10 +102,8 @@ button: {
   width: 220,
   margin: 20,
 },
-buttonContainer: {
-  margin: 20,
-  justifyContent: 'center',
-  alignItems: 'center',
+iconContainer: {
+  marginTop : -305
 },
 });
 

@@ -15,6 +15,8 @@ import SearchBar from '../SearchBar';
 import FilterBar from '../FilterBar';
 import MainWidget from '../MainWidget';
 import Geolocation from '@react-native-community/geolocation';
+import {serverIP, apis} from '../../common/urls';
+import {List} from 'reselect/es/types';
 
 // 검색창 및 위젯을 지도 위로 띄우기 위한 스탕일시트
 const styles = StyleSheet.create({
@@ -49,24 +51,41 @@ interface IRange {
   ne_longitude: number;
 }
 
-// 카테고리 별 시설 목록 불러오기
-fetch('https://j7e105.p.ssafy.io/api/location/02', {
-  method: 'GET',
-})
-  .then(response => {
-    console.log(response);
-  })
-  .catch(e => console.log('error:', e));
+type ICategory = {
+  id: number;
+  lat: number;
+  lng: number;
+};
+
+const P0: ILocation = {latitude: 35.0974162, longitude: 128.9224885};
+const P1 = {latitude: 35.099813701853336, longitude: 128.91850338616183};
+const P2 = {latitude: 35.09565291172822, longitude: 128.91850338616183};
+const P3 = {latitude: 35.099813701853336, longitude: 128.9219366138379};
+const P4 = {latitude: 35.09565291172822, longitude: 128.9219366138379};
+const P5 = {latitude: 35.09565291172822, longitude: 128.91850338616183};
 
 const Map = ({openDrawer}: MapProps) => {
-  const P0: ILocation = {latitude: 35.0974162, longitude: 128.9224885};
-  const P1 = {latitude: 35.099813701853336, longitude: 128.91850338616183};
-  const P2 = {latitude: 35.09565291172822, longitude: 128.91850338616183};
-  const P3 = {latitude: 35.099813701853336, longitude: 128.9219366138379};
-  const P4 = {latitude: 35.09565291172822, longitude: 128.9219366138379};
-  const P5 = {latitude: 35.09565291172822, longitude: 128.91850338616183};
-
+  // 현재 내 위치 구하는 함수
   const [location, setLocation] = useState<ILocation>(P0);
+  // 대분류에 맞는 시설 가져오기
+  const [category, setCategory] = useState<ICategory[]>();
+  // 화면의 범위 측정
+  const [range, setrange] = useState<IRange>({
+    sw_latitude: 35.09565291172822,
+    sw_longitude: 128.91850338616183,
+    ne_latitude: 35.09565291172822,
+    ne_longitude: 28.9219366138379,
+  });
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(catenum);
+  // }, [catenum, category]);
+
+  // 현재 내 위치 구하기
   const getCurrentLocation = (): void => {
     Geolocation.getCurrentPosition(
       position => {
@@ -84,95 +103,73 @@ const Map = ({openDrawer}: MapProps) => {
     );
   };
 
-  useEffect(() => {
-    getCurrentLocation();
-  }, []);
+  // 카테고리 번호에 맞는 카테고리 좌표들 구하기
+  const getCategory = (catenum: string): void => {
+    fetch(serverIP + apis.placeAllInfo + '/' + catenum, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(response => {
+        const datas = [...response];
+        let newDatas: ICategory[] = [];
+        datas.map((data, id) => {
+          const newData: ICategory = {
+            id: id,
+            lat: data.lat,
+            lng: data.lng,
+          };
+          newDatas.push(newData);
+        });
+        setCategory(newDatas);
+      })
+      .catch(e => console.log('error:', e));
+  };
 
-  // 화면의 범위 측정
-  const [range, setrange] = useState<IRange>({
-    sw_latitude: 35.09565291172822,
-    sw_longitude: 128.91850338616183,
-    ne_latitude: 35.09565291172822,
-    ne_longitude: 28.9219366138379,
-  });
-  console.log('하하하', range.sw_latitude);
   return (
     <View style={styles.container}>
-      <Text>{range.sw_latitude}</Text>
       <View style={styles.relative_view}>
         <NaverMapView
           style={{width: '100%', height: '100%'}}
           showsMyLocationButton={false}
           center={{...location, zoom: 16}}
           // onTouch={e => console.warn('onTouch', JSON.stringify(e.nativeEvent))}
-          onCameraChange={
-            e => (range.sw_latitude = e.contentRegion[0].latitude)
-            // useEffect(() => {
-            //   const sw_latitude = e.contentRegion[0].latitude;
-            //   const sw_longitude = e.contentRegion[0].longitude;
-            //   const ne_latitude = e.contentRegion[2].latitude;
-            //   const ne_longitude = e.contentRegion[2].longitude;
-
-            //   const subRange: IRange = {
-            //     sw_latitude,
-            //     sw_longitude,
-            //     ne_latitude,
-            //     ne_longitude,
-            //   };
-
-            //   setrange(subRange);
+          onCameraChange={e =>
+            setrange({
+              sw_latitude: e.contentRegion[0].latitude,
+              sw_longitude: e.contentRegion[0].longitude,
+              ne_latitude: e.contentRegion[2].latitude,
+              ne_longitude: e.contentRegion[2].longitude,
+            })
           }
           // onMapClick={e => console.warn('onMapClick', JSON.stringify(e))}
         >
-          <Marker
-            coordinate={location}
-            onClick={() => console.warn('onClick! p0')}
-          />
-          <Marker
+          {category?.map((e, idx) => {
+            if (range.sw_latitude < e.lat && e.lat < range.ne_latitude) {
+              if (range.sw_longitude < e.lng && e.lng < range.ne_longitude) {
+                return (
+                  <Marker
+                    key={idx}
+                    pinColor="blue"
+                    coordinate={{
+                      latitude: Number(e.lat),
+                      longitude: Number(e.lng),
+                    }}
+                  />
+                );
+              }
+            }
+          })}
+          {/* <Marker
             coordinate={P1}
             pinColor="blue"
             onClick={() => console.warn('onClick! p1')}
-          />
-          <Marker
-            coordinate={P3}
-            pinColor="yellow"
-            onClick={() => console.warn('onClick! p1')}
-          />
-          <Marker
-            coordinate={P5}
-            pinColor="red"
-            onClick={() => console.warn('onClick! p1')}
-          />
-          {/* <Path
-            coordinates={[P0, P1]}
-            onClick={() => console.warn('onClick! path')}
-            width={10}
-          /> */}
-          {/* <Marker
-            coordinate={P2}
-            pinColor="red"
-            onClick={() => console.warn('onClick! p2')}
-          /> */}
-          {/* <Polyline
-            coordinates={[P1, P2]}
-            onClick={() => console.warn('onClick! polyline')}
-          /> */}
-          {/* <Circle
-            coordinate={P0}
-            color={'rgba(255,0,0,0.3)'}
-            radius={200}
-            onClick={() => console.warn('onClick! circle')}
-          /> */}
-          {/* <Polygon
-            coordinates={[P0, P1, P2]}
-            color={'rgba(0, 0, 0, 0.5)'}
-            onClick={() => console.warn('onClick! polygon')}
           /> */}
         </NaverMapView>
       </View>
       <View style={styles.absolute_view}>
         <SearchBar openDrawer={openDrawer} />
-        <FilterBar />
+        <FilterBar getCategory={getCategory} />
+        {/* <FilterBar getCategory={getCategory} setCatenum={setCatenum} /> */}
       </View>
       <MainWidget getCurrentLocation={getCurrentLocation} />
     </View>

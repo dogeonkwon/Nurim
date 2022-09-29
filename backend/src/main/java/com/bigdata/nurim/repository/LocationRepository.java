@@ -29,8 +29,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     @Query("select l from Location l " +
             "join fetch l.subCategory s " +
             "join fetch s.mainCategory m " +
-            "join fetch l.reviews r " +
-            "join fetch r.user u " +
             "where l.locationId = :#{#locationId}")
     Location findByLocationId(@Param("locationId")Integer locationId);
 }

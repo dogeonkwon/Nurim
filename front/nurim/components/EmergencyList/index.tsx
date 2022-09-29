@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Dialog, ListItem, Avatar, Icon} from '@rneui/themed';
-import {View, StyleSheet, Linking} from 'react-native';
+import {StyleSheet, Linking, View} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 type DialogComponentProps = {};
@@ -54,7 +54,7 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
   return (
     <>
       <SafeAreaProvider style={styles.iconContainer}>
-        <SafeAreaProvider>
+        <View>
           <Icon
             raised
             name="alarm-light"
@@ -68,16 +68,11 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
       buttonStyle={styles.button}
 <<<<<<< Updated upstream
     /> */}
-          <Button
+          {/* <Button
             title={loginButton} //로그인상태에 따라 버튼타이틀이 변화
             onPress={buttonEvent} //로그인상태에 따라 클릭시 실행되는 함수가 변화
-          />
-        </SafeAreaProvider>
-        <Dialog isVisible={visible} onBackdropPress={toggleDialog} />
-        <Button
-          title={loginButton} //로그인상태에 따라 버튼타이틀이 변화
-          onPress={buttonEvent} //로그인상태에 따라 클릭시 실행되는 함수가 변화
-        />
+          /> */}
+        </View>
         <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
           <Dialog.Title title="비상 연락" />
           {emergencyCallList.map((l, i) => (
@@ -114,7 +109,8 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   iconContainer: {
-    marginTop: -305,
+    marginRight : 140,
+    marginTop: -10,
   },
   buttonContainer: {
     margin: 20,

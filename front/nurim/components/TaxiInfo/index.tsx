@@ -8,7 +8,7 @@ type ButtonsComponentProps = {};
 const TaxiInfo: React.FunctionComponent<ButtonsComponentProps> = () =>  {
   return (
     <View>
-      <ListItem>
+      <ListItem bottomDivider>
         <Button
             //길어지므로 아래에 const로 정의
             title={<CustomTitle />}

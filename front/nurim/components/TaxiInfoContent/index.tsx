@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BottomSheet, Button, ListItem, Image, Text } from '@rneui/themed';
+import { ListItem, Image, Text } from '@rneui/themed';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {

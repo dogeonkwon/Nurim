@@ -15,6 +15,8 @@ import Main from './Main';
 import PlaceDetail from './PlaceDetail';
 import MyPage from './MyPage';
 import SignUp from './SignUp';
+import TaxiDetail from './TaxiDetail';
+import MainWidget from '../components/MainWidget';
 
 import {
   createDrawerNavigator,
@@ -53,7 +55,9 @@ export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 type MainParams = {
   Main: undefined;
   PlaceDetail: undefined;
+  TaxiDetail: undefined;
   openDrawer: () => void;
+  MainWidget: undefined;
 };
 export type MainStackNavigationProp = NativeStackNavigationProp<MainParams>;
 const MainStack = createNativeStackNavigator<MainParams>();
@@ -70,6 +74,12 @@ const MainScreenStack = () => {
       />
       {/* 장소 상세보기 페이지 */}
       <MainStack.Screen component={PlaceDetail} name="PlaceDetail" />
+      {/* 콜택시 상세보기 페이지 */}
+      <MainStack.Screen
+        component={TaxiDetail}
+        name="TaxiDetail"
+        options={{headerShown: false}}
+      />
     </MainStack.Navigator>
   );
 };

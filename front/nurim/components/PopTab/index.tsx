@@ -28,7 +28,7 @@ const PopTab = (props: PopTabProps) => {
       margin: 5,
     },
     titleText: {
-      fontSize: 16,
+      fontSize: 20,
     },
   });
   return (

@@ -53,9 +53,19 @@ const MyPage = ({navigation}: MyReviewFavorProps) => {
         />
       </View>
       <View style={styles.contentHeight}>
-        {selectedMenu === 1 ? <MyPageContent /> : <UpdateProfile />}
+        {selectedMenu === 0 ? <MyPageContent /> : <UpdateProfile />}
       </View>
     </View>
+    /*
+    <View style={styles.container}>
+      <View style={styles.titleHeight}>
+        <PopTab title="내 정보 수정" navigation={navigation} color="" />
+      </View>
+      <View style={styles.contentHeight}>
+        {selectedMenu === 0 ? <MyPageContent /> : <UpdateProfile />}
+      </View>
+    </View>
+    */
   );
 };
 

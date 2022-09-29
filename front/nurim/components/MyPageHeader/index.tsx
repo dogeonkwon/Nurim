@@ -21,48 +21,68 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
       fontSize: 20,
       textAlign: 'center',
     },
-    titleHeight: {
-      height: '30%',
-    },
-    contentHeight: {
-      height: '60%',
-    },
     tabBackColor: {
       backgroundColor: getColor('HEADER'),
+    },
+    viewBack: {
+      height: '25%',
+    },
+    viewContent: {
+      height: '35%',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    viewTab: {
+      height: '40%',
     },
   });
 
   return (
     <View style={styles.container}>
-      <PopTab
-        title=""
-        navigation={props.navigation}
-        color={getColor('HEADER')}
-      />
-      <Text style={styles.titleText}>마이페이지</Text>
-      <Tab
-        style={styles.tabBackColor}
-        value={props.selectedMenu}
-        onChange={e => props.setSelectedMenu(e)}
-        indicatorStyle={{
-          backgroundColor: 'white',
-          height: 2,
-        }}>
-        <Tab.Item
-          containerStyle={active => ({
-            backgroundColor: '#36BC9B',
-          })}
-          title="내정보보기"
-          titleStyle={{fontSize: 15, color: 'white'}}
+      <View style={styles.viewBack}>
+        <PopTab
+          title=""
+          navigation={props.navigation}
+          color={getColor('HEADER')}
         />
-        <Tab.Item
-          containerStyle={active => ({
-            backgroundColor: '#36BC9B',
-          })}
-          title="내정보수정"
-          titleStyle={{fontSize: 15}}
-        />
-      </Tab>
+      </View>
+      <View style={styles.viewContent}>
+        <Text style={styles.titleText}>내계정</Text>
+      </View>
+      <View style={styles.viewTab}>
+        <Tab
+          style={[styles.tabBackColor, styles.viewTab]}
+          value={props.selectedMenu}
+          onChange={e => props.setSelectedMenu(e)}
+          indicatorStyle={{
+            backgroundColor: 'white',
+            height: 2,
+          }}>
+          <Tab.Item
+            containerStyle={active => ({
+              backgroundColor: '#36BC9B',
+            })}
+            title="내정보보기"
+            titleStyle={
+              props.selectedMenu === 0
+                ? {color: 'white', fontSize: 15}
+                : {fontSize: 15}
+            }
+          />
+          <Tab.Item
+            containerStyle={active => ({
+              backgroundColor: '#36BC9B',
+            })}
+            title="내정보수정"
+            titleStyle={
+              props.selectedMenu === 1
+                ? {color: 'white', fontSize: 15}
+                : {fontSize: 15}
+            }
+          />
+        </Tab>
+      </View>
     </View>
   );
 };

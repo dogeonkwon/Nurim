@@ -6,7 +6,6 @@ import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {Button, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
-import {signInWithKakao} from '../../modules/kakao';
 import {naverLogin} from '../../modules/naver';
 import {
   getProfile as getKakaoProfile,

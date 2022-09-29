@@ -1,10 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@rneui/themed';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Geolocation from '@react-native-community/geolocation';
+import TaxiPreview from '../TaxiPreview';
+import EmergencyList from '../EmergencyList';
+
 
 const styles = StyleSheet.create({
   // 비상호출, 내위치 버튼 컴포넌트 위치
@@ -34,10 +37,20 @@ type MainWidgetProps = {
 };
 
 const MainWidget = ({getCurrentLocation}: MainWidgetProps) => {
+  const [visible, setVisible] = useState<boolean>(false);
+
+  const taxiEmergencyButton = () => {
+    setVisible(!visible);
+  };
+  // style={styles.wrap}
   return (
     <SafeAreaView style={styles.wrap}>
-      <TouchableOpacity style={styles.button}>
-        <Icon name={'car-emergency'} size={30} color="#01a699" />
+      <TouchableOpacity>{visible && <EmergencyList />}</TouchableOpacity>
+      <TouchableOpacity>{visible && <TaxiPreview />}</TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={taxiEmergencyButton}>
+        <Icon2 name={'add-box'} size={30} color="#01a699" />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}

@@ -8,7 +8,7 @@ type ButtonsComponentProps = {};
 const TaxiInfo: React.FunctionComponent<ButtonsComponentProps> = () =>  {
   return (
     <View>
-      <ListItem>
+      <ListItem bottomDivider>
         <Button
             //길어지므로 아래에 const로 정의
             title={<CustomTitle />}
@@ -31,8 +31,8 @@ const TaxiInfo: React.FunctionComponent<ButtonsComponentProps> = () =>  {
 const CustomTitle = () => {
   return (
     <View>
-      <Text style={{ fontWeight: 'bold', fontSize: 17 }}>부산광역시 특별교통총괄본부(부산시설공단)</Text>
-      <Text style={{ fontStyle: 'italic', fontSize: 12 }}>전화걸기</Text>
+      <Text style={{ fontWeight: 'bold', fontSize: 17, marginLeft: 10 }}>부산광역시 특별교통총괄본부(부산시설공단)</Text>
+      <Text style={{ fontStyle: 'italic', fontSize: 12, marginLeft: 10 }}>전화걸기</Text>
     </View>
   );
 };

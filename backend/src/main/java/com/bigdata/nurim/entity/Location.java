@@ -43,6 +43,15 @@ public class Location {
     @Column(nullable = false)
     private String facilities;
 
+    @Column
+    private String sido;
+
+    @Column
+    private String gu;
+
+    @Column
+    private String dong;
+
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
@@ -67,7 +76,11 @@ public class Location {
                 .phone(this.phone)
                 .lat(this.lat)
                 .lng(this.lng)
+                .sido(this.sido)
+                .gu(this.gu)
+                .dong(this.dong)
                 .openingHours(this.openingHours)
+                .mainCategoryId(this.subCategory.getMainCategory().getMainCategoryId())
                 .mainCategoryName(this.subCategory.getMainCategory().getMainCategoryName())
                 .subCategoryName(this.subCategory.getSubCategoryName())
                 .facilities(facilities)

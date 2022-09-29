@@ -29,23 +29,15 @@ import java.util.Map;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReviewService {
-    private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final LocationRepository locationRepository;
     private final SparkService sparkService;
     private final MongoService mongoService;
     @Transactional
-    public ResponseEntity<String> register(HttpServletRequest request, ReviewWriteDto reviewWriteDto){
+    public ResponseEntity<String> register(String email, ReviewWriteDto reviewWriteDto){
 
-        String token = request.getHeader("jwt-token");
-        User user = null;
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-
-        user = userRepository.findByEmail(userEmail).get();
+        User user = userRepository.findByEmail(email).get();
 
         Location location = locationRepository.findById(reviewWriteDto.getLocationId()).get();
 
@@ -72,11 +64,8 @@ public class ReviewService {
         return new ResponseEntity<>("리뷰가 등록되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<String> update(HttpServletRequest request,int review_id,String content){
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<String> update(int review_id,String content){
+
         Review review = reviewRepository.findById(review_id).get();
 
         review.update(content);
@@ -86,11 +75,8 @@ public class ReviewService {
         return new ResponseEntity<>("리뷰가 수정되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<String> delete(HttpServletRequest request,int review_id){
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<String> delete(int review_id){
+
         Review review = reviewRepository.findById(review_id).get();
         reviewRepository.delete(review);
         if(reviewRepository.findById(review_id).orElse(null) != null) {
@@ -106,15 +92,9 @@ public class ReviewService {
         reviewRepository.save(review);
         return new ResponseEntity<>("리뷰가 신고되었습니다.", HttpStatus.OK);
     }
-    public ResponseEntity<?> getMyReview(HttpServletRequest request){
-        String token = request.getHeader("jwt-token");
-        User user = null;
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
+    public ResponseEntity<?> getMyReview(String email){
 
-        user = userRepository.findByEmail(userEmail).get();
+        User user = userRepository.findByEmail(email).get();
 
         List<Review> reviews = reviewRepository.findReviewByUserFetchJoin(user);
         List<ReviewDto> result = new ArrayList<>();

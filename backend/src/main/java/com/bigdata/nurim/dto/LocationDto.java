@@ -1,5 +1,6 @@
 package com.bigdata.nurim.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -13,21 +14,32 @@ import java.util.List;
 @NoArgsConstructor
 public class LocationDto {
 
-    //장소 식별자
+    @Schema(description = "장소 식별자")
     private int locationId;
-    //장소명
+    @Schema(description = "장소명")
     private String locationName;
-    //주소
+    @Schema(description = "주소")
     private String address;
-    //전화번호
+    @Schema(description = "전화번호")
     private String phone;
-    //위도
+    @Schema(description = "위도")
     private String lat;
-    //경도
+    @Schema(description = "경도")
     private String lng;
-    //운영 시간
+    @Schema(description = "운영 시간")
     private String openingHours;
+    @Schema(description = "서브 카테코리 이름")
     private String subCategoryName;
+    @Schema(description = "메인 카테코리 이름")
     private String mainCategoryName;
+    @Schema(description = "번호 카테코리 식별자")
+    private String mainCategoryId;
+    @Schema(description = "시/도")
+    private String sido;
+    @Schema(description = "구")
+    private String gu;
+    @Schema(description = "동")
+    private String dong;
+    @Schema(description = "편의 시설 정보")
     private List<String> facilities = new ArrayList<>();
 }

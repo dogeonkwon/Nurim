@@ -29,14 +29,9 @@ public class FavoriteService {
     private final TokenProvider tokenProvider;
     private final FavoriteRepository favoriteRepository;
     private final LocationRepository locationRepository;
-    public ResponseEntity<?> getFavoritesInfo(HttpServletRequest request) {
+    public ResponseEntity<?> getFavoritesInfo(String email) {
 
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-        User user = userRepository.findByEmail(userEmail).get();
+        User user = userRepository.findByEmail(email).get();
 
         List<Favorite> favoriteList = favoriteRepository.findFavoriteFetchJoin(user);
 
@@ -49,23 +44,15 @@ public class FavoriteService {
     }
 
     @Transactional
-    public ResponseEntity<String> delete(HttpServletRequest request, int favoriteId) {
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<String> delete(int favoriteId) {
         favoriteRepository.deleteById(favoriteId);
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<String> add(HttpServletRequest request, int location_id) {
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-        User user = userRepository.findByEmail(userEmail).get();
+    public ResponseEntity<String> add(String email, int location_id) {
+
+        User user = userRepository.findByEmail(email).get();
 
         Location location = locationRepository.findById(location_id).get();
         if(favoriteRepository.findFavoriteByUserAndLocation(user, location).isPresent()) {

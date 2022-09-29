@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -60,42 +61,21 @@ public class UserService {
         return new ResponseEntity<>(loginResDto, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getInfo(HttpServletRequest request) {
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-
-        User findUser = userRepository.findByEmail(userEmail).get();
-
-        UserDto userDto = findUser.toDto();
-
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    public ResponseEntity<?> getInfo(String email) {
+        Optional<User> findUser = userRepository.findByEmail(email);
+        return new ResponseEntity<>(findUser.map(User::toDto).orElse(null), HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<String> delete(HttpServletRequest request) {
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-        User findUser = userRepository.findByEmail(userEmail).get();
-
+    public ResponseEntity<String> delete(String email) {
+        User findUser = userRepository.findByEmail(email).get();
         userRepository.delete(findUser);
-
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<?> modify(ModifyUserInfoDto modifyUserInfoDto, MultipartFile file, HttpServletRequest request) {
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-        User findUser = userRepository.findByEmail(userEmail).get();
+    public ResponseEntity<?> modify(ModifyUserInfoDto modifyUserInfoDto, MultipartFile file, String email, String token) {
+
+        Optional<User> user = userRepository.findByEmail(email);
+        User findUser = user.get();
         if(file!=null){
             if (!findUser.getImgUrl().equals(defaultImg)) {
                 imageUploadService.delete(findUser.getImgUrl());
@@ -107,7 +87,7 @@ public class UserService {
         findUser.update(modifyUserInfoDto);
 
         userRepository.save(findUser);
-        LoginResDto loginResDto = getLoginResDto(userEmail,token);
+        LoginResDto loginResDto = getLoginResDto(email, token);
         return new ResponseEntity<>(loginResDto, HttpStatus.OK);
     }
     public ResponseEntity<NicknameCheckResultDto> nicknameCheck(String nickname){
@@ -118,26 +98,18 @@ public class UserService {
         return new ResponseEntity<>(nicknameCheckResultDto, HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<String> firstLogin(HttpServletRequest request, FirstLoginInfoDto firstLoginInfoDto){
-        String token = request.getHeader("jwt-token");
-        if (!tokenProvider.validateToken(token)) {
-            return new ResponseEntity<>("유효하지 않는 토큰", HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<String> firstLogin(FirstLoginInfoDto firstLoginInfoDto,String email){
 
-        String userEmail = String.valueOf(tokenProvider.getPayload(token).get("sub"));
-        User findUser = userRepository.findByEmail(userEmail).get();
-
+        User findUser = userRepository.findByEmail(email).get();
         findUser.updateFirst(firstLoginInfoDto);
-
         userRepository.save(findUser);
         return new ResponseEntity<>("저장 완료", HttpStatus.OK);
     }
 
-    public LoginResDto getLoginResDto(String email,String jwt){
+    public LoginResDto getLoginResDto(String email,String token){
         User findUser = userRepository.findByEmail(email).get();
         LoginResDto loginResDto = new LoginResDto();
-
-        loginResDto.setToken(jwt);
+        loginResDto.setToken(token);
         loginResDto.setNickname(findUser.getNickname());
         loginResDto.setLoginType(findUser.getLoginType().toString());
         loginResDto.setImgUrl(findUser.getImgUrl());

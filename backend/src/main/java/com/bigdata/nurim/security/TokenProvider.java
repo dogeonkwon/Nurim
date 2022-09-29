@@ -86,10 +86,10 @@ public class TokenProvider implements InitializingBean {
                         .collect(Collectors.toList());
 
         // 권한정보를 이용해 유저객체 생성
-        User principal = new User(claims.getSubject(), "", authorities);
+        String email = new User(claims.getSubject(), "", authorities).getUsername();
 
         // 유저객체, 토큰, 권한정보를 이용해 최종적으로 Authentication 객체를 리턴
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return new UsernamePasswordAuthenticationToken(email, token, authorities);
     }
 
     // 토큰을 파라미터로 받아서 토큰의 유효성 검증

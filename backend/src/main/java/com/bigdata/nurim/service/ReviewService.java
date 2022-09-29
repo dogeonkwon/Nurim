@@ -67,11 +67,12 @@ public class ReviewService {
 
         //수정 리뷰 내용 분석 및 저장
         ReviewDto reviewDto = review.toDto();
+
         Map<String, Long> newMapReduce = sparkService.getCount(content);
         Map<String, Long> oldMapReduce = sparkService.getCount(reviewDto.getContent());
 
-        WordAnalysisDto newDto = new WordAnalysisDto(reviewDto.getLocationDto().getLocationId(), newMapReduce);
-        WordAnalysisDto oldDto = new WordAnalysisDto(reviewDto.getLocationDto().getLocationId(), oldMapReduce);
+        WordAnalysisDto newDto = new WordAnalysisDto(reviewDto.getLocationId(), newMapReduce);
+        WordAnalysisDto oldDto = new WordAnalysisDto(reviewDto.getLocationId(), oldMapReduce);
 
         mongoService.update(newDto, oldDto);
         review.update(content);

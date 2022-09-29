@@ -2,6 +2,7 @@ package com.bigdata.nurim.service;
 
 import com.bigdata.nurim.dto.ReviewDto;
 import com.bigdata.nurim.dto.ReviewWriteDto;
+import com.bigdata.nurim.dto.WordAnalysisDto;
 import com.bigdata.nurim.entity.Location;
 import com.bigdata.nurim.entity.Review;
 import com.bigdata.nurim.entity.User;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -30,7 +32,8 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final LocationRepository locationRepository;
-
+    private final SparkService sparkService;
+    private final MongoService mongoService;
     @Transactional
     public ResponseEntity<String> register(String email, ReviewWriteDto reviewWriteDto){
 
@@ -51,6 +54,11 @@ public class ReviewService {
 
         Review review = reviewDto.toEntity(user,location);
 
+        //리뷰 분석 후, WordCloud 용 No SQL Table 에 저장
+        Map<String, Long> mapReduce = sparkService.getCount(reviewWriteDto.getContent());
+
+        WordAnalysisDto dto = new WordAnalysisDto(reviewWriteDto.getLocationId(), mapReduce);
+        mongoService.save(dto);
         reviewRepository.save(review);
 
         return new ResponseEntity<>("리뷰가 등록되었습니다.", HttpStatus.OK);

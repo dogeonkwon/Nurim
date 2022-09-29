@@ -1,4 +1,4 @@
-import {Linking, StyleSheet, View} from 'react-native';
+import {Linking, StyleSheet, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Button, Text, ListItem} from '@rneui/themed';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -19,9 +19,6 @@ const TaxiInfo = () => {
           iconRight
           //경계선이 없는 흰색 버튼
           type="clear"
-          onPress={() => {
-            Linking.openURL(`tel:01092403692`);
-          }}
           size="lg"
         />
       </ListItem>
@@ -32,16 +29,18 @@ const TaxiInfo = () => {
 const CustomTitle = () => {
   const navigation = useNavigation<MainStackNavigationProp>();
   return (
-    <View>
+    <View style={{marginLeft:0, marginRight: 15}}>
+      <TouchableOpacity onPress = {() => {navigation.navigate('TaxiDetail')}}>
       <Text style={{fontWeight: 'bold', fontSize: 17, marginLeft: 10}}>
         부산광역시 특별교통총괄본부(부산시설공단)
       </Text>
       <Text style={{fontStyle: 'italic', fontSize: 12, marginLeft: 10}}>
-        전화걸기
+        상세보기
       </Text>
-      <Button
+      </TouchableOpacity>
+      {/* <Button
         title="상세보기"
-        onPress={() => navigation.navigate('TaxiDetail')}></Button>
+        onPress={() => navigation.navigate('TaxiDetail')}></Button> */}
     </View>
   );
 };
@@ -50,16 +49,22 @@ const styles = StyleSheet.create({
   iconSpec: {
     name: 'phone',
     type: 'font-awesome',
-    size: 40,
+    size: 55,
     color: '#36BC9B',
+    onPress: () => {
+      Linking.openURL(`tel:01092403692`);
+    }
   },
   containerSpec: {
     width: 300,
-    marginHorizontal: -5,
+    marginHorizontal: 0,
     marginVertical: 0,
+    marginLeft: -10,
+    marginRight: 0
   },
   iconMargin: {
-    marginLeft: 15,
+    marginLeft: 0,
+    marginRight:0
   },
 });
 

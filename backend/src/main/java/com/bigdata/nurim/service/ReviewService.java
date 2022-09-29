@@ -9,7 +9,6 @@ import com.bigdata.nurim.entity.User;
 import com.bigdata.nurim.repository.LocationRepository;
 import com.bigdata.nurim.repository.ReviewRepository;
 import com.bigdata.nurim.repository.UserRepository;
-import com.bigdata.nurim.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,6 +76,13 @@ public class ReviewService {
     public ResponseEntity<String> delete(int review_id){
 
         Review review = reviewRepository.findById(review_id).get();
+
+        //리뷰분석 && WordCloud
+        ReviewDto reviewDto = review.toDto();
+        Map<String, Long> mapReduce = sparkService.getCount(reviewDto.getContent());
+        WordAnalysisDto wordAnalysisDto = new WordAnalysisDto(review.getLocation().getLocationId(), mapReduce);
+
+        mongoService.delete(wordAnalysisDto);
         reviewRepository.delete(review);
         if(reviewRepository.findById(review_id).orElse(null) != null) {
             return new ResponseEntity<>("삭제실패", HttpStatus.NO_CONTENT);

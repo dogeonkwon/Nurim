@@ -1,5 +1,6 @@
 package com.bigdata.nurim.entity;
 
+import com.bigdata.nurim.dto.LocationReviewDto;
 import com.bigdata.nurim.dto.ReviewDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,14 @@ public class Review {
                 .type(this.type)
                 .locationName(this.location.getLocationName())
                 .locationId(this.location.getLocationId())
+                .createdDate(this.createdDate)
+                .nickname(this.user.getNickname())
+                .build();
+    }
+    public LocationReviewDto toLocationReviewDto(){
+        return LocationReviewDto.builder()
+                .reviewId(this.reviewId)
+                .content(this.content)
                 .createdDate(this.createdDate)
                 .nickname(this.user.getNickname())
                 .build();

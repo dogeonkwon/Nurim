@@ -66,15 +66,4 @@ public class ReviewController {
     public ResponseEntity<?> getMyReview(@AuthenticationPrincipal String email) {
         return reviewService.getMyReview(email);
     }
-    @Operation(summary = "Look up location review", description = "장소 리뷰 조회")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
-    @GetMapping("/{location_id}")
-    public ResponseEntity<?> getLocationReview(@PathVariable int location_id) {
-        return reviewService.getLocationReview(location_id);
-    }
 }

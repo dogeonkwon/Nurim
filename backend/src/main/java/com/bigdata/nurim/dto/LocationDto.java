@@ -44,7 +44,7 @@ public class LocationDto {
     @Schema(description = "편의 시설 정보")
     private List<String> facilities = new ArrayList<>();
     @Schema(description = "리뷰")
-    private HashMap<String,List<ReviewDto>> reviews = new HashMap<>();
+    private HashMap<String,List<LocationReviewDto>> reviews = new HashMap<>();
     @Schema(description = "리뷰 수")
     private ReviewCountDto reviewCount;
 }

@@ -1,8 +1,6 @@
 package com.bigdata.nurim.entity;
 
-import com.bigdata.nurim.dto.LocationDto;
-import com.bigdata.nurim.dto.ReviewCountDto;
-import com.bigdata.nurim.dto.ReviewDto;
+import com.bigdata.nurim.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,24 +71,24 @@ public class Location {
         }
         ReviewCountDto reviewCountDto = new ReviewCountDto();
         reviewCountDto.setTotal(this.reviews.size());
-        HashMap<String,List<ReviewDto>> reviews = new HashMap<>();
+        HashMap<String,List<LocationReviewDto>> reviews = new HashMap<>();
         String[]arr=new String[]{"green","yellow","red"};
-        for(String type:arr)reviews.put(type,new ArrayList<ReviewDto>());
+        for(String type:arr)reviews.put(type,new ArrayList<LocationReviewDto>());
 
         for(Review review:this.reviews){
             int type=review.getType();
             switch (type){
                 case 1:
                     reviewCountDto.updateGreen();
-                    reviews.get(arr[0]).add(review.toDto());
+                    reviews.get(arr[0]).add(review.toLocationReviewDto());
                     break;
                 case 2:
                     reviewCountDto.updateYellow();
-                    reviews.get(arr[1]).add(review.toDto());
+                    reviews.get(arr[1]).add(review.toLocationReviewDto());
                     break;
                 default:
                     reviewCountDto.updateRed();
-                    reviews.get(arr[2]).add(review.toDto());
+                    reviews.get(arr[2]).add(review.toLocationReviewDto());
             }
         }
 
@@ -111,6 +109,15 @@ public class Location {
                 .facilities(facilities)
                 .reviewCount(reviewCountDto)
                 .reviews(reviews)
+                .build();
+    }
+    public LocationPosDto toLocationPosDto(){
+        return LocationPosDto.builder()
+                .locationName(this.locationName)
+                .locationId(this.locationId)
+                .lat(this.lat)
+                .lng(this.lng)
+                .address(this.address)
                 .build();
     }
 }

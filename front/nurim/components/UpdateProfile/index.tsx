@@ -2,11 +2,15 @@
 // 2022-09-26 김국진
 
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
+
+const styles = StyleSheet.create({
+  viewContainer: {},
+});
 
 const UpdateProfile = () => {
   return (
-    <View>
+    <View style={styles.viewContainer}>
       <Text>내정보수정컴포넌트</Text>
     </View>
   );

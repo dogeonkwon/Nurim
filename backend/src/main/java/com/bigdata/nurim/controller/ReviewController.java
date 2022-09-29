@@ -1,6 +1,7 @@
 package com.bigdata.nurim.controller;
 
 
+import com.bigdata.nurim.dto.ModifyReviewDto;
 import com.bigdata.nurim.dto.ReviewDto;
 import com.bigdata.nurim.dto.ReviewWriteDto;
 import com.bigdata.nurim.service.ReviewService;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 @Tag(name = "Review", description = "리뷰 API")
 @CrossOrigin(origins = { "*" }, maxAge = 6000)
 @RestController
@@ -41,8 +41,8 @@ public class ReviewController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PutMapping("/{review_id}")
-    public ResponseEntity<String> update(@AuthenticationPrincipal String email,@PathVariable int review_id,@RequestBody Map<String,String> map) {
-        return reviewService.update(review_id,map.get("content"));
+    public ResponseEntity<String> update(@AuthenticationPrincipal String email, @PathVariable int review_id, ModifyReviewDto modifyReviewDto) {
+        return reviewService.update(review_id,modifyReviewDto.getContent());
     }
     @Operation(summary = "Delete Review", description = "리뷰 삭제")
     @ApiResponses({

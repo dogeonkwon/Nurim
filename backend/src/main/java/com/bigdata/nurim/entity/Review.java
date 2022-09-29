@@ -51,7 +51,8 @@ public class Review {
                 .reviewId(this.reviewId)
                 .content(this.content)
                 .type(this.type)
-                .locationDto(this.location.toDto())
+                .locationName(this.location.getLocationName())
+                .locationId(this.location.getLocationId())
                 .createdDate(this.createdDate)
                 .nickname(this.user.getNickname())
                 .build();

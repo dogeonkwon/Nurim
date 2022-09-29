@@ -3,6 +3,7 @@ package com.bigdata.nurim.service;
 import com.bigdata.nurim.dto.LocationDto;
 import com.bigdata.nurim.entity.Location;
 import com.bigdata.nurim.repository.LocationRepository;
+import com.bigdata.nurim.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import java.util.List;
 public class LocationService {
 
     private final LocationRepository locationRepository;
-
+    private final ReviewRepository reviewRepository;
     //전체 장소 조회
     public ResponseEntity<List<LocationDto>> getAllInfo() {
 
@@ -28,6 +29,7 @@ public class LocationService {
         List<LocationDto> locationDtoList = new ArrayList<>();
 
         for(Location location: findLocationList) {
+
             LocationDto locationDto = location.toDto();
             locationDtoList.add(locationDto);
         }

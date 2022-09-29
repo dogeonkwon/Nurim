@@ -1,12 +1,13 @@
 package com.bigdata.nurim.service;
 
 import com.bigdata.nurim.dto.WordAnalysisDto;
-import com.bigdata.nurim.mongo.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,8 +20,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MongoService {
 
-    private final WordRepository wordRepository;
     private final MongoTemplate mongoTemplate;
+
+    //MongoDB 저장내용 불러오기
+    public ResponseEntity<WordAnalysisDto> getInfo(int locationId) {
+
+        WordAnalysisDto wordAnalysisDto = mongoTemplate.findOne(
+                Query.query(Criteria.where("_id").is(locationId)),
+                WordAnalysisDto.class);
+
+        return new ResponseEntity<>(wordAnalysisDto, HttpStatus.OK);
+    }
 
     //리뷰 분석 저장
     public void save(WordAnalysisDto wordAnalysisDto){
@@ -161,7 +171,7 @@ public class MongoService {
                 }
             }
         }
-        
+
         //MongoDB에서 해당 장소 리뷰 삭제
         mongoTemplate.remove(
                 Query.query(Criteria.where("_id").is(newWordAnalysisDto.getLocationId())),

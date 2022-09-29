@@ -9,7 +9,7 @@ import NaverMapView, {
   Polyline,
   Polygon,
 } from 'react-native-nmap';
-import {View, StyleSheet, Dimensions, Text} from 'react-native';
+import {View, StyleSheet, Dimensions, Text, Button} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import SearchBar from '../SearchBar';
 import FilterBar from '../FilterBar';
@@ -17,6 +17,10 @@ import MainWidget from '../MainWidget';
 import Geolocation from '@react-native-community/geolocation';
 import {serverIP, apis} from '../../common/urls';
 import {List} from 'reselect/es/types';
+import {
+  RootStackParams,
+  MainStackNavigationProp,
+} from '../../screens/RootStack';
 
 // 검색창 및 위젯을 지도 위로 띄우기 위한 스탕일시트
 const styles = StyleSheet.create({

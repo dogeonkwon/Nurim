@@ -46,7 +46,6 @@ public class ReviewService {
         ReviewDto reviewDto = new ReviewDto();
         reviewDto.setContent(reviewWriteDto.getContent());
         reviewDto.setCreatedDate(createdDate);
-        reviewDto.setReported(false);
         reviewDto.setType(reviewWriteDto.getType());
         reviewDto.setNickname(user.getNickname());
 

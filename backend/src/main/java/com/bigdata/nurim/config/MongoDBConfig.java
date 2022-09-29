@@ -1,6 +1,5 @@
 package com.bigdata.nurim.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -12,9 +11,6 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 @Configuration
 public class MongoDBConfig {
-
-    @Value("${mongodb.uri}")
-    private String path;
 
     @Bean
     public MappingMongoConverter mappingMongoConverter(

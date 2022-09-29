@@ -49,10 +49,10 @@ interface filter_type {
 
 type FilterBarProps = {
   getCategory: (catenum: string) => void;
-  // setCatenum: (catenum: string) => void;
+  setCatenum: (catenum: string) => void;
 };
 
-const FilterBar = ({getCategory}: FilterBarProps) => {
+const FilterBar = ({getCategory, setCatenum}: FilterBarProps) => {
   return (
     <SafeAreaView style={styles.container}>
       {choice.map((data: filter_type, idx: number): any => (
@@ -60,7 +60,10 @@ const FilterBar = ({getCategory}: FilterBarProps) => {
         <TouchableOpacity
           style={styles.button}
           key={idx}
-          onPress={() => getCategory('0' + String(data.id))}>
+          onPress={() => {
+            getCategory('0' + String(data.id));
+            setCatenum('0' + String(data.id));
+          }}>
           <Icon
             style={{paddingHorizontal: 2}}
             name={data.image}
@@ -73,7 +76,7 @@ const FilterBar = ({getCategory}: FilterBarProps) => {
         </TouchableOpacity>
       ))}
       {/* 더보기 */}
-      <More getCategory={getCategory} />
+      <More getCategory={getCategory} setCatenum={setCatenum} />
     </SafeAreaView>
   );
 };

@@ -21,6 +21,7 @@ import {
   RootStackParams,
   MainStackNavigationProp,
 } from '../../screens/RootStack';
+import PlacePreview from '../PlacePreview';
 
 // 검색창 및 위젯을 지도 위로 띄우기 위한 스탕일시트
 const styles = StyleSheet.create({
@@ -49,24 +50,19 @@ interface ILocation {
 }
 
 interface IRange {
-  sw_latitude: number;
-  sw_longitude: number;
-  ne_latitude: number;
-  ne_longitude: number;
+  sw_latitude: string;
+  sw_longitude: string;
+  ne_latitude: string;
+  ne_longitude: string;
 }
 
 type ICategory = {
   id: number;
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
 };
 
 const P0: ILocation = {latitude: 35.0974162, longitude: 128.9224885};
-const P1 = {latitude: 35.099813701853336, longitude: 128.91850338616183};
-const P2 = {latitude: 35.09565291172822, longitude: 128.91850338616183};
-const P3 = {latitude: 35.099813701853336, longitude: 128.9219366138379};
-const P4 = {latitude: 35.09565291172822, longitude: 128.9219366138379};
-const P5 = {latitude: 35.09565291172822, longitude: 128.91850338616183};
 
 const Map = ({openDrawer}: MapProps) => {
   // 현재 내 위치 구하는 함수
@@ -75,19 +71,24 @@ const Map = ({openDrawer}: MapProps) => {
   const [category, setCategory] = useState<ICategory[]>();
   // 화면의 범위 측정
   const [range, setrange] = useState<IRange>({
-    sw_latitude: 35.09565291172822,
-    sw_longitude: 128.91850338616183,
-    ne_latitude: 35.09565291172822,
-    ne_longitude: 28.9219366138379,
+    sw_latitude: '35.09565291172822',
+    sw_longitude: '128.91850338616183',
+    ne_latitude: '35.09565291172822',
+    ne_longitude: '28.9219366138379',
   });
+  const [catenum, setCatenum] = useState<string>('0');
 
+  // 시설 미리보기 컴포넌트 띄우기
+  const [preview, setpreview] = useState(false);
+
+  // 카테고리 번호에 맞는 시설 가져오기
   useEffect(() => {
     getCurrentLocation();
   }, []);
 
   // useEffect(() => {
-  //   console.log(catenum);
-  // }, [catenum, category]);
+  //   getCategory();
+  // }, [range]);
 
   // 현재 내 위치 구하기
   const getCurrentLocation = (): void => {
@@ -108,9 +109,13 @@ const Map = ({openDrawer}: MapProps) => {
   };
 
   // 카테고리 번호에 맞는 카테고리 좌표들 구하기
-  const getCategory = (catenum: string): void => {
-    fetch(serverIP + apis.placeAllInfo + '/' + catenum, {
-      method: 'GET',
+  const getCategory = (cateId: string): void => {
+    fetch(serverIP + apis.placeAllInfo + '/' + cateId, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(range),
     })
       .then(response => response.json())
       .then(response => {
@@ -137,31 +142,33 @@ const Map = ({openDrawer}: MapProps) => {
           showsMyLocationButton={false}
           center={{...location, zoom: 16}}
           // onTouch={e => console.warn('onTouch', JSON.stringify(e.nativeEvent))}
-          onCameraChange={e =>
+          onCameraChange={e => {
             setrange({
               sw_latitude: e.contentRegion[0].latitude,
               sw_longitude: e.contentRegion[0].longitude,
               ne_latitude: e.contentRegion[2].latitude,
               ne_longitude: e.contentRegion[2].longitude,
-            })
-          }
+            });
+            // getCategory(catenum);
+          }}
           // onMapClick={e => console.warn('onMapClick', JSON.stringify(e))}
         >
           {category?.map((e, idx) => {
-            if (range.sw_latitude < e.lat && e.lat < range.ne_latitude) {
-              if (range.sw_longitude < e.lng && e.lng < range.ne_longitude) {
-                return (
-                  <Marker
-                    key={idx}
-                    pinColor="blue"
-                    coordinate={{
-                      latitude: Number(e.lat),
-                      longitude: Number(e.lng),
-                    }}
-                  />
-                );
-              }
-            }
+            return (
+              <Marker
+                key={idx}
+                pinColor="blue"
+                coordinate={{
+                  latitude: Number(e.lat),
+                  longitude: Number(e.lng),
+                }}
+                onClick={() => {
+                  console.log('헬로우');
+                }}
+              />
+            );
+            //   }
+            // }
           })}
           {/* <Marker
             coordinate={P1}
@@ -172,8 +179,9 @@ const Map = ({openDrawer}: MapProps) => {
       </View>
       <View style={styles.absolute_view}>
         <SearchBar openDrawer={openDrawer} />
-        <FilterBar getCategory={getCategory} />
-        {/* <FilterBar getCategory={getCategory} setCatenum={setCatenum} /> */}
+        <FilterBar getCategory={getCategory} setCatenum={setCatenum} />
+        {/* {preview ? <PlacePreview /> : null} */}
+        {/* <PlacePreview /> */}
       </View>
       <MainWidget getCurrentLocation={getCurrentLocation} />
     </View>

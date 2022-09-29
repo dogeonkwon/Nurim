@@ -1,42 +1,139 @@
+/* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, View} from 'react-native';
-import {TextInput} from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useState, useEffect} from 'react';
+import {serverIP, apis} from '../../common/urls';
+import {Text} from '@react-native-material/core';
 
-const styles = StyleSheet.create({
-  // 검색창 스타일
-  header: {
-    alignSelf: 'center',
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    width: '100%',
-    flexDirection: 'row',
-    backgroundColor: 'orange',
-  },
-  search: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  input: {
-    paddingHorizontal: 3,
-    width: '70%',
-  },
-});
+interface IReviews {
+  additionalProp1: object[];
+  additionalProp3: object[];
+  additionalProp2: object[];
+}
 
-type Props = {openDrawer: void};
+interface IAddition {
+  reviewId: number;
+  content: string;
+  createdDate: string;
+  nickname: string;
+}
 
-const SearchBar = ({openDrawer}: Props) => {
+interface IReviewCount {
+  green: number;
+  yellow: number;
+  red: number;
+  total: number;
+}
+
+interface IPlace {
+  id: number;
+  locationId: number;
+  locationName: string;
+  address: string;
+  phone: string;
+  lat: string;
+  lng: string;
+  openingHours: string;
+  subCategoryName: string;
+  mainCategoryName: string;
+  mainCategoryId: string;
+  sido: string;
+  gu: string;
+  dong: string;
+  facilities: string[];
+  reviews: IReviews;
+  reviewCount: IReviewCount;
+}
+
+interface PlacePreviewProps {
+  locatID: number;
+}
+
+const PlacePreview = (locatID: PlacePreviewProps) => {
+  // 시설 데이터
+  const [placeInfo, setPlaceInfo] = useState<IPlace>();
+
+  useEffect(() => {
+    getPlaceInfo();
+  }, []);
+
+  // 시설 ID에 맞는 데이터 구하기
+  const getPlaceInfo = (): void => {
+    fetch(serverIP + apis.placeAllInfo + '/' + locatID.locatID, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(response => {
+        setPlaceInfo(response);
+      })
+      .catch(e => console.log('error:', e));
+  };
+
   return (
-    <SafeAreaView style={styles.header}>
-      <View style={styles.search}>
-        <TextInput placeholder="장소 미리 보기" style={styles.input} />
+    <SafeAreaView style={styles.container}>
+      {/* 제목, 상세보기 */}
+      <View style={styles.header}>
+        <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+          {placeInfo?.locationName}
+        </Text>
+        <Text style={{color: 'gray'}}>상세보기</Text>
+      </View>
+      {/* 서브카테고리 */}
+      <Text style={{paddingLeft: 5, color: 'gray'}}>
+        {placeInfo?.subCategoryName}
+      </Text>
+      {/* 주소, 영업시간(있으면) */}
+      <View style={styles.info}>
+        <Text>{placeInfo?.address}</Text>
+        {placeInfo?.openingHours ? <Text>{placeInfo.openingHours}</Text> : null}
+      </View>
+      {/* 리뷰 */}
+      <View style={styles.review}>
+        <View style={styles.review}>
+          <Icon name={'circle'} size={25} color="green" />
+          <Text style={{padding: 5, color: 'gray'}}>
+            {placeInfo?.reviewCount.green}
+          </Text>
+        </View>
+        <Text style={{padding: 5, color: 'gray'}}>
+          | 🟠 {placeInfo?.reviewCount.yellow}
+        </Text>
+        <Text style={{padding: 5, color: 'gray'}}>
+          | 🔴 {placeInfo?.reviewCount.red}
+        </Text>
+        <Text style={{padding: 5, color: 'gray'}}>
+          | 한줄평 {placeInfo?.reviewCount.total}
+        </Text>
+      </View>
+      {/* 전화, 리뷰, 즐겨찾기 */}
+      <View style={styles.review}>
+        <Text>전화걸기 | 통계 | 즐겨찾기</Text>
       </View>
     </SafeAreaView>
   );
 };
 
-export default SearchBar;
+const styles = StyleSheet.create({
+  // 검색창 스타일
+  container: {
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    backgroundColor: 'white',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 5,
+  },
+  info: {
+    padding: 5,
+  },
+  review: {
+    flexDirection: 'row',
+  },
+});
+
+export default PlacePreview;

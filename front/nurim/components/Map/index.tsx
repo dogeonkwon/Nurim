@@ -22,21 +22,7 @@ import {
   MainStackNavigationProp,
 } from '../../screens/RootStack';
 import PlacePreview from '../PlacePreview';
-
-// 검색창 및 위젯을 지도 위로 띄우기 위한 스탕일시트
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  absolute_view: {
-    position: 'absolute',
-    top: '3%',
-    left: '5%',
-  },
-  relative_view: {
-    position: 'relative',
-  },
-});
+import {BottomSheet} from '@rneui/themed';
 
 // 햄버거 -> 사이드바 네이게이션 실행 하는 함수 타입 지정
 type MapProps = {
@@ -58,6 +44,7 @@ interface IRange {
 
 type ICategory = {
   id: number;
+  locationId: number;
   lat: string;
   lng: string;
 };
@@ -79,9 +66,11 @@ const Map = ({openDrawer}: MapProps) => {
   const [catenum, setCatenum] = useState<string>('0');
 
   // 시설 미리보기 컴포넌트 띄우기
-  const [preview, setpreview] = useState(false);
+  const [preview, setPreview] = useState<boolean>(false);
+  // 시설 아이디
+  const [locatID, setlocatID] = useState<number>(0);
 
-  // 카테고리 번호에 맞는 시설 가져오기
+  // 내 위치 구하기
   useEffect(() => {
     getCurrentLocation();
   }, []);
@@ -124,6 +113,7 @@ const Map = ({openDrawer}: MapProps) => {
         datas.map((data, id) => {
           const newData: ICategory = {
             id: id,
+            locationId: data.locationId,
             lat: data.lat,
             lng: data.lng,
           };
@@ -163,7 +153,8 @@ const Map = ({openDrawer}: MapProps) => {
                   longitude: Number(e.lng),
                 }}
                 onClick={() => {
-                  console.log('헬로우');
+                  setPreview(true);
+                  setlocatID(e.locationId);
                 }}
               />
             );
@@ -177,6 +168,14 @@ const Map = ({openDrawer}: MapProps) => {
           /> */}
         </NaverMapView>
       </View>
+      <BottomSheet
+        modalProps={{}}
+        isVisible={preview}
+        onBackdropPress={() => setPreview(false)}>
+        <View>
+          <PlacePreview locatID={locatID} />
+        </View>
+      </BottomSheet>
       <View style={styles.absolute_view}>
         <SearchBar openDrawer={openDrawer} />
         <FilterBar getCategory={getCategory} setCatenum={setCatenum} />
@@ -187,5 +186,20 @@ const Map = ({openDrawer}: MapProps) => {
     </View>
   );
 };
+
+// 검색창 및 위젯을 지도 위로 띄우기 위한 스탕일시트
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  absolute_view: {
+    position: 'absolute',
+    top: '3%',
+    left: '5%',
+  },
+  relative_view: {
+    position: 'relative',
+  },
+});
 
 export default Map;

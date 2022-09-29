@@ -14,13 +14,14 @@ import RootStack from './screens/RootStack';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import rootReducer from './slices';
-
+import AdditionalButton from './components/AdditionalButton';
+import TaxiPreview from './components/TaxiPreview';
 const store = createStore(rootReducer);
 const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <RootStack />
+        <AdditionalButton />
       </NavigationContainer>
     </Provider>
   );

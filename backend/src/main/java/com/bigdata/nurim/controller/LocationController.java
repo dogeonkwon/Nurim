@@ -46,7 +46,7 @@ public class LocationController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @GetMapping("/{search_word}")
+    @GetMapping("/search/{search_word}")
     public ResponseEntity<List<LocationPosDto>> getSearchedLocationInfo(@PathVariable String search_word){
         return locationService.getSearchedLocationInfo(search_word);
     }
@@ -71,7 +71,7 @@ public class LocationController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @GetMapping("/{location_id}")
-    public ResponseEntity<LocationDto> getLocationDetail(@PathVariable int location_id){
-        return locationService.getLocationDetail(location_id);
+    public ResponseEntity<LocationDto> getLocationDetail(@PathVariable String location_id){
+        return locationService.getLocationDetail(Integer.parseInt(location_id));
     }
 }

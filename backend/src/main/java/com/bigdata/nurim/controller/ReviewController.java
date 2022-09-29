@@ -41,7 +41,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PutMapping("/{review_id}")
-    public ResponseEntity<String> update(@AuthenticationPrincipal String email, @PathVariable int review_id, ModifyReviewDto modifyReviewDto) {
+    public ResponseEntity<String> update(@AuthenticationPrincipal String email, @PathVariable int review_id, @RequestBody ModifyReviewDto modifyReviewDto) {
         return reviewService.update(review_id,modifyReviewDto.getContent());
     }
     @Operation(summary = "Delete Review", description = "리뷰 삭제")

@@ -102,14 +102,22 @@ const MyReviewHeader = (props: MyReviewHeaderProps) => {
               backgroundColor: '#36BC9B',
             })}
             title="내리뷰보기"
-            titleStyle={{fontSize: 15, color: 'white'}}
+            titleStyle={
+              props.selectedMenu === 0
+                ? {color: 'white', fontSize: 15}
+                : {fontSize: 15}
+            }
           />
           <Tab.Item
             containerStyle={active => ({
               backgroundColor: '#36BC9B',
             })}
             title="내즐겨찾기"
-            titleStyle={{fontSize: 15}}
+            titleStyle={
+              props.selectedMenu === 1
+                ? {color: 'white', fontSize: 15}
+                : {fontSize: 15}
+            }
           />
         </Tab>
       </View>

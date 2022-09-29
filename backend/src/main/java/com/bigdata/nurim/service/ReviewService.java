@@ -2,13 +2,13 @@ package com.bigdata.nurim.service;
 
 import com.bigdata.nurim.dto.ReviewDto;
 import com.bigdata.nurim.dto.ReviewWriteDto;
+import com.bigdata.nurim.dto.WordAnalysisDto;
 import com.bigdata.nurim.entity.Location;
 import com.bigdata.nurim.entity.Review;
 import com.bigdata.nurim.entity.User;
 import com.bigdata.nurim.repository.LocationRepository;
 import com.bigdata.nurim.repository.ReviewRepository;
 import com.bigdata.nurim.repository.UserRepository;
-import com.bigdata.nurim.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,11 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -30,7 +30,8 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final LocationRepository locationRepository;
-
+    private final SparkService sparkService;
+    private final MongoService mongoService;
     @Transactional
     public ResponseEntity<String> register(String email, ReviewWriteDto reviewWriteDto){
 
@@ -45,12 +46,16 @@ public class ReviewService {
         ReviewDto reviewDto = new ReviewDto();
         reviewDto.setContent(reviewWriteDto.getContent());
         reviewDto.setCreatedDate(createdDate);
-        reviewDto.setReported(false);
         reviewDto.setType(reviewWriteDto.getType());
         reviewDto.setNickname(user.getNickname());
 
         Review review = reviewDto.toEntity(user,location);
 
+        //리뷰 분석 후, WordCloud 용 No SQL Table 에 저장
+        Map<String, Long> mapReduce = sparkService.getCount(reviewWriteDto.getContent());
+
+        WordAnalysisDto dto = new WordAnalysisDto(reviewWriteDto.getLocationId(), mapReduce);
+        mongoService.save(dto);
         reviewRepository.save(review);
 
         return new ResponseEntity<>("리뷰가 등록되었습니다.", HttpStatus.OK);
@@ -60,6 +65,16 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(review_id).get();
 
+        //수정 리뷰 내용 분석 및 저장
+        ReviewDto reviewDto = review.toDto();
+
+        Map<String, Long> newMapReduce = sparkService.getCount(content);
+        Map<String, Long> oldMapReduce = sparkService.getCount(reviewDto.getContent());
+
+        WordAnalysisDto newDto = new WordAnalysisDto(reviewDto.getLocationId(), newMapReduce);
+        WordAnalysisDto oldDto = new WordAnalysisDto(reviewDto.getLocationId(), oldMapReduce);
+
+        mongoService.update(newDto, oldDto);
         review.update(content);
         
         reviewRepository.save(review);
@@ -70,6 +85,13 @@ public class ReviewService {
     public ResponseEntity<String> delete(int review_id){
 
         Review review = reviewRepository.findById(review_id).get();
+
+        //리뷰분석 && WordCloud
+        ReviewDto reviewDto = review.toDto();
+        Map<String, Long> mapReduce = sparkService.getCount(reviewDto.getContent());
+        WordAnalysisDto wordAnalysisDto = new WordAnalysisDto(review.getLocation().getLocationId(), mapReduce);
+
+        mongoService.delete(wordAnalysisDto);
         reviewRepository.delete(review);
         if(reviewRepository.findById(review_id).orElse(null) != null) {
             return new ResponseEntity<>("삭제실패", HttpStatus.NO_CONTENT);

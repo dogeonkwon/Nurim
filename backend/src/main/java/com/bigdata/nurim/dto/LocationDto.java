@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -42,4 +43,8 @@ public class LocationDto {
     private String dong;
     @Schema(description = "편의 시설 정보")
     private List<String> facilities = new ArrayList<>();
+    @Schema(description = "리뷰")
+    private HashMap<String,List<LocationReviewDto>> reviews = new HashMap<>();
+    @Schema(description = "리뷰 수")
+    private ReviewCountDto reviewCount;
 }

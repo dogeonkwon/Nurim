@@ -16,6 +16,8 @@ configurations {
 
 repositories {
 	mavenCentral()
+	//Komoran
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -33,6 +35,18 @@ dependencies {
 
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
+
+	//spark
+	implementation ('org.apache.spark:spark-core_2.13:3.3.0'){
+		exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+	}
+	implementation 'com.thoughtworks.paranamer:paranamer:2.8'
+
+	//Komoran
+	implementation 'com.github.shin285:KOMORAN:3.3.4'
+
+	//MongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'

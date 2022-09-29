@@ -18,18 +18,18 @@ public class ReviewDto {
     private String content;
     @Schema(description = "작성일")
     private String createdDate;
-    @Schema(description = "신고 여부")
-    private Boolean reported;
     @Schema(description = "작성자 닉네임")
     private String nickname;
     @Schema(description = "신호등 리뷰 평가")
     private int type;
-    @Schema(description = "장소 정보")
-    private LocationDto locationDto;
+    @Schema(description = "장소명")
+    private String locationName;
+    @Schema(description = "장소 식별자")
+    private int locationId;
+
     public Review toEntity(User user, Location location){
         return Review.builder()
                 .content(this.content)
-                .reported(this.reported)
                 .createdDate(this.createdDate)
                 .user(user)
                 .type(this.type)

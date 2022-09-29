@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BottomSheet, Button, ListItem, Image, Text, Icon } from '@rneui/themed';
+import { BottomSheet, Icon } from '@rneui/themed';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import TaxiInfo from '../TaxiInfo'
@@ -11,7 +11,7 @@ const TaxiPreview: React.FunctionComponent<BottomSheetComponentProps> = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
 return (
-  <SafeAreaProvider>
+  <View style={styles.iconContainer}>
   {/* 아이콘 클릭시 bottomsheet가 보이도록 */}
     <Icon raised
       name='taxi'
@@ -39,7 +39,7 @@ return (
         </ListItem>
       ))} */}
     </BottomSheet>
-  </SafeAreaProvider>
+  </View>
 );
 };
 
@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
     },
     imageMargin: {
       marginRight: 20,
+    },
+    iconContainer: {
+      marginRight: 70,
+      marginTop: -10
     }
     });
 

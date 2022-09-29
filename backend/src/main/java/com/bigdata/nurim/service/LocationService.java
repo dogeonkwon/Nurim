@@ -1,6 +1,8 @@
 package com.bigdata.nurim.service;
 
 import com.bigdata.nurim.dto.LocationDto;
+import com.bigdata.nurim.dto.LocationPosDto;
+import com.bigdata.nurim.dto.MapLocationDto;
 import com.bigdata.nurim.entity.Location;
 import com.bigdata.nurim.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,44 +22,59 @@ import java.util.List;
 public class LocationService {
 
     private final LocationRepository locationRepository;
-
     //전체 장소 조회
-    public ResponseEntity<List<LocationDto>> getAllInfo() {
+    public ResponseEntity<List<LocationPosDto>> getAllInfo(MapLocationDto mapLocationDto) {
 
         List<Location> findLocationList = locationRepository.findAll();
-        List<LocationDto> locationDtoList = new ArrayList<>();
+        List<LocationPosDto> locationDtoList = new ArrayList<>();
 
         for(Location location: findLocationList) {
-            LocationDto locationDto = location.toDto();
-            locationDtoList.add(locationDto);
+            if(!boundaryCheck(location,mapLocationDto))continue;
+            LocationPosDto locationPosDto = location.toLocationPosDto();
+            locationDtoList.add(locationPosDto);
         }
 
         return new ResponseEntity<>(locationDtoList, HttpStatus.OK);
     }
 
     //장소검색(이름으로)
-    public ResponseEntity<List<LocationDto>> getSearchedLocationInfo(String locationName) {
+    public ResponseEntity<List<LocationPosDto>> getSearchedLocationInfo(String locationName) {
 
         List<Location> searchedLocationList = locationRepository.findByLocationNameContaining(locationName);
-        List<LocationDto> locationDtoList = new ArrayList<>();
+        List<LocationPosDto> locationDtoList = new ArrayList<>();
 
         for(Location location: searchedLocationList) {
-            LocationDto locationDto = location.toDto();
-            locationDtoList.add(locationDto);
+            LocationPosDto locationPosDto = location.toLocationPosDto();
+            locationDtoList.add(locationPosDto);
         }
 
         return new ResponseEntity<>(locationDtoList, HttpStatus.OK);
     }
-    public ResponseEntity<List<LocationDto>>getCategoryLocationInfo(String mainCategoryId){
-
+    public ResponseEntity<List<LocationPosDto>>getCategoryLocationInfo(String mainCategoryId, MapLocationDto mapLocationDto){
         List<Location> searchedLocationList = locationRepository.findByLocationMainCategory(mainCategoryId);
-        List<LocationDto> locationDtoList = new ArrayList<>();
+        List<LocationPosDto> locationDtoList = new ArrayList<>();
 
         for(Location location: searchedLocationList) {
-            LocationDto locationDto = location.toDto();
-            locationDtoList.add(locationDto);
+            if(!boundaryCheck(location,mapLocationDto))continue;
+            LocationPosDto locationPosDto = location.toLocationPosDto();
+            locationDtoList.add(locationPosDto);
         }
 
         return new ResponseEntity<>(locationDtoList, HttpStatus.OK);
+    }
+    public ResponseEntity<LocationDto>getLocationDetail(int locationId){
+        Location location = locationRepository.findByLocationId(locationId);
+        LocationDto locationDto = location.toDto();
+        return new ResponseEntity<>(locationDto, HttpStatus.OK);
+    }
+    private boolean boundaryCheck(Location location, MapLocationDto mapLocationDto){
+        if(Double.parseDouble(location.getLat())>=Double.parseDouble(mapLocationDto.getSw_latitude()) &&
+                Double.parseDouble(location.getLat())<=Double.parseDouble(mapLocationDto.getNe_latitude())&&
+                Double.parseDouble(location.getLng())<=Double.parseDouble(mapLocationDto.getNe_longitude())&&
+                Double.parseDouble(location.getLng())>=Double.parseDouble(mapLocationDto.getSw_longitude())
+        ){
+            return true;
+        }
+        return false;
     }
 }

@@ -21,7 +21,7 @@ public class TaxiDto {
     private String taxiWeekdayBookStart;
     @Schema(description = "평일 예약접수 운영종료 시간")
     private String taxiWeekdayBookEnd;
-    @Schema(description = "콜택시 식별자")
+    @Schema(description = "주말 예약접수 운영시작 시간")
     private String taxiWeekendBookStart;
     @Schema(description = "주말 예약접수 운영종료 시간")
     private String taxiWeekendBookEnd;

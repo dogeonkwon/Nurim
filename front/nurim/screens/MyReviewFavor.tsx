@@ -53,8 +53,12 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
   const [selectedMenu, setSelectedMenu] = useState<number>(params?.type);
   // 나의 리뷰 Data
   const [myReview, setMyReview] = useState<ReviewType[] | undefined>();
+  // 나의 리뷰 갯수
+  const [myReviewCnt, setMyReviewCnt] = useState<number>(0);
   // 나의 즐겨찾기 Data
   const [myFavor, setMyFavor] = useState<FavorType[] | undefined>();
+  // 나의 즐겨찾기 갯수
+  const [myFavorCnt, setMyFavorCnt] = useState<number>(0);
 
   // 화면 포커스 인식용
   const isFocused = useIsFocused();
@@ -66,12 +70,19 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
     getMyFavor();
   }, [isFocused]);
 
+  // 선택 탭이 바뀌었을 때
+  useEffect(() => {
+    if (selectedMenu === 0) getMyReview();
+    else getMyFavor();
+  }, [selectedMenu]);
+
   // 나의 리뷰 GET 서버 통신
   const getMyReview = (): void => {
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     requestHeaders.set('jwt-token', user?.token ? user.token : '');
     requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    let count = 0;
     fetch(serverIP + apis.myReviewInfo, {
       method: 'GET',
       headers: requestHeaders,
@@ -86,16 +97,18 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
           // 리뷰 객체 생성
           const newData: ReviewType = {
             id: index,
-            locationName: data.locationDto.locationName,
+            locationName: data.locationName,
             content: data.content,
             date: data.createdDate,
             type: data.type,
           };
           // 생성한 리뷰 객체를 배열에 push
           newDatas.push(newData);
+          count++;
         });
         // 생성한 리뷰 배열을 상태에 업데이트
         setMyReview(newDatas);
+        setMyReviewCnt(count);
       })
       .catch(error => console.log(error));
   };
@@ -106,6 +119,7 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
     const requestHeaders = new Headers();
     requestHeaders.set('jwt-token', user?.token ? user.token : '');
     requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    let count = 0;
     fetch(serverIP + apis.favorInfo, {
       method: 'GET',
       headers: requestHeaders,
@@ -121,8 +135,10 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
             locationAddress: data.locationAddress,
           };
           newDatas.push(newData);
+          count++;
         });
         setMyFavor(newDatas);
+        setMyFavorCnt(count);
       })
       .catch(error => console.log(error));
   };
@@ -134,6 +150,8 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
           navigation={navigation}
           selectedMenu={selectedMenu}
           setSelectedMenu={setSelectedMenu}
+          myReviewCnt={myReviewCnt}
+          myFavorCnt={myFavorCnt}
         />
       </View>
 

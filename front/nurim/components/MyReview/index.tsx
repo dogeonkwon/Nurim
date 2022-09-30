@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import {ReviewType} from '../../screens/MyReviewFavor';
+import MyReviewContent from '../MyReviewContent';
 
 type MyReviewProps = {
   myReview: ReviewType[] | undefined;
@@ -8,9 +9,17 @@ type MyReviewProps = {
 const MyReview = (props: MyReviewProps) => {
   return (
     <View>
-      {props.myReview?.map(review => (
-        <Text>{review.content}</Text>
-      ))}
+      <ScrollView>
+        {props.myReview?.map(review => (
+          <MyReviewContent
+            key={review.id}
+            locationName={review.locationName}
+            content={review.content}
+            date={review.date}
+            type={review.type}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };

@@ -111,7 +111,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
   };
   return (
     <Divider style={styles.Divider}>
-      <Text style={styles.nameText}>로그인 해주세요.</Text>
       <Button
         buttonStyle={styles.kakaoButton}
         containerStyle={styles.ButtonContainer}

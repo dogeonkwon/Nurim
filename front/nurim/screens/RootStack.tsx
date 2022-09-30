@@ -9,6 +9,7 @@ import {
 } from '@react-navigation/native-stack'; // 스택 내비게이션
 import {useNavigation} from '@react-navigation/native';
 import {Box} from '@react-native-material/core';
+import {logout} from '@react-native-seoul/kakao-login';
 
 // Screen import
 import Main from './Main';
@@ -34,7 +35,8 @@ import LogInSideBar from '../components/LogInSideBar';
 import CustomDrawer from '../components/CustomDrawer';
 import MyReviewFavor from './MyReviewFavor';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {authorize} from '../slices/auth';
 import {RootState} from '../slices';
 
 /* 스택 내비게이션 사용 파트 */
@@ -104,8 +106,15 @@ const MyReviewFavorScreenStack = () => {
 };*/
 
 const RootStack = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const isLogin = false;
+  const logoutButtonClicked = async () => {
+    // 로그아웃
+    const message = await logout();
+
+    dispatch(authorize(null));
+  };
   return (
     <StackNavi.Navigator
       initialRouteName="Main"
@@ -126,6 +135,20 @@ const RootStack = () => {
             <LogOutSideBar navigation={props.navigation} />
           )}
           <DrawerItemList {...props} />
+          {user && (
+            <View>
+              <Text
+                style={{
+                  color: '#3366FF',
+                  textAlign: 'right',
+                  marginRight: '4%',
+                  fontSize: 13,
+                }}
+                onPress={() => logoutButtonClicked()}>
+                로그아웃
+              </Text>
+            </View>
+          )}
         </DrawerContentScrollView>
       )}>
       {user && (

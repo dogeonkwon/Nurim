@@ -87,13 +87,20 @@ public class UserController {
             @Parameter(name = "file", description = "새로운 프로필 사진", example = "xxx.png"),
             @Parameter(name = "userInfo", description = "변경할 사용자 정보")
     })
+//    @PutMapping
+//    public ResponseEntity<?> modify(@RequestPart(value = "file", required = false) MultipartFile file,
+//                                    @RequestPart(value = "userInfo", required = false) ModifyUserInfoDto modifyUserInfoDto,
+//                                    @AuthenticationPrincipal String email,
+//                                    HttpServletRequest request) {
+//        String token = request.getHeader("jwt-token");
+//        return userService.modify(modifyUserInfoDto, file, email,token);
+//    }
     @PutMapping
-    public ResponseEntity<?> modify(@RequestPart(value = "file", required = false) MultipartFile file,
-                                    @RequestPart(value = "userInfo", required = false) ModifyUserInfoDto modifyUserInfoDto,
+    public ResponseEntity<?> modifyInfo(@RequestBody ModifyUserInfoDto userInfo,
                                     @AuthenticationPrincipal String email,
                                     HttpServletRequest request) {
         String token = request.getHeader("jwt-token");
-        return userService.modify(modifyUserInfoDto, file, email,token);
+        return userService.modify(userInfo, email,token);
     }
     @Operation(summary = "Check nickname duplication", description = "닉네임 중복 확인")
     @ApiResponses({

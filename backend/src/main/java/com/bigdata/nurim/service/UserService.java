@@ -72,18 +72,18 @@ public class UserService {
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<?> modify(ModifyUserInfoDto modifyUserInfoDto, MultipartFile file, String email, String token) {
+    public ResponseEntity<?> modify(ModifyUserInfoDto modifyUserInfoDto, String email, String token) {
 
         Optional<User> user = userRepository.findByEmail(email);
         User findUser = user.get();
-        if(file!=null){
-            if (!findUser.getImgUrl().equals(defaultImg)) {
-                imageUploadService.delete(findUser.getImgUrl());
-            }
-            findUser.updateImg(imageUploadService.uploadImge(file));
-        }else{
-            findUser.updateImg(findUser.getImgUrl());
-        }
+//        if(file!=null){
+//            if (!findUser.getImgUrl().equals(defaultImg)) {
+//                imageUploadService.delete(findUser.getImgUrl());
+//            }
+//            findUser.updateImg(imageUploadService.uploadImge(file));
+//        }else{
+//            findUser.updateImg(findUser.getImgUrl());
+//        }
         findUser.update(modifyUserInfoDto);
 
         userRepository.save(findUser);

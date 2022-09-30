@@ -29,6 +29,11 @@ const styles = StyleSheet.create({
     marginLeft: '4%',
     top: -20,
     fontSize: 16,
+  },
+  errTextPossible: {
+    color: 'blue',
+  },
+  errTextImpossible: {
     color: 'red',
   },
 });
@@ -36,7 +41,7 @@ const styles = StyleSheet.create({
 const UpdateProfile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const [errMsg, setErrMsg] = useState<string>('');
+  const [errMsg, setErrMsg] = useState<number>(0);
   const [nickname, setNickname] = useState<string>('김국진');
   const [phone, setPhone] = useState<string>('');
   const [emergency, setEmergency] = useState<string>('');
@@ -59,12 +64,33 @@ const UpdateProfile = () => {
       .then(response => response.json())
       .then(response => {
         if (response.availability) {
-          setErrMsg('닉네임을 사용하실 수 있습니다.');
+          setErrMsg(1);
           setCheckNick(true);
         } else {
-          setErrMsg('닉네임을 사용하실 수 없습니다');
+          setErrMsg(2);
           setCheckNick(false);
         }
+      })
+      .catch(e => console.log(e));
+  };
+
+  const updateProfile = (): void => {
+    // 통신 헤더 정의
+    const requestHeaders = new Headers();
+    requestHeaders.set('jwt-token', user?.token ? user.token : '');
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    fetch(serverIP + apis.userUpdate, {
+      method: 'PUT',
+      headers: requestHeaders,
+      body: JSON.stringify({
+        nickname,
+        phone,
+        emergency,
+      }),
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
       })
       .catch(e => console.log(e));
   };
@@ -86,7 +112,17 @@ const UpdateProfile = () => {
             </Button>
           </View>
         </View>
-        {errMsg && <Text style={styles.errText}>{errMsg}</Text>}
+        {errMsg === 1 && (
+          <Text style={[styles.errText, styles.errTextPossible]}>
+            닉네임을 사용하실 수 있습니다.
+          </Text>
+        )}
+
+        {errMsg === 2 && (
+          <Text style={[styles.errText, styles.errTextImpossible]}>
+            닉네임을 사용하실 수 없습니다.
+          </Text>
+        )}
         <Input
           placeholder="교체할 휴대폰 번호. (010-xxxx-xxxx)"
           value={phone}
@@ -99,7 +135,9 @@ const UpdateProfile = () => {
         />
       </View>
       <View style={styles.viewButton}>
-        <Button size="md">저장하기</Button>
+        <Button size="md" onPress={() => updateProfile()}>
+          저장하기
+        </Button>
       </View>
     </View>
   );

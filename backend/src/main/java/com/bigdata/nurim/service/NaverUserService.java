@@ -68,6 +68,10 @@ public class NaverUserService implements SocialUserService {
         if (!user.isPresent()){
             userService.signup(userDto,LoginType.NAVER);
         }
+        else if(!userDto.getImgUrl().equals(user.get().getImgUrl())){
+            user.get().updateImg(userDto.getImgUrl());
+            userRepository.save(user.get());
+        }
         return userDto;
     }
     @Override

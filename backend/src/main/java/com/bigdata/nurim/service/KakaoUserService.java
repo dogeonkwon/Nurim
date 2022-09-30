@@ -60,6 +60,10 @@ public class KakaoUserService implements SocialUserService {
         if (!user.isPresent()){
             userService.signup(userDto,LoginType.KAKAO);
         }
+        else if(!userDto.getImgUrl().equals(user.get().getImgUrl())){
+            user.get().updateImg(userDto.getImgUrl());
+            userRepository.save(user.get());
+        }
         return userDto;
     }
     @Override

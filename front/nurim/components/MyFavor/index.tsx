@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import {FavorType} from '../../screens/MyReviewFavor';
 import MyFavorContent from '../MyFavorContent';
 
@@ -10,12 +10,15 @@ type MyFavorProps = {
 const MyFavor = (props: MyFavorProps) => {
   return (
     <View>
-      {props.myFavor?.map(favor => (
-        <MyFavorContent
-          locationName={favor.locationName}
-          locationAddress={favor.locationAddress}
-        />
-      ))}
+      <ScrollView>
+        {props.myFavor?.map(favor => (
+          <MyFavorContent
+            key={favor.id}
+            locationName={favor.locationName}
+            locationAddress={favor.locationAddress}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };

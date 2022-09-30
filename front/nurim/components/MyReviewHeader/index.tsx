@@ -11,6 +11,8 @@ type MyReviewHeaderProps = {
   navigation: MainStackNavigationProp;
   selectedMenu: number;
   setSelectedMenu: (selectedMenu: number) => void;
+  myReviewCnt: number;
+  myFavorCnt: number;
 };
 const MyReviewHeader = (props: MyReviewHeaderProps) => {
   // redux
@@ -49,9 +51,14 @@ const MyReviewHeader = (props: MyReviewHeaderProps) => {
     },
     viewProfileContent: {
       width: '50%',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     viewTab: {
       height: '30%',
+    },
+    textWhite: {
+      color: 'white',
     },
   });
 
@@ -84,7 +91,35 @@ const MyReviewHeader = (props: MyReviewHeaderProps) => {
         </View>
         {/* 내정보/ 작성리뷰/ 즐겨찾기 */}
         <View style={styles.viewProfileContent}>
-          <Text>닉네임 : {user?.nickname}</Text>
+          <Text style={[styles.textWhite, {fontSize: 16, marginBottom: 5}]}>
+            {user?.nickname}
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '90%',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
+            <View>
+              <Text style={[styles.textWhite, {textAlign: 'center'}]}>
+                {`작성리뷰\n${props.myReviewCnt}`}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: '1%',
+                height: '80%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              }}></View>
+            <View>
+              <Text style={[styles.textWhite, {textAlign: 'center'}]}>
+                {`즐겨찾기\n${props.myFavorCnt}`}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
       {/* 탭 버튼 */}

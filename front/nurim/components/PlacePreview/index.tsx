@@ -1,10 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Linking, Button, Text, Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useState, useEffect} from 'react';
 import {serverIP, apis} from '../../common/urls';
-import {Text} from '@react-native-material/core';
+import {MainStackNavigationProp} from '../../screens/RootStack';
+import {useNavigation} from '@react-navigation/native';
+import PlaceFuncBox from '../PlaceFuncBox';
 
 interface IReviews {
   additionalProp1: object[];
@@ -51,6 +53,8 @@ interface PlacePreviewProps {
 }
 
 const PlacePreview = (locatID: PlacePreviewProps) => {
+  const navigation = useNavigation<MainStackNavigationProp>();
+
   // 시설 데이터
   const [placeInfo, setPlaceInfo] = useState<IPlace>();
 
@@ -77,7 +81,12 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
         <Text style={{fontSize: 20, fontWeight: 'bold'}}>
           {placeInfo?.locationName}
         </Text>
-        <Text style={{color: 'gray'}}>상세보기</Text>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('PlaceDetail');
+          }}>
+          <Text>상세보기</Text>
+        </Pressable>
       </View>
       {/* 서브카테고리 */}
       <Text style={{paddingLeft: 5, color: 'gray'}}>
@@ -90,12 +99,10 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
       </View>
       {/* 리뷰 */}
       <View style={styles.review}>
-        <View style={styles.review}>
-          <Icon name={'circle'} size={25} color="green" />
-          <Text style={{padding: 5, color: 'gray'}}>
-            {placeInfo?.reviewCount.green}
-          </Text>
-        </View>
+        {/* <Icon name={'circle'} size={15} color="green" /> */}
+        <Text style={{padding: 5, color: 'gray'}}>
+          🟢 {placeInfo?.reviewCount.green}
+        </Text>
         <Text style={{padding: 5, color: 'gray'}}>
           | 🟠 {placeInfo?.reviewCount.yellow}
         </Text>
@@ -107,8 +114,9 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
         </Text>
       </View>
       {/* 전화, 리뷰, 즐겨찾기 */}
-      <View style={styles.review}>
-        <Text>전화걸기 | 통계 | 즐겨찾기</Text>
+      <View style={styles.funcbox}>
+        <PlaceFuncBox placeInfo={placeInfo} />
+        {/* <Text>전화걸기 | 통계 | 즐겨찾기</Text> */}
       </View>
     </SafeAreaView>
   );
@@ -133,6 +141,13 @@ const styles = StyleSheet.create({
   },
   review: {
     flexDirection: 'row',
+    marginHorizontal: 10,
+  },
+  funcbox: {
+    alignContent: 'center',
+    marginVertical: 10,
+    // borderColor: 'blue',
+    // borderWidth: 10,
   },
 });
 

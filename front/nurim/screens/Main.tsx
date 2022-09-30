@@ -23,7 +23,8 @@ const Main = () => {
         title="gkdl"
         onPress={() => {
           navigation.navigate('PlaceDetail');
-        }}></Button>
+        }}
+      />
     </SafeAreaView>
   );
 };

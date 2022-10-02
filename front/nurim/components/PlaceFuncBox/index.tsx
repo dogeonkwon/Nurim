@@ -8,9 +8,11 @@ import {IPlace} from '../PlacePreview';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {IDetailType} from '../PlaceInfo';
 
-interface IPreview {
+interface IFuncType {
   preview: IPlace | null;
+  placeAllInfo: IDetailType;
 }
 
 export type MyFavorType = {
@@ -20,22 +22,22 @@ export type MyFavorType = {
   locationId: number;
 };
 
-const PlaceFuncBox = (placeInfo: IPreview) => {
+const PlaceFuncBox = (placeInfo: IFuncType) => {
   // 유저 정보 불러오기
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // 나의 즐겨찾기 Data
-  const [myFavor, setMyFavor] = useState<MyFavorType[] | undefined>();
-
-  // 나의 즐겨찾기 Data(myFavor)와 시설 ID(placeInfo.preview.locationId)를 비교하여 즐겨찾기가 되어 있는지 비교
+  // 즐겨찾기가 된 시설인지 확인
   const [placeFavor, setPlaceFavor] = useState<number>(0);
+
+  // 즐겨찾기가 된 시설인지 확인
+  const [favoriteId, setFavoriteId] = useState<number>(0);
 
   // 나의 즐겨찾기와 시설 ID 비교
   useEffect(() => {
     getMyFavor();
   }, [placeInfo]);
 
-  // 서버에서 나의 즐겨찾기 가져오기
+  // 서버에서 나의 즐겨찾기 가져와서 시설 ID와 비교하기
   const getMyFavor = (): void => {
     if (user) {
       // 통신 헤더 정의
@@ -49,20 +51,13 @@ const PlaceFuncBox = (placeInfo: IPreview) => {
         .then(response => response.json())
         .then(response => {
           const datas = [...response];
-          let newDatas: MyFavorType[] = [];
-          datas.map((data, index) => {
-            const newData: MyFavorType = {
-              id: index,
-              locationName: data.locationName,
-              locationAddress: data.locationAddress,
-              locationId: data.locationId,
-            };
+          console.log(datas);
+          datas.map(data => {
             if (data.locationId === placeInfo.preview?.locationId) {
               setPlaceFavor(1);
+              setFavoriteId(data.favoriteId);
             }
-            newDatas.push(newData);
           });
-          setMyFavor(newDatas);
         })
         .catch(error => console.log('PlaceFuncBox 에러 임당', error));
     }
@@ -77,6 +72,19 @@ const PlaceFuncBox = (placeInfo: IPreview) => {
       requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
       fetch(serverIP + apis.favorInfo + '/' + placeId, {
         method: 'POST',
+        headers: requestHeaders,
+      }).catch(error => console.log('pushMyFavor 에러 임당', error));
+    }
+  };
+
+  const deleteFavor = (favorId: number | undefined): void => {
+    if (user) {
+      // 통신 헤더 정의
+      const requestHeaders = new Headers();
+      requestHeaders.set('jwt-token', user?.token ? user.token : '');
+      requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+      fetch(serverIP + apis.favorInfo + '/' + favorId, {
+        method: 'DELETE',
         headers: requestHeaders,
       }).catch(error => console.log('pushMyFavor 에러 임당', error));
     }
@@ -103,12 +111,32 @@ const PlaceFuncBox = (placeInfo: IPreview) => {
       <Pressable style={styles.button}>
         {user ? (
           placeFavor ? (
-            <Icon name={'heart'} size={30} />
+            <Icon
+              name={'heart'}
+              size={30}
+              onPress={() => {
+                deleteFavor(favoriteId);
+                setPlaceFavor(0);
+              }}
+            />
           ) : (
-            <Icon name={'heart-outline'} size={30} />
+            <Icon
+              name={'heart-outline'}
+              size={30}
+              onPress={() => {
+                pushMyFavor(placeInfo.preview?.locationId);
+                setPlaceFavor(1);
+              }}
+            />
           )
         ) : (
-          <Icon name={'heart-outline'} size={50} />
+          <Icon
+            name={'heart-outline'}
+            size={30}
+            onPress={() => {
+              return Alert.alert('로그인 후 이용가능합니다.');
+            }}
+          />
         )}
         <Text>즐겨 찾기</Text>
       </Pressable>

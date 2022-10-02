@@ -1,12 +1,15 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, View, Linking, Button, Text, Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {serverIP, apis} from '../../common/urls';
 import {MainStackNavigationProp} from '../../screens/RootStack';
 import {useNavigation} from '@react-navigation/native';
 import PlaceFuncBox from '../PlaceFuncBox';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
 
 interface IReviews {
   additionalProp1: object[];
@@ -56,7 +59,7 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
   const navigation = useNavigation<MainStackNavigationProp>();
 
   // 시설 데이터
-  const [placeInfo, setPlaceInfo] = useState<IPlace>();
+  const [placeInfo, setPlaceInfo] = useState<IPlace | null>(null);
 
   useEffect(() => {
     getPlaceInfo();
@@ -71,7 +74,7 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
       .then(response => {
         setPlaceInfo(response);
       })
-      .catch(e => console.log('error:', e));
+      .catch(e => console.log('PlacePreview 에러 임당', e));
   };
 
   return (
@@ -83,7 +86,7 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
         </Text>
         <Pressable
           onPress={() => {
-            navigation.navigate('PlaceDetail');
+            navigation.navigate('PlaceDetail', locatID);
           }}>
           <Text>상세보기</Text>
         </Pressable>
@@ -115,7 +118,7 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
       </View>
       {/* 전화, 리뷰, 즐겨찾기 */}
       <View style={styles.funcbox}>
-        <PlaceFuncBox placeInfo={placeInfo} />
+        <PlaceFuncBox preview={placeInfo} />
         {/* <Text>전화걸기 | 통계 | 즐겨찾기</Text> */}
       </View>
     </SafeAreaView>
@@ -152,3 +155,4 @@ const styles = StyleSheet.create({
 });
 
 export default PlacePreview;
+export type {IPlace, IReviews, IReviewCount};

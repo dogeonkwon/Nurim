@@ -48,7 +48,7 @@ type MyReviewFavorProps = {
 const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const {params} = useRoute<MyReviewFavorRouteProp>();
-
+  console.log(user);
   // 나의리뷰/즐겨찾기 메뉴 스왑용도
   const [selectedMenu, setSelectedMenu] = useState<number>(params?.type);
   // 나의 리뷰 Data
@@ -72,8 +72,11 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
 
   // 선택 탭이 바뀌었을 때
   useEffect(() => {
-    if (selectedMenu === 0) getMyReview();
-    else getMyFavor();
+    if (selectedMenu === 0) {
+      getMyReview();
+    } else {
+      getMyFavor();
+    }
   }, [selectedMenu]);
 
   // 나의 리뷰 GET 서버 통신

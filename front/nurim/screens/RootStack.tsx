@@ -54,9 +54,9 @@ const StackNavi = createDrawerNavigator<RootStackParams>();
 export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 
 // Main Component Stack Navigator 구현
-type MainParams = {
+export type MainParams = {
   Main: undefined;
-  PlaceDetail: undefined;
+  PlaceDetail: {locatID: number};
   TaxiDetail: undefined;
   openDrawer: () => void;
   MainWidget: undefined;

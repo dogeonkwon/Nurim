@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable no-const-assign */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/jsx-no-duplicate-props */
@@ -23,6 +24,8 @@ import {
 } from '../../screens/RootStack';
 import PlacePreview from '../PlacePreview';
 import {BottomSheet} from '@rneui/themed';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
 
 // 햄버거 -> 사이드바 네이게이션 실행 하는 함수 타입 지정
 type MapProps = {
@@ -67,6 +70,7 @@ const Map = ({openDrawer}: MapProps) => {
 
   // 시설 미리보기 컴포넌트 띄우기
   const [preview, setPreview] = useState<boolean>(false);
+
   // 시설 아이디
   const [locatID, setlocatID] = useState<number>(0);
 
@@ -161,11 +165,6 @@ const Map = ({openDrawer}: MapProps) => {
             //   }
             // }
           })}
-          {/* <Marker
-            coordinate={P1}
-            pinColor="blue"
-            onClick={() => console.warn('onClick! p1')}
-          /> */}
         </NaverMapView>
       </View>
       <BottomSheet

@@ -1,15 +1,13 @@
 /* eslint-disable no-lone-blocks */
 /* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, View, Linking, Button, Text, Pressable} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useEffect, useState} from 'react';
 import {serverIP, apis} from '../../common/urls';
 import {MainStackNavigationProp} from '../../screens/RootStack';
 import {useNavigation} from '@react-navigation/native';
 import PlaceFuncBox from '../PlaceFuncBox';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../slices';
+import {IRange} from '../Map';
 
 interface IReviews {
   additionalProp1: object[];
@@ -31,7 +29,7 @@ interface IReviewCount {
   total: number;
 }
 
-interface IPlace {
+export type IPlace = {
   id: number;
   locationId: number;
   locationName: string;
@@ -49,7 +47,7 @@ interface IPlace {
   facilities: string[];
   reviews: IReviews;
   reviewCount: IReviewCount;
-}
+};
 
 interface PlacePreviewProps {
   locatID: number;

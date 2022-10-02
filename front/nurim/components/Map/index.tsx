@@ -38,7 +38,7 @@ interface ILocation {
   longitude: number;
 }
 
-interface IRange {
+export interface IRange {
   sw_latitude: string;
   sw_longitude: string;
   ne_latitude: string;
@@ -143,10 +143,7 @@ const Map = ({openDrawer}: MapProps) => {
               ne_latitude: e.contentRegion[2].latitude,
               ne_longitude: e.contentRegion[2].longitude,
             });
-            // getCategory(catenum);
-          }}
-          // onMapClick={e => console.warn('onMapClick', JSON.stringify(e))}
-        >
+          }}>
           {category?.map((e, idx) => {
             return (
               <Marker
@@ -162,8 +159,6 @@ const Map = ({openDrawer}: MapProps) => {
                 }}
               />
             );
-            //   }
-            // }
           })}
         </NaverMapView>
       </View>

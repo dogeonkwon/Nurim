@@ -111,7 +111,6 @@ const UpdateProfile = (props: UpdateProfileProps) => {
     })
       .then(response => response.json())
       .then(response => {
-        console.log(response);
         dispatch(
           authorize({
             nickname: response.nickname, // 닉네임

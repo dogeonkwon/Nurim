@@ -43,10 +43,6 @@ const MyPage = ({navigation}: MyReviewFavorProps) => {
     setSelectedMenu(0);
   }, [isFocused]);
 
-  useEffect(() => {
-    console.log(selectedMenu);
-  }, [selectedMenu]);
-
   return (
     <View style={styles.container}>
       <View style={styles.titleHeight}>

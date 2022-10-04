@@ -103,15 +103,15 @@ const PlaceDetail = (props: IDetailType) => {
       } else {
         dist = dist * 1609.344;
       }
-      return dist;
+      return Math.round(dist);
     }
   };
 
   const distance = getDistance(
     Number(props.placeAllInfo?.lng),
     Number(props.placeAllInfo?.lat),
-    Number(myLat),
     Number(myLng),
+    Number(myLat),
     true,
   );
 
@@ -123,7 +123,7 @@ const PlaceDetail = (props: IDetailType) => {
       </View>
       <View style={styles.change}>
         <Text>
-          {distance}KM | {props.placeAllInfo?.subCategoryName}
+          {distance} KM | {props.placeAllInfo?.subCategoryName}
         </Text>
       </View>
       <View style={styles.change}>

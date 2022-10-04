@@ -33,7 +33,7 @@ type MapProps = {
 };
 
 // 내 위치, 마커 등에 사용하는 위도와 경도 타입 지정
-interface ILocation {
+export interface ILocation {
   latitude: number;
   longitude: number;
 }
@@ -167,7 +167,7 @@ const Map = ({openDrawer}: MapProps) => {
         isVisible={preview}
         onBackdropPress={() => setPreview(false)}>
         <View>
-          <PlacePreview locatID={locatID} />
+          <PlacePreview locatID={locatID} location={location} />
         </View>
       </BottomSheet>
       <View style={styles.absolute_view}>
@@ -176,7 +176,7 @@ const Map = ({openDrawer}: MapProps) => {
         {/* {preview ? <PlacePreview /> : null} */}
         {/* <PlacePreview /> */}
       </View>
-      <MainWidget getCurrentLocation={getCurrentLocation} />
+      <MainWidget getCurrentLocation={getCurrentLocation} location={location} />
     </View>
   );
 };

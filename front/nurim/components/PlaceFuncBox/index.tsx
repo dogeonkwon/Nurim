@@ -12,7 +12,6 @@ import {IDetailType} from '../PlaceInfo';
 
 interface IFuncType {
   preview: IPlace | null;
-  placeAllInfo: IDetailType;
 }
 
 export type MyFavorType = {
@@ -51,7 +50,6 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
         .then(response => response.json())
         .then(response => {
           const datas = [...response];
-          console.log(datas);
           datas.map(data => {
             if (data.locationId === placeInfo.preview?.locationId) {
               setPlaceFavor(1);

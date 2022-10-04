@@ -13,7 +13,7 @@ export const apis = {
   reviewWrite: 'api/review/write', // 리뷰 작성
   reviewUpdate: 'api/review/', // 리뷰 수정
   reviewDelete: 'api/review/', // 리뷰 삭제
-  myReviewInfo: 'api/review/my-reviews', // 본인이 작성한 리뷰 조회
+  myReviewInfo: 'api/review/reviews', // 본인이 작성한 리뷰 조회
   placeReview: 'api/review/', // 해당 장소에 대한 리뷰 조회
   favorInsert: 'api/favorite/', // 즐겨찾기 추가
   favorDelete: 'api/favorite/', // 즐겨찾기 삭제

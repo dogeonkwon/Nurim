@@ -6,7 +6,6 @@ import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {Button, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
-import {signInWithKakao} from '../../modules/kakao';
 import {naverLogin} from '../../modules/naver';
 import {
   getProfile as getKakaoProfile,
@@ -22,6 +21,7 @@ import {
   MainDrawerNavigationProp,
 } from './../../screens/RootStack';
 import {Tab, Text, TabView} from '@rneui/themed';
+import Toast from 'react-native-simple-toast';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
 });
 
 type LogOutSideBarProps = {
-  navigation: MainDrawerNavigationProp;
+  navigation: any;
 };
 const LogOutSideBar = (props: LogOutSideBarProps) => {
   const dispatch = useDispatch();
@@ -77,7 +77,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
     try {
       const token: any = await login();
       const requestHeaders = new Headers();
-      //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
       requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
       fetch(serverIP + apis.kakaoLogin, {
         method: 'POST',
@@ -113,7 +112,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
   };
   return (
     <Divider style={styles.Divider}>
-      <Text style={styles.nameText}>로그인 해주세요.</Text>
       <Button
         buttonStyle={styles.kakaoButton}
         containerStyle={styles.ButtonContainer}
@@ -126,7 +124,8 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
       <Button
         buttonStyle={styles.naverButton}
         containerStyle={[styles.ButtonContainer, {marginBottom: 20}]}
-        onPress={() => naverLoginButtonClicked()}>
+        //onPress={() => naverLoginButtonClicked()}
+        onPress={() => Toast.show('미지원 기능입니다.')}>
         <Avatar source={require('../../assets/images/NAVER_LOGO.png')} />
         <Text style={[styles.naverButtonText, styles.ButtonText]}>
           네이버 로그인

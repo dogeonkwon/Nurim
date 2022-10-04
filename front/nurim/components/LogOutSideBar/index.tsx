@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 });
 
 type LogOutSideBarProps = {
-  navigation: MainDrawerNavigationProp;
+  navigation: any;
 };
 const LogOutSideBar = (props: LogOutSideBarProps) => {
   const dispatch = useDispatch();

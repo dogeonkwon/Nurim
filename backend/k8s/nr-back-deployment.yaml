@@ -15,11 +15,18 @@ spec:
       containers:
         - name: nurim-back
           image: pudingles94/project-nurim:nurim-back
+          volumeMounts:
+            - name: user-dic
+              mountPath: /usr/dic
           ports:
             - containerPort: 8080
           imagePullPolicy: Always
           env:
             - name: DATE
               value: 'DATE_STRING'
+      volumes:
+        - name: user-dic
+          hostPath:
+            path: /home/ubuntu/dic
       imagePullSecrets:
         - name: my-secret

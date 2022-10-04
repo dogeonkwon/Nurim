@@ -6,7 +6,7 @@ export interface User {
   profile: string; // 프로필사진
   phone: string; // 휴대폰번호
   emergency: string; // 비상연락번호
-  token: string | null; // 액세스토큰
+  token: string | undefined | null; // 액세스토큰
 }
 
 interface AuthState {
@@ -21,7 +21,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    authorize(state, action: PayloadAction<User>) {
+    authorize(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
     },
   },

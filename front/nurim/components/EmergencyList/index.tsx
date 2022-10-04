@@ -4,37 +4,14 @@ import {StyleSheet, Linking, View, Text} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {serverIP, apis} from '../../common/urls';
 import axios from 'axios';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
 
 type DialogComponentProps = {};
 
 const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
-
-  // const [emergencyNumber, setemergencyNumber] = useState<string>();
-  // const [loading, setLoading] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   const fetchEmergencyNumber = async () => {
-  //     try {
-  //       setemergencyNumber('');
-  //       setLoading(true);
-  //       const response = await axios.get(
-  //         serverIP + apis.userInfo + '/' + '',
-  //       );
-  //         //taxiInfoData에 데이터를 장착
-  //         setemergencyNumber(response.data);
-  //     } catch (e) {
-  //       console.log('error:', e);
-  //     } 
-  //     setLoading(false);
-  //   };
-
-  //   fetchEmergencyNumber();
-  // }, []);
-
-  //버튼을 눌러야만 보이도록 false
+  const user = useSelector((state: RootState) => state.auth.user);
   const [visible, setVisible] = useState(false);
-  //로그인 상태변화, 기본값은 false
-  const [login, setLogin] = useState(false);
 
   //dialog를 띄우는 arrow
   const toggleDialog = () => {
@@ -54,25 +31,13 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
       phoneNumber: '112',
     },
   ];
-  //상태변화에 따라 재할당이 필요하기에 재할당이 가능한 let 사용
-  let loginButton = '로그인하기';
-  let buttonEvent = () => {
-    setLogin(true);
-  };
 
   //로그인시에 이하를 적용
-  if (login == true) {
-    //버튼의 기능을 로그아웃으로 변경
-    buttonEvent = () => {
-      setLogin(false);
-    };
-    //버튼 타이틀 변경
-    loginButton = '로그아웃하기';
-    //재할당이 불가능한 const이기에 .push로 이하를 리스트 마지막에 추가
+  if (user?.emergency) {
     emergencyCallList.push({
       name: '비상연락처',
       subTitle: '미리 지정해 둔 번호로 연락',
-      phoneNumber: '01092403692',
+      phoneNumber: user?.emergency,
     });
   }
 

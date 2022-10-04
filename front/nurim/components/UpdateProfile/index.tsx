@@ -2,11 +2,14 @@
 // 2022-09-26 김국진
 
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, Input} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {useDispatch} from 'react-redux';
+import {authorize} from '../../slices/auth';
+import Toast from 'react-native-simple-toast';
 
 const styles = StyleSheet.create({
   viewContainer: {
@@ -14,7 +17,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
   viewButton: {marginLeft: '3%', marginRight: '3%'},
-  viewNickname: {
+  messageContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -36,13 +39,25 @@ const styles = StyleSheet.create({
   errTextImpossible: {
     color: 'red',
   },
+
+  messageText: {
+    fontSize: 16,
+    color: 'blue',
+    marginBottom: 15,
+  },
 });
 
-const UpdateProfile = () => {
+type UpdateProfileProps = {
+  setSelectedMenu: (selectedMenu: number) => void;
+};
+
+const UpdateProfile = (props: UpdateProfileProps) => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [errMsg, setErrMsg] = useState<number>(0);
-  const [nickname, setNickname] = useState<string>('김국진');
+  const [message, setMessage] = useState<string>('');
+  const [nickname, setNickname] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [emergency, setEmergency] = useState<string>('');
   const [checkNick, setCheckNick] = useState<boolean>(false);
@@ -66,6 +81,7 @@ const UpdateProfile = () => {
         if (response.availability) {
           setErrMsg(1);
           setCheckNick(true);
+          setMessage('');
         } else {
           setErrMsg(2);
           setCheckNick(false);
@@ -74,7 +90,12 @@ const UpdateProfile = () => {
       .catch(e => console.log(e));
   };
 
-  const updateProfile = (): void => {
+  const saveButtonClicked = (): void => {
+    if (!checkNick) {
+      setMessage('닉네임 중복체크가 필요합니다.');
+      return;
+    }
+
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     requestHeaders.set('jwt-token', user?.token ? user.token : '');
@@ -91,6 +112,17 @@ const UpdateProfile = () => {
       .then(response => response.json())
       .then(response => {
         console.log(response);
+        dispatch(
+          authorize({
+            nickname: response.nickname, // 닉네임
+            phone: response.phone, // 휴대폰번호
+            emergency: response.emergency, // 비상연락번호
+            token: response.token, // 액세스토큰
+            profile: response.imgUrl,
+          }),
+        );
+        Toast.show('회원 정보 수정이 완료되었습니다.');
+        props.setSelectedMenu(0);
       })
       .catch(e => console.log(e));
   };
@@ -98,7 +130,7 @@ const UpdateProfile = () => {
   return (
     <View style={styles.viewContainer}>
       <View>
-        <View style={styles.viewNickname}>
+        <View style={styles.messageContainer}>
           <View style={styles.nicknameInput}>
             <Input
               placeholder="새 닉네임을 입력하세요."
@@ -134,8 +166,11 @@ const UpdateProfile = () => {
           onChangeText={value => setEmergency(value)}
         />
       </View>
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageText}>{message}</Text>
+      </View>
       <View style={styles.viewButton}>
-        <Button size="md" onPress={() => updateProfile()}>
+        <Button size="md" onPress={() => saveButtonClicked()}>
           저장하기
         </Button>
       </View>

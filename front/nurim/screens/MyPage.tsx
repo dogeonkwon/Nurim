@@ -34,7 +34,7 @@ type MyReviewFavorProps = {
 const MyPage = ({navigation}: MyReviewFavorProps) => {
   const {params} = useRoute<MyReviewFavorRouteProp>();
 
-  // 1: 내정보조회  2: 내정보수정
+  // 0: 내정보조회 1: 내정보수정
   const [selectedMenu, setSelectedMenu] = useState<number>(0);
 
   const isFocused = useIsFocused();
@@ -42,6 +42,10 @@ const MyPage = ({navigation}: MyReviewFavorProps) => {
   useEffect(() => {
     setSelectedMenu(0);
   }, [isFocused]);
+
+  useEffect(() => {
+    console.log(selectedMenu);
+  }, [selectedMenu]);
 
   return (
     <View style={styles.container}>
@@ -53,7 +57,11 @@ const MyPage = ({navigation}: MyReviewFavorProps) => {
         />
       </View>
       <View style={styles.contentHeight}>
-        {selectedMenu === 0 ? <MyPageContent /> : <UpdateProfile />}
+        {selectedMenu === 0 ? (
+          <MyPageContent />
+        ) : (
+          <UpdateProfile setSelectedMenu={setSelectedMenu} />
+        )}
       </View>
     </View>
     /*

@@ -39,7 +39,7 @@ const PlaceDetail = () => {
 
   return (
     <SafeAreaView>
-      <Placeinfo placeAllInfo={placeAllInfo} />
+      <Placeinfo placeAllInfo={placeAllInfo} location={params.location} />
       <PlaceReview reviewInfo={placeAllInfo} />
     </SafeAreaView>
   );

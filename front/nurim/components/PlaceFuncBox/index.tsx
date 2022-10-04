@@ -1,14 +1,13 @@
 /* eslint-disable no-lone-blocks */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {StyleSheet, Linking, Text, Pressable, Alert} from 'react-native';
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IPlace} from '../PlacePreview';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
-import {IDetailType} from '../PlaceInfo';
 
 interface IFuncType {
   preview: IPlace | null;
@@ -102,10 +101,10 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
         <Icon name={'call'} size={30} />
         <Text>전화 걸기</Text>
       </Pressable>
-      <Pressable style={styles.button}>
+      {/* <Pressable style={styles.button}>
         <Icon name={'cellular'} size={30} />
         <Text>통계 보기</Text>
-      </Pressable>
+      </Pressable> */}
       <Pressable style={styles.button}>
         {user ? (
           placeFavor ? (

@@ -72,10 +72,10 @@ const morelist = [
 
 type MoreProps = {
   getCategory: (catenum: string) => void;
-  setCatenum: (catenum: string) => void;
+  catenum: string;
 };
 
-const More = ({getCategory, setCatenum}: MoreProps) => {
+const More = (Props: MoreProps) => {
   return (
     <SafeAreaView>
       <ModalDropdown
@@ -87,15 +87,15 @@ const More = ({getCategory, setCatenum}: MoreProps) => {
         onSelect={e => {
           if (Number(e) >= 5) {
             if (Number(e) >= 7) {
-              getCategory(String(Number(e) + 3));
-              setCatenum(String(Number(e) + 3));
+              Props.getCategory(String(Number(e) + 3));
+              // setCatenum(String(Number(e) + 3));
             } else {
-              getCategory('0' + String(Number(e) + 3));
-              setCatenum('0' + String(Number(e) + 3));
+              Props.getCategory('0' + String(Number(e) + 3));
+              // setCatenum('0' + String(Number(e) + 3));
             }
           } else {
-            getCategory('0' + e);
-            setCatenum('0' + e);
+            Props.getCategory('0' + e);
+            // setCatenum('0' + e);
           }
         }}
         defaultTextStyle={{fontWeight: '900'}}

@@ -14,20 +14,26 @@ const my_lng = 128.91850338616183;
 // ------------------------------------------------------- 아래쪽은 실제 사용할 코드
 
 type iconF = {
+  id: number;
   image: string;
   desc: string;
   check: string;
 };
 
 const iconFilter: iconF[] = [
-  {image: 'restroom', desc: '화장실', check: '대변기'},
-  {image: 'shower', desc: '샤워실', check: '샤워실및탈의실'},
-  {image: 'road', desc: '접근로', check: '주출입구접근로'},
-  {image: 'elevator-passenger', desc: '승강기', check: '계단또는승강설비'},
-  {image: 'exit-run', desc: '피난시설', check: '경보및피난설비'},
-  {image: 'parking', desc: '주차장', check: '장애인전용주차구역'},
-  {image: 'info-circle', desc: '안내시설', check: '유도및안내설비'},
-  {image: 'braille', desc: '점자블록', check: '점자블록'},
+  {id: 0, image: 'restroom', desc: '화장실', check: '대변기'},
+  {id: 1, image: 'shower', desc: '샤워실', check: '샤워실및탈의실'},
+  {id: 2, image: 'road', desc: '접근로', check: '주출입구접근로'},
+  {
+    id: 3,
+    image: 'elevator-passenger',
+    desc: '승강기',
+    check: '계단또는승강설비',
+  },
+  {id: 4, image: 'exit-run', desc: '피난시설', check: '경보및피난설비'},
+  {id: 5, image: 'parking', desc: '주차장', check: '장애인전용주차구역'},
+  {id: 6, image: 'info-circle', desc: '안내시설', check: '유도및안내설비'},
+  {id: 7, image: 'braille', desc: '점자블록', check: '점자블록'},
 ];
 
 export interface IDetailType {
@@ -45,16 +51,22 @@ const PlaceDetail = (placeAllInfo: IDetailType) => {
   }, [placeAllInfo]);
 
   const getIcon = () => {
-    let newIcon: iconF[] = [];
+    let newIcons: iconF[] = [];
     placeAllInfo.placeAllInfo?.facilities.map(data => {
       const trimData: string = data.replace(/ /g, '');
-      iconFilter.forEach(e => {
+      iconFilter.forEach((e, idx) => {
         if (e.check === trimData) {
-          newIcon.push(e);
+          const newIcon: iconF = {
+            id: idx,
+            image: e.image,
+            desc: e.desc,
+            check: e.check,
+          };
+          newIcons.push(newIcon);
         }
       });
     });
-    setIconList(newIcon);
+    setIconList(newIcons);
   };
 
   // 출발지 위경도로 부터 도착지 위경도까지의 거리 구하기
@@ -64,7 +76,6 @@ const PlaceDetail = (placeAllInfo: IDetailType) => {
   const rad2deg = (rad: number) => {
     return (rad * 180) / Math.PI;
   };
-  console.log(placeAllInfo, '❤❤❤❤❤❤❤❤❤❤❤❤❤❤');
 
   const getDistance = (
     lng1: number,
@@ -114,8 +125,7 @@ const PlaceDetail = (placeAllInfo: IDetailType) => {
         </Text>
       </View>
       <View style={styles.change}>
-        <Text>PlaceFuncBox 불러오기</Text>
-        {/* <PlaceFuncBox placeAllInfo={placeAllInfo} /> */}
+        <PlaceFuncBox preview={placeAllInfo.placeAllInfo} />
       </View>
       <View style={styles.change}>
         <Text>{placeAllInfo.placeAllInfo?.address}</Text>

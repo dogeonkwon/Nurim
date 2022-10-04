@@ -40,7 +40,7 @@ const PlaceDetail = () => {
   return (
     <SafeAreaView>
       <Placeinfo placeAllInfo={placeAllInfo} />
-      {/* <PlaceReview placeAllInfo={placeAllInfo}/> */}
+      <PlaceReview reviewInfo={placeAllInfo} />
     </SafeAreaView>
   );
 };

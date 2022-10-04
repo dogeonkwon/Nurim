@@ -38,6 +38,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
 import {authorize} from '../slices/auth';
 import {RootState} from '../slices';
+import {ILocation} from '../components/Map';
 
 /* 스택 내비게이션 사용 파트 */
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
@@ -56,7 +57,7 @@ export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 // Main Component Stack Navigator 구현
 export type MainParams = {
   Main: undefined;
-  PlaceDetail: {locatID: number};
+  PlaceDetail: {locatID: number; location: ILocation};
   TaxiDetail: undefined;
   openDrawer: () => void;
   MainWidget: undefined;

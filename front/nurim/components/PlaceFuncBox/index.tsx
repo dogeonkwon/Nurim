@@ -8,6 +8,7 @@ import {IPlace} from '../PlacePreview';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import Toast from 'react-native-simple-toast';
 
 interface IFuncType {
   preview: IPlace | null;
@@ -114,6 +115,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
               onPress={() => {
                 deleteFavor(favoriteId);
                 setPlaceFavor(0);
+                Toast.show('즐겨찾기에서 삭제되었습니다.');
               }}
             />
           ) : (
@@ -123,6 +125,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
               onPress={() => {
                 pushMyFavor(placeInfo.preview?.locationId);
                 setPlaceFavor(1);
+                Toast.show('즐겨찾기에 추가되었습니다.');
               }}
             />
           )

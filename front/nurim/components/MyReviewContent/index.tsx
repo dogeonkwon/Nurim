@@ -1,5 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
+import {serverIP, apis} from '../../common/urls';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
+import Toast from 'react-native-simple-toast';
 
 const styles = StyleSheet.create({
   viewContainer: {
@@ -9,6 +13,10 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     paddingLeft: '3%',
     paddingRight: '3%',
+  },
+  viewTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   viewContent: {
     flexDirection: 'row',
@@ -32,6 +40,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: '80%',
   },
+  textDelete: {
+    fontSize: 12,
+    color: 'rgba(0, 0, 0, 0.4)',
+    textAlign: 'right',
+  },
   imogeStyle: {
     padding: 5,
     fontSize: 22,
@@ -39,16 +52,19 @@ const styles = StyleSheet.create({
 });
 
 type MyReviewContentProps = {
+  reviewId: number;
   locationName: string;
   content: string;
   date: string;
   type: number;
+  refreshReview: boolean;
+  setRefreshReview: (refreshReview: boolean) => void;
 };
 
 const MyReviewContent = (props: MyReviewContentProps) => {
+  const user = useSelector((state: RootState) => state.auth.user);
+  // 날짜 포맷 맞추기
   const dateFormatChange = (date: string): string => {
-    // 20220929115634
-
     return `${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(
       6,
       8,
@@ -57,9 +73,43 @@ const MyReviewContent = (props: MyReviewContentProps) => {
       14,
     )} 작성`;
   };
+  //
+  const deleteButtonClicked = () => {
+    Alert.alert('리뷰를 삭제하시겠습니까?', '', [
+      {
+        text: '확인',
+        onPress: () => deleteReview(),
+        style: 'cancel',
+      },
+      {text: '취소'},
+    ]);
+  };
+  const deleteReview = () => {
+    console.log(props.reviewId);
+    // 통신 헤더 정의
+    const requestHeaders = new Headers();
+    requestHeaders.set('jwt-token', user?.token ? user.token : '');
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    fetch(serverIP + apis.reviewDelete + props.reviewId, {
+      method: 'DELETE',
+      headers: requestHeaders,
+    })
+      //.then(response => response.json())
+      .then(response => {
+        console.log(response);
+        Toast.show('리뷰가 삭제되었습니다.');
+        props.setRefreshReview(!props.refreshReview);
+      })
+      .catch(e => console.log(e));
+  };
   return (
     <View style={styles.viewContainer}>
-      <Text style={styles.textTitle}>{props.locationName}</Text>
+      <View style={styles.viewTitle}>
+        <Text style={styles.textTitle}>{props.locationName}</Text>
+        <Text style={styles.textDelete} onPress={() => deleteButtonClicked()}>
+          리뷰삭제
+        </Text>
+      </View>
       <Text style={styles.textDate}>{dateFormatChange(props.date)}</Text>
       <View style={styles.viewContent}>
         {props.type === 1 ? (

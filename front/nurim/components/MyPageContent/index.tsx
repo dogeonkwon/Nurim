@@ -18,19 +18,24 @@ const styles = StyleSheet.create({
   },
   viewContent: {
     marginTop: '5%',
-    marginLeft: '20%',
-    marginRight: '20%',
+    marginLeft: '15%',
+    marginRight: '15%',
+  },
+  viewContentItem: {
+    width: '100%',
     flexDirection: 'row',
+    marginTop: '10%',
   },
   viewContentTitle: {
-    width: '45%',
+    width: '40%',
   },
   viewContentContent: {
-    width: '55%',
+    width: '60%',
   },
-  textSize: {
+
+  textStyle: {
     fontSize: 16,
-    marginTop: '5%',
+    fontWeight: '600',
   },
 });
 const MyPageContent = () => {
@@ -52,16 +57,41 @@ const MyPageContent = () => {
         />
       </View>
       <View style={styles.viewContent}>
+        <View style={styles.viewContentItem}>
+          <View style={styles.viewContentTitle}>
+            <Text style={styles.textStyle}>닉네임</Text>
+          </View>
+          <View style={styles.viewContentContent}>
+            <Text style={styles.textStyle}>{user?.nickname}</Text>
+          </View>
+        </View>
+        <View style={styles.viewContentItem}>
+          <View style={styles.viewContentTitle}>
+            <Text style={styles.textStyle}>휴대전화</Text>
+          </View>
+          <View style={styles.viewContentContent}>
+            <Text style={styles.textStyle}>{user?.phone}</Text>
+          </View>
+        </View>
+        <View style={styles.viewContentItem}>
+          <View style={styles.viewContentTitle}>
+            <Text style={styles.textStyle}>비상연락처</Text>
+          </View>
+          <View style={styles.viewContentContent}>
+            <Text style={styles.textStyle}>{user?.emergency}</Text>
+          </View>
+        </View>
+        {/*
         <View style={styles.viewContentTitle}>
-          <Text style={styles.textSize}>닉네임</Text>
-          <Text style={styles.textSize}>휴대전화</Text>
-          <Text style={styles.textSize}>비상연락처</Text>
+          <Text style={styles.textStyle}>닉네임</Text>
+          <Text style={styles.textStyle}>휴대전화</Text>
+          <Text style={styles.textStyle}>비상연락처</Text>
         </View>
         <View style={styles.viewContentContent}>
-          <Text style={styles.textSize}>{user?.nickname}</Text>
-          <Text style={styles.textSize}>{user?.phone}</Text>
-          <Text style={styles.textSize}>{user?.emergency}</Text>
-        </View>
+          <Text style={styles.textStyle}>{user?.nickname}</Text>
+          <Text style={styles.textStyle}>{user?.phone}</Text>
+          <Text style={styles.textStyle}>{user?.emergency}</Text>
+        </View>*/}
       </View>
     </View>
   );

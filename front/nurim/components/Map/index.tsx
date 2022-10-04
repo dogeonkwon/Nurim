@@ -77,6 +77,7 @@ const Map = ({openDrawer}: MapProps) => {
   // 내 위치 구하기
   useEffect(() => {
     getCurrentLocation();
+    
   }, []);
 
   // useEffect(() => {

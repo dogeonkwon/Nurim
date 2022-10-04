@@ -1,11 +1,36 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Dialog, ListItem, Avatar, Icon} from '@rneui/themed';
-import {StyleSheet, Linking, View} from 'react-native';
+import {StyleSheet, Linking, View, Text} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {serverIP, apis} from '../../common/urls';
+import axios from 'axios';
 
 type DialogComponentProps = {};
 
 const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
+
+  // const [emergencyNumber, setemergencyNumber] = useState<string>();
+  // const [loading, setLoading] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   const fetchEmergencyNumber = async () => {
+  //     try {
+  //       setemergencyNumber('');
+  //       setLoading(true);
+  //       const response = await axios.get(
+  //         serverIP + apis.userInfo + '/' + '',
+  //       );
+  //         //taxiInfoData에 데이터를 장착
+  //         setemergencyNumber(response.data);
+  //     } catch (e) {
+  //       console.log('error:', e);
+  //     } 
+  //     setLoading(false);
+  //   };
+
+  //   fetchEmergencyNumber();
+  // }, []);
+
   //버튼을 눌러야만 보이도록 false
   const [visible, setVisible] = useState(false);
   //로그인 상태변화, 기본값은 false

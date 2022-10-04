@@ -7,7 +7,6 @@ import {serverIP, apis} from '../../common/urls';
 import {MainStackNavigationProp} from '../../screens/RootStack';
 import {useNavigation} from '@react-navigation/native';
 import PlaceFuncBox from '../PlaceFuncBox';
-import {IRange} from '../Map';
 import {ILocation} from '../Map';
 
 interface reviewColor {

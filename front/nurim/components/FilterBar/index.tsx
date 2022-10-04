@@ -52,7 +52,6 @@ type FilterBarProps = {
 };
 
 const FilterBar = (Props: FilterBarProps) => {
-  console.log(Props);
   return (
     <SafeAreaView style={styles.container}>
       {choice.map((data: filter_type, idx: number): any => (

@@ -85,7 +85,6 @@ const MyReviewContent = (props: MyReviewContentProps) => {
     ]);
   };
   const deleteReview = () => {
-    console.log(props.reviewId);
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     requestHeaders.set('jwt-token', user?.token ? user.token : '');

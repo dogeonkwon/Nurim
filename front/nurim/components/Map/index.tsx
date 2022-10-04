@@ -117,6 +117,7 @@ const Map = ({openDrawer}: MapProps) => {
 
   // 검색에 맞는 시설 좌표들 구하기
   const getInput = (searchText: string): void => {
+    console.log(searchText);
     fetch(serverIP + apis.placeAllInfo + '/search/' + searchText, {
       method: 'GET',
     })
@@ -133,10 +134,62 @@ const Map = ({openDrawer}: MapProps) => {
           };
           newTextInfos.push(newTextInfo);
         });
+        setLocation({
+          latitude: Number(newTextInfos[0].lat),
+          longitude: Number(newTextInfos[0].lng),
+        });
         setCategory(newTextInfos);
       })
       .catch(e => console.log('error:', e));
   };
+
+  // 출발지 위경도로 부터 도착지 위경도까지의 거리 구하기
+  const deg2rad = (deg: number) => {
+    return (deg * Math.PI) / 180.0;
+  };
+  const rad2deg = (rad: number) => {
+    return (rad * 180) / Math.PI;
+  };
+
+  const getDistance = (
+    lng1: number,
+    lat1: number,
+    lng2: number,
+    lat2: number,
+    useKm?: boolean,
+  ) => {
+    if (lng1 === lng2 && lat1 === lat2) {
+      return 0;
+    } else {
+      const theta = lng1 - lng2;
+      let dist =
+        Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) +
+        Math.cos(deg2rad(lat1)) *
+          Math.cos(deg2rad(lat2)) *
+          Math.cos(deg2rad(theta));
+      dist = Math.acos(dist);
+      dist = rad2deg(dist);
+      dist = dist * 60 * 1.1515;
+      if (useKm) {
+        dist = dist * 1.609344;
+      } else {
+        dist = dist * 1609.344;
+      }
+      return Math.round(dist);
+    }
+  };
+
+  // const distance = getDistance(
+  //   Number(props.placeAllInfo?.lng),
+  //   Number(props.placeAllInfo?.lat),
+  //   Number(myLng),
+  //   Number(myLat),
+  //   true,
+  // );
+
+  // console.log(category);
+  // latitude: number;
+  // longitude: number;
 
   return (
     <View style={styles.container}>
@@ -183,8 +236,6 @@ const Map = ({openDrawer}: MapProps) => {
       <View style={styles.absolute_view}>
         <SearchBar openDrawer={openDrawer} getInput={getInput} />
         <FilterBar getCategory={getCategory} catenum={catenum} />
-        {/* {preview ? <PlacePreview /> : null} */}
-        {/* <PlacePreview /> */}
       </View>
       <MainWidget getCurrentLocation={getCurrentLocation} location={location} />
     </View>

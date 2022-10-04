@@ -21,6 +21,7 @@ import {
   MainDrawerNavigationProp,
 } from './../../screens/RootStack';
 import {Tab, Text, TabView} from '@rneui/themed';
+import Toast from 'react-native-simple-toast';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -123,7 +124,8 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
       <Button
         buttonStyle={styles.naverButton}
         containerStyle={[styles.ButtonContainer, {marginBottom: 20}]}
-        onPress={() => naverLoginButtonClicked()}>
+        //onPress={() => naverLoginButtonClicked()}
+        onPress={() => Toast.show('미지원 기능입니다.')}>
         <Avatar source={require('../../assets/images/NAVER_LOGO.png')} />
         <Text style={[styles.naverButtonText, styles.ButtonText]}>
           네이버 로그인

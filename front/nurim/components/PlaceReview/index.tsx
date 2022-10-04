@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import {IPlace} from '../PlacePreview';
 import {Button, Overlay} from '@rneui/themed';
@@ -29,6 +30,7 @@ export type subListType = {
 };
 
 const PlaceReview = (placeAllInfo: IReviewType) => {
+  console.log(placeAllInfo.reviewInfo?.locationId);
   // 유저 정보 불러오기
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -61,6 +63,28 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
   const [redLight, onChangeRedLight] = useState<string>(
     'rgba(204, 204, 204, 1)',
   );
+
+  // 시설 데이터
+  const [reviewInfo, setReviewInfo] = useState<IPlace | null>(null);
+
+  useEffect(() => {
+    getPlaceAll();
+  }, [visible]);
+
+  // 시설 ID에 맞는 데이터 구하기
+  const getPlaceAll = (): void => {
+    fetch(
+      serverIP + apis.placeAllInfo + '/' + placeAllInfo.reviewInfo?.locationId,
+      {
+        method: 'GET',
+      },
+    )
+      .then(response => response.json())
+      .then(response => {
+        setReviewInfo(response);
+      })
+      .catch(e => console.log('PlacePreview 에러 임당', e));
+  };
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -209,25 +233,28 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
           | 총 리뷰 {placeAllInfo.reviewInfo?.reviewCount.total} 건
         </Text>
       </View>
-      <View style={{backgroundColor: 'gray'}}>
-        {allReview === [] ? (
-          <Text>등록된 리뷰가 없습니다.</Text>
-        ) : (
-          allReview.map((e, idx) => {
-            return (
-              <View>
-                <View key={idx} style={styles.nameday}>
-                  <Text>{e.nickname}</Text>
-                  <Text>
-                    {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
-                    {e.createdDate.slice(6, 8)}
-                  </Text>
-                </View>
-                <Text>{e.content}</Text>
-              </View>
-            );
-          })
-        )}
+      <View style={{backgroundColor: 'blue'}}>
+        <ScrollView style={{height: '30%'}}>
+          {/* <ScrollView> */}
+          {reviewList === 2 ? (
+            <Text>등록된 리뷰가 없습니다.</Text>
+          ) : (
+            allReview.map((e, idx) => {
+              return (
+                <SafeAreaView style={{backgroundColor: 'gray'}}>
+                  <View key={idx} style={styles.nameday}>
+                    <Text>{e.nickname}</Text>
+                    <Text>
+                      {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
+                      {e.createdDate.slice(6, 8)}
+                    </Text>
+                  </View>
+                  <Text>{e.content}</Text>
+                </SafeAreaView>
+              );
+            })
+          )}
+        </ScrollView>
       </View>
       <View>
         <Button
@@ -318,6 +345,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     fontSize: 17,
+  },
+  vcontainer: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+  },
+  vscrollView: {
+    backgroundColor: 'pink',
+    marginHorizontal: 20,
+  },
+  vtext: {
+    fontSize: 42,
   },
 });
 

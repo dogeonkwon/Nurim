@@ -2,7 +2,6 @@ import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import More from './more';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useEffect, useState} from 'react';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,10 +48,11 @@ interface filter_type {
 
 type FilterBarProps = {
   getCategory: (catenum: string) => void;
-  setCatenum: (catenum: string) => void;
+  catenum: string;
 };
 
-const FilterBar = ({getCategory, setCatenum}: FilterBarProps) => {
+const FilterBar = (Props: FilterBarProps) => {
+  console.log(Props);
   return (
     <SafeAreaView style={styles.container}>
       {choice.map((data: filter_type, idx: number): any => (
@@ -61,8 +61,11 @@ const FilterBar = ({getCategory, setCatenum}: FilterBarProps) => {
           style={styles.button}
           key={idx}
           onPress={() => {
-            getCategory('0' + String(data.id));
-            setCatenum('0' + String(data.id));
+            if (Props.catenum === '0') {
+              Props.getCategory('0' + String(data.id));
+            } else {
+              Props.getCategory('00');
+            }
           }}>
           <Icon
             style={{paddingHorizontal: 2}}
@@ -76,7 +79,7 @@ const FilterBar = ({getCategory, setCatenum}: FilterBarProps) => {
         </TouchableOpacity>
       ))}
       {/* 더보기 */}
-      <More getCategory={getCategory} setCatenum={setCatenum} />
+      <More getCategory={Props.getCategory} catenum={Props.catenum} />
     </SafeAreaView>
   );
 };

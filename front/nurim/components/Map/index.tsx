@@ -3,29 +3,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import NaverMapView, {
-  Circle,
-  Marker,
-  Path,
-  Polyline,
-  Polygon,
-} from 'react-native-nmap';
-import {View, StyleSheet, Dimensions, Text, Button} from 'react-native';
+import NaverMapView, {Marker} from 'react-native-nmap';
+import {View, StyleSheet} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import SearchBar from '../SearchBar';
 import FilterBar from '../FilterBar';
 import MainWidget from '../MainWidget';
 import Geolocation from '@react-native-community/geolocation';
 import {serverIP, apis} from '../../common/urls';
-import {List} from 'reselect/es/types';
-import {
-  RootStackParams,
-  MainStackNavigationProp,
-} from '../../screens/RootStack';
 import PlacePreview from '../PlacePreview';
 import {BottomSheet} from '@rneui/themed';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../slices';
 
 // 햄버거 -> 사이드바 네이게이션 실행 하는 함수 타입 지정
 type MapProps = {
@@ -77,7 +64,6 @@ const Map = ({openDrawer}: MapProps) => {
   // 내 위치 구하기
   useEffect(() => {
     getCurrentLocation();
-    
   }, []);
 
   // useEffect(() => {
@@ -129,6 +115,29 @@ const Map = ({openDrawer}: MapProps) => {
       .catch(e => console.log('error:', e));
   };
 
+  // 검색에 맞는 시설 좌표들 구하기
+  const getInput = (searchText: string): void => {
+    fetch(serverIP + apis.placeAllInfo + '/search/' + searchText, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(response => {
+        const textInfos = [...response];
+        let newTextInfos: ICategory[] = [];
+        textInfos.map((textInfo, id) => {
+          const newTextInfo: ICategory = {
+            id: id,
+            locationId: textInfo.locationId,
+            lat: textInfo.lat,
+            lng: textInfo.lng,
+          };
+          newTextInfos.push(newTextInfo);
+        });
+        setCategory(newTextInfos);
+      })
+      .catch(e => console.log('error:', e));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.relative_view}>
@@ -172,8 +181,8 @@ const Map = ({openDrawer}: MapProps) => {
         </View>
       </BottomSheet>
       <View style={styles.absolute_view}>
-        <SearchBar openDrawer={openDrawer} />
-        <FilterBar getCategory={getCategory} setCatenum={setCatenum} />
+        <SearchBar openDrawer={openDrawer} getInput={getInput} />
+        <FilterBar getCategory={getCategory} catenum={catenum} />
         {/* {preview ? <PlacePreview /> : null} */}
         {/* <PlacePreview /> */}
       </View>

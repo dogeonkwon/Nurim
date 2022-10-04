@@ -5,11 +5,9 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ILocation} from '../Map';
 import PlaceFuncBox from '../PlaceFuncBox';
 import {IPlace} from '../PlacePreview';
-
-const my_lat = 35.09565291172822;
-const my_lng = 128.91850338616183;
 
 // ------------------------------------------------------- 아래쪽은 실제 사용할 코드
 
@@ -38,21 +36,25 @@ const iconFilter: iconF[] = [
 
 export interface IDetailType {
   placeAllInfo: IPlace | null;
+  location: ILocation;
 }
 
 // 내 좌표 불러와서 거리 구해야 함
 // 디테일 페이지에서 내 좌표 가져오기..
 
-const PlaceDetail = (placeAllInfo: IDetailType) => {
+const PlaceDetail = (props: IDetailType) => {
   const [iconList, setIconList] = useState<iconF[]>([]);
-
+  console.log(props.placeAllInfo);
   useEffect(() => {
     getIcon();
-  }, [placeAllInfo]);
+  }, [props]);
+
+  const [myLat, setMyLat] = useState<number>(props.location.latitude);
+  const [myLng, setMyLng] = useState<number>(props.location.longitude);
 
   const getIcon = () => {
     let newIcons: iconF[] = [];
-    placeAllInfo.placeAllInfo?.facilities.map(data => {
+    props.placeAllInfo?.facilities.map(data => {
       const trimData: string = data.replace(/ /g, '');
       iconFilter.forEach((e, idx) => {
         if (e.check === trimData) {
@@ -106,10 +108,10 @@ const PlaceDetail = (placeAllInfo: IDetailType) => {
   };
 
   const distance = getDistance(
-    Number(placeAllInfo.placeAllInfo?.lng),
-    Number(placeAllInfo.placeAllInfo?.lat),
-    Number(my_lng),
-    Number(my_lat),
+    Number(props.placeAllInfo?.lng),
+    Number(props.placeAllInfo?.lat),
+    Number(myLat),
+    Number(myLng),
     true,
   );
 
@@ -117,27 +119,27 @@ const PlaceDetail = (placeAllInfo: IDetailType) => {
     <View>
       {/* 시설 정보 */}
       <View style={styles.placeName}>
-        <Text>{placeAllInfo.placeAllInfo?.locationName}</Text>
+        <Text>{props.placeAllInfo?.locationName}</Text>
       </View>
       <View style={styles.change}>
         <Text>
-          {distance} | {placeAllInfo.placeAllInfo?.subCategoryName}
+          {distance}KM | {props.placeAllInfo?.subCategoryName}
         </Text>
       </View>
       <View style={styles.change}>
-        <PlaceFuncBox preview={placeAllInfo.placeAllInfo} />
+        <PlaceFuncBox preview={props.placeAllInfo} />
       </View>
       <View style={styles.change}>
-        <Text>{placeAllInfo.placeAllInfo?.address}</Text>
+        <Text>{props.placeAllInfo?.address}</Text>
       </View>
-      {placeAllInfo.placeAllInfo?.openingHours ? (
+      {props.placeAllInfo?.openingHours ? (
         <View style={styles.change}>
-          <Text>{placeAllInfo.placeAllInfo?.openingHours}</Text>
+          <Text>{props.placeAllInfo?.openingHours}</Text>
         </View>
       ) : null}
-      {placeAllInfo.placeAllInfo?.phone ? (
+      {props.placeAllInfo?.phone ? (
         <View style={styles.change}>
-          <Text>{placeAllInfo.placeAllInfo?.phone}</Text>
+          <Text>{props.placeAllInfo?.phone}</Text>
         </View>
       ) : null}
       <View style={{borderColor: 'red', borderWidth: 5}}>

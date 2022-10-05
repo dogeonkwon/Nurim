@@ -1,10 +1,24 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
+import {FavorType} from '../../screens/MyReviewFavor';
+import MyFavorContent from '../MyFavorContent';
 
-const MyFavor = () => {
+type MyFavorProps = {
+  myFavor: FavorType[] | undefined;
+};
+
+const MyFavor = (props: MyFavorProps) => {
   return (
     <View>
-      <Text>즐겨찾기 컴포넌트</Text>
+      <ScrollView>
+        {props.myFavor?.map(favor => (
+          <MyFavorContent
+            key={favor.id}
+            locationName={favor.locationName}
+            locationAddress={favor.locationAddress}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };

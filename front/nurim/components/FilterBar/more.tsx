@@ -1,9 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import {StyleSheet} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Icon} from '@react-native-material/core';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import {useEffect} from 'react';
 
 const styles = StyleSheet.create({
   dropdown: {
@@ -28,35 +29,53 @@ const styles = StyleSheet.create({
 
 const morelist = [
   {
+    id: 0,
     title: '더 보기',
   },
   {
-    title: '교육',
-  },
-  {
-    title: '복지',
-  },
-  {
-    title: '공공시설',
-  },
-  {
-    title: '주거',
-  },
-  {
-    title: '숙박',
-  },
-  {
-    title: '금융',
-  },
-  {
+    id: 1,
     title: '공공기관',
   },
   {
+    id: 2,
+    title: '교육',
+  },
+  {
+    id: 3,
+    title: '공공시설',
+  },
+  {
+    id: 4,
+    title: '복지',
+  },
+  {
+    id: 8,
+    title: '장례시설',
+  },
+  {
+    id: 9,
+    title: '숙박',
+  },
+  {
+    id: 10,
+    title: '금융',
+  },
+  {
+    id: 11,
+    title: '주거',
+  },
+  {
+    id: 12,
     title: '공장',
   },
 ];
 
-const more = () => {
+type MoreProps = {
+  getCategory: (catenum: string) => void;
+  setCatenum: (catenum: string) => void;
+};
+
+const More = ({getCategory, setCatenum}: MoreProps) => {
   return (
     <SafeAreaView>
       <ModalDropdown
@@ -65,6 +84,20 @@ const more = () => {
         options={morelist.map(list => {
           return list.title;
         })}
+        onSelect={e => {
+          if (Number(e) >= 5) {
+            if (Number(e) >= 7) {
+              getCategory(String(Number(e) + 3));
+              setCatenum(String(Number(e) + 3));
+            } else {
+              getCategory('0' + String(Number(e) + 3));
+              setCatenum('0' + String(Number(e) + 3));
+            }
+          } else {
+            getCategory('0' + e);
+            setCatenum('0' + e);
+          }
+        }}
         defaultTextStyle={{fontWeight: '900'}}
         dropdownStyle={styles.box}
         dropdownTextStyle={{fontWeight: '900'}}
@@ -74,4 +107,4 @@ const more = () => {
   );
 };
 
-export default more;
+export default More;

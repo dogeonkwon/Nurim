@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
 
 const LogInSideBar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user?.profile);
   return (
     <Divider style={styles.Divider}>
       <Avatar

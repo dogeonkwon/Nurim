@@ -19,7 +19,7 @@ const PopTab = (props: PopTabProps) => {
       flexDirection: 'row',
     },
     containerColor: {
-      backgroundColor: `${props.color}`,
+      backgroundColor: `${props.color === '' || props.color}`,
     },
     emptyIcon: {
       opacity: 0,
@@ -28,7 +28,7 @@ const PopTab = (props: PopTabProps) => {
       margin: 5,
     },
     titleText: {
-      fontSize: 16,
+      fontSize: 20,
     },
   });
   return (

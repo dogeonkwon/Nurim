@@ -6,7 +6,6 @@ import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {Button, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
-import {signInWithKakao} from '../../modules/kakao';
 import {naverLogin} from '../../modules/naver';
 import {
   getProfile as getKakaoProfile,
@@ -77,7 +76,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
     try {
       const token: any = await login();
       const requestHeaders = new Headers();
-      //requestHeaders.set('Authorization', JSON.stringify(token.accessToken));
       requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
       fetch(serverIP + apis.kakaoLogin, {
         method: 'POST',
@@ -113,7 +111,6 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
   };
   return (
     <Divider style={styles.Divider}>
-      <Text style={styles.nameText}>로그인 해주세요.</Text>
       <Button
         buttonStyle={styles.kakaoButton}
         containerStyle={styles.ButtonContainer}

@@ -1,10 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Button} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@rneui/themed';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Geolocation from '@react-native-community/geolocation';
+import TaxiPreview from '../TaxiPreview';
+import EmergencyList from '../EmergencyList';
+import {MainStackNavigationProp} from '../../screens/RootStack';
 
 const styles = StyleSheet.create({
   // 비상호출, 내위치 버튼 컴포넌트 위치
@@ -29,45 +32,34 @@ const styles = StyleSheet.create({
   },
 });
 
-interface ILocation {
-  latitude: number;
-  longitude: number;
-}
+type MainWidgetProps = {
+  getCurrentLocation: () => void;
+};
 
-const MainWidget = ({}) => {
-  const [location, setLocation] = useState<ILocation | undefined>(undefined);
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setLocation({
-          latitude,
-          longitude,
-        });
-        console.log(location);
-        console.log(latitude, longitude);
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
-  }, []);
+const MainWidget = ({getCurrentLocation}: MainWidgetProps) => {
+  const [visible, setVisible] = useState<boolean>(false);
+  const taxiEmergencyButton = () => {
+    setVisible(!visible);
+  };
+  // style={styles.wrap}
   return (
     <SafeAreaView style={styles.wrap}>
-      {/* {location ? (
+      {visible && (
         <>
-          <Text>{location}</Text>
-          <Text>Latitude: {location.latitude}</Text>
-          <Text>longitude: {location.longitude}</Text>
+          <TouchableOpacity>
+            <EmergencyList />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <TaxiPreview />
+          </TouchableOpacity>
         </>
-      ) : (
-        <Text>Loading...</Text>
-      )} */}
-      <TouchableOpacity style={styles.button}>
-        <Icon name={'car-emergency'} size={30} color="#01a699" />
+      )}
+      <TouchableOpacity style={styles.button} onPress={taxiEmergencyButton}>
+        <Icon2 name={'add-box'} size={30} color="#01a699" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => getCurrentLocation()}>
         <Icon2 name={'my-location'} size={30} color="#01a699" />
       </TouchableOpacity>
     </SafeAreaView>

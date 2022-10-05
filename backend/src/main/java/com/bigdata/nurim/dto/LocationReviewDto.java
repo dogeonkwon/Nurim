@@ -17,4 +17,6 @@ public class LocationReviewDto {
     private String createdDate;
     @Schema(description = "작성자 닉네임")
     private String nickname;
+    @Schema(description = "작성자 프로필 이미지")
+    private String profileImg;
 }

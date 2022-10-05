@@ -10,12 +10,15 @@ import {
   Alert,
   ScrollView,
   StatusBar,
+  TextInputBase,
 } from 'react-native';
 import {IPlace} from '../PlacePreview';
 import {Button, Overlay} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {Flex} from '@react-native-material/core';
+import {Input} from '@rneui/base';
 
 type IReviewType = {
   reviewInfo: IPlace | null;
@@ -218,7 +221,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
   console.log(allReview);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.underSignalPart}>
       <View style={styles.container}>
         <Text onPress={() => setReviewList(1)}>
           🟢 {placeAllInfo.reviewInfo?.reviewCount.green}
@@ -233,25 +236,23 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
           | 총 리뷰 {placeAllInfo.reviewInfo?.reviewCount.total} 건
         </Text>
       </View>
-      <View style={{backgroundColor: 'blue'}}>
-        <ScrollView style={{height: '30%'}}>
+      <View style={styles.reviewListView}>
+        <ScrollView style={styles.reviewScrollView}>
           {/* <ScrollView> */}
           {reviewList === 2 ? (
             <Text>등록된 리뷰가 없습니다.</Text>
           ) : (
             allReview.map((e, idx) => {
-              return (
-                <SafeAreaView style={{backgroundColor: 'gray'}}>
-                  <View key={idx} style={styles.nameday}>
-                    <Text>{e.nickname}</Text>
-                    <Text>
-                      {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
-                      {e.createdDate.slice(6, 8)}
-                    </Text>
-                  </View>
-                  <Text>{e.content}</Text>
-                </SafeAreaView>
-              );
+              <View key={idx} style={styles.eachReaviewView}>
+                <View style={styles.nameDay}>
+                  <Text style={styles.name}>{e.nickname}</Text>
+                  <Text style={styles.day}>
+                    {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
+                    {e.createdDate.slice(6, 8)}
+                  </Text>
+                </View>
+                <Text style={styles.content}>{e.content}</Text>
+              </View>;
             })
           )}
         </ScrollView>
@@ -263,49 +264,62 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
           buttonStyle={styles.button}
         />
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <Text style={styles.textPrimary}>사용자의 경험을 공유해 주세요.</Text>
-          <View style={styles.nameday}>
-            <Button
-              onPress={getGreen}
-              buttonStyle={{backgroundColor: greenLight}}>
-              좋아요
-            </Button>
-            <Button
-              onPress={getYellow}
-              buttonStyle={{backgroundColor: yellowLight}}>
-              보통
-            </Button>
-            <Button onPress={getRed} buttonStyle={{backgroundColor: redLight}}>
-              나빠요
-            </Button>
-          </View>
-          <View style={{backgroundColor: 'rgba(204, 204, 204, 1)', margin: 10}}>
-            <TextInput
-              style={{flexShrink: 1}}
-              multiline={true}
-              onChangeText={onChangeText}
-              value={text}
-              placeholder="시설에 대한 만족도를 남겨주세요."
-            />
-          </View>
-          <View style={styles.nameday}>
-            <Button
-              buttonStyle={{
-                backgroundColor: 'rgba(204, 204, 204, 1)',
-              }}
-              title="취소"
-              onPress={toggleOverlay}
-            />
-            <Button
-              buttonStyle={{backgroundColor: 'rgba(54, 188, 155, 1)'}}
-              title="등록"
-              onPress={() => {
-                user
-                  ? pushReview()
-                  : Alert.alert('회원가입 후 이용가능합니다.');
-              }}
-            />
-          </View>
+          <SafeAreaView style={styles.popup}>
+            <Text style={styles.textPrimary}>
+              사용자의 경험을 공유해 주세요.
+            </Text>
+            <View style={styles.userExp}>
+              <View style={styles.userExpCon}>
+                <Button
+                  onPress={getGreen}
+                  containerStyle={styles.userConBtn}
+                  buttonStyle={{backgroundColor: greenLight}}>
+                  좋아요
+                </Button>
+                <Button
+                  onPress={getYellow}
+                  containerStyle={styles.userConBtn}
+                  buttonStyle={{backgroundColor: yellowLight}}>
+                  보통
+                </Button>
+                <Button
+                  onPress={getRed}
+                  containerStyle={styles.userConBtn}
+                  buttonStyle={{backgroundColor: redLight}}>
+                  나빠요
+                </Button>
+              </View>
+              <View style={styles.userExpWriteView}>
+                <TextInput
+                  style={styles.userExpWrite}
+                  multiline={true}
+                  numberOfLines={5}
+                  maxLength={100}
+                  onChangeText={onChangeText}
+                  value={text}
+                  placeholder="시설에 대한 만족도를 남겨주세요."
+                />
+              </View>
+              <View style={styles.userExpCon}>
+                <Button
+                  containerStyle={styles.defaultBtn}
+                  buttonStyle={styles.cancelBtn}
+                  title="취소"
+                  onPress={toggleOverlay}
+                />
+                <Button
+                  containerStyle={styles.defaultBtn}
+                  buttonStyle={styles.registBtn}
+                  title="등록"
+                  onPress={() => {
+                    user
+                      ? pushReview()
+                      : Alert.alert('회원가입 후 이용가능합니다.');
+                  }}
+                />
+              </View>
+            </View>
+          </SafeAreaView>
         </Overlay>
       </View>
     </SafeAreaView>
@@ -313,11 +327,62 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
 };
 
 const styles = StyleSheet.create({
+  underSignalPart: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
   container: {
     flexDirection: 'row',
-    borderWidth: 3,
-    borderColor: 'black',
-    backgroundColor: 'gray',
+    borderStyle: 'solid',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: 'lightgray',
+    marginBottom: 5,
+    padding: 3,
+  },
+  reviewListView: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  reviewScrollView: {
+    height: '35%',
+  },
+  eachReaviewView: {
+    display: 'flex',
+    flexDirection: 'column',
+    textAlign: 'left',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderColor: 'lightgray',
+    paddingBottom: 1,
+  },
+  nameDay: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    textAlign: 'center',
+    alignItems: 'baseline',
+    marginBottom: 3,
+  },
+  name: {
+    fontSize: 15,
+    color: 'black',
+  },
+  day: {
+    marginLeft: 5,
+    fontSize: 10,
+    color: 'gray',
+  },
+  content: {
+    marginBottom: 3,
+    color: '#414141',
+    fontSize: 13,
+  },
+  popup: {
+    padding: 5,
+    maxWidth: '90%',
   },
   change: {
     borderWidth: 3,
@@ -328,34 +393,49 @@ const styles = StyleSheet.create({
     margin: 15,
     alignItems: 'center',
   },
-  nameday: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
   button: {
-    margin: 10,
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: 'rgba(54, 188, 155, 1)',
   },
   textPrimary: {
-    marginVertical: 20,
+    marginVertical: 10,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 19,
+    color: 'black',
+    fontWeight: 'bold',
+    width: '100%',
+    marginHorizontal: 4,
   },
-  textSecondary: {
-    marginBottom: 10,
-    textAlign: 'center',
-    fontSize: 17,
+  userExp: {
+    justifyContent: 'center',
+    alignContent: 'center',
   },
-  vcontainer: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight,
+  userExpCon: {
+    justifyContent: 'space-between',
+    display: 'flex',
+    flexDirection: 'row',
   },
-  vscrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
+  userConBtn: {
+    width: '30%',
   },
-  vtext: {
-    fontSize: 42,
+  userExpWriteView: {
+    backgroundColor: '#e2e3e2',
+    marginVertical: 10,
+    padding: 0,
+  },
+  userExpWrite: {
+    flexShrink: 1,
+    margin: 0,
+  },
+  defaultBtn: {
+    width: '45%',
+  },
+  cancelBtn: {
+    backgroundColor: '#494949',
+  },
+  registBtn: {
+    backgroundColor: '#3ec689',
   },
 });
 

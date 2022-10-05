@@ -63,6 +63,9 @@ const UpdateProfile = (props: UpdateProfileProps) => {
   const [checkNick, setCheckNick] = useState<boolean>(false);
 
   const nicknameCheck = (): void => {
+    if (nickname.length === 0) {
+      return;
+    }
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     //requestHeaders.set('jwt-token', user?.token);

@@ -1,39 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-lone-blocks */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
-
-// 내 위치 좌표(my_lat, my_lng)
-// 와 마커 누른 시설의 정보(locationId를 활용)를 가져옴
-// --------------------------------------------------------------- 임의의 값
-const place = {
-  address: '평천로 651',
-  facilities: [
-    '계단 또는 승강설비',
-    '대변기',
-    '복도',
-    '일반사항',
-    '장애인전용주차구역',
-    '주출 입구 높이차이 제거',
-    '주출입구 접근로',
-    '출입구(문)',
-    '해당시설 층수',
-    '샤워실 및 탈의실',
-    '경보 및 피난설비',
-  ],
-  lat: '37.5153038942823',
-  lng: '126.762906433695',
-  locationId: 172809,
-  locationName: '신진중동자동차운전전문학원',
-  mainCategoryId: '02',
-  mainCategoryName: '교육시설',
-  openingHours: null,
-  phone: '063-351-1547',
-  subCategoryName: '운 전학원',
-};
+import PlaceFuncBox from '../PlaceFuncBox';
+import {IPlace} from '../PlacePreview';
 
 const my_lat = 35.09565291172822;
 const my_lng = 128.91850338616183;
@@ -56,19 +29,34 @@ const iconFilter: iconF[] = [
   {image: 'info-circle', desc: '안내시설', check: '유도및안내설비'},
   {image: 'braille', desc: '점자블록', check: '점자블록'},
 ];
-const iconList: iconF[] = [];
 
-place.facilities.map(data => {
-  const trimData: string = data.replace(/ /g, '');
-  const tmpList: iconF[] = [];
-  iconFilter.forEach(e => {
-    if (e.check === trimData) {
-      iconList.push(e);
-    }
-  });
-});
+export interface IDetailType {
+  placeAllInfo: IPlace | null;
+}
 
-const PlaceDetail = () => {
+// 내 좌표 불러와서 거리 구해야 함
+// 디테일 페이지에서 내 좌표 가져오기..
+
+const PlaceDetail = (placeAllInfo: IDetailType) => {
+  const [iconList, setIconList] = useState<iconF[]>([]);
+
+  useEffect(() => {
+    getIcon();
+  }, [placeAllInfo]);
+
+  const getIcon = () => {
+    let newIcon: iconF[] = [];
+    placeAllInfo.placeAllInfo?.facilities.map(data => {
+      const trimData: string = data.replace(/ /g, '');
+      iconFilter.forEach(e => {
+        if (e.check === trimData) {
+          newIcon.push(e);
+        }
+      });
+    });
+    setIconList(newIcon);
+  };
+
   // 출발지 위경도로 부터 도착지 위경도까지의 거리 구하기
   const deg2rad = (deg: number) => {
     return (deg * Math.PI) / 180.0;
@@ -76,6 +64,7 @@ const PlaceDetail = () => {
   const rad2deg = (rad: number) => {
     return (rad * 180) / Math.PI;
   };
+  console.log(placeAllInfo, '❤❤❤❤❤❤❤❤❤❤❤❤❤❤');
 
   const getDistance = (
     lng1: number,
@@ -106,8 +95,8 @@ const PlaceDetail = () => {
   };
 
   const distance = getDistance(
-    Number(place.lng),
-    Number(place.lat),
+    Number(placeAllInfo.placeAllInfo?.lng),
+    Number(placeAllInfo.placeAllInfo?.lat),
     Number(my_lng),
     Number(my_lat),
     true,
@@ -117,22 +106,30 @@ const PlaceDetail = () => {
     <View>
       {/* 시설 정보 */}
       <View style={styles.placeName}>
-        <Text>{place.locationName}</Text>
+        <Text>{placeAllInfo.placeAllInfo?.locationName}</Text>
       </View>
-      <View style={styles.hader}>
+      <View style={styles.change}>
         <Text>
-          {distance} | {place.subCategoryName}
+          {distance} | {placeAllInfo.placeAllInfo?.subCategoryName}
         </Text>
       </View>
-      <View style={styles.hader}>
-        <Text>전화걸기(기능) | 즐겨찾기(기능)</Text>
+      <View style={styles.change}>
+        <Text>PlaceFuncBox 불러오기</Text>
+        {/* <PlaceFuncBox placeAllInfo={placeAllInfo} /> */}
       </View>
-      <View style={styles.hader}>
-        <Text>{place.address}</Text>
+      <View style={styles.change}>
+        <Text>{placeAllInfo.placeAllInfo?.address}</Text>
       </View>
-      <View style={styles.hader}>
-        <Text>{place.phone}</Text>
-      </View>
+      {placeAllInfo.placeAllInfo?.openingHours ? (
+        <View style={styles.change}>
+          <Text>{placeAllInfo.placeAllInfo?.openingHours}</Text>
+        </View>
+      ) : null}
+      {placeAllInfo.placeAllInfo?.phone ? (
+        <View style={styles.change}>
+          <Text>{placeAllInfo.placeAllInfo?.phone}</Text>
+        </View>
+      ) : null}
       <View style={{borderColor: 'red', borderWidth: 5}}>
         <View style={{flexDirection: 'row'}}>
           {iconList.map((e, idx) => {
@@ -207,7 +204,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     backgroundColor: 'gray',
   },
-  hader: {
+  change: {
     borderWidth: 3,
     borderColor: 'black',
     backgroundColor: 'gray',

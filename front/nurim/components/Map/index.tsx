@@ -14,6 +14,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {serverIP, apis} from '../../common/urls';
 import PlacePreview from '../PlacePreview';
 import {BottomSheet} from '@rneui/themed';
+import {useIsFocused} from '@react-navigation/native';
 
 // 햄버거 -> 사이드바 네이게이션 실행 하는 함수 타입 지정
 type MapProps = {
@@ -61,6 +62,15 @@ const Map = ({openDrawer}: MapProps) => {
 
   // 시설 아이디
   const [locatID, setlocatID] = useState<number>(0);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setLocation(location);
+    setCategory([]);
+    setPreview(false);
+    setlocatID(0);
+  }, [isFocused]);
 
   // 내 위치 구하기
   useEffect(() => {
@@ -220,6 +230,14 @@ const Map = ({openDrawer}: MapProps) => {
               onClick={() => {
                 setPreview(true);
                 setlocatID(e.locationId);
+                setCategory([
+                  {
+                    id: idx,
+                    locationId: e.locationId,
+                    lat: e.lat,
+                    lng: e.lng,
+                  },
+                ]);
               }}
             />
           );

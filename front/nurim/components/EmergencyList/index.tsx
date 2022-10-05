@@ -2,8 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {Button, Dialog, ListItem, Avatar, Icon} from '@rneui/themed';
 import {StyleSheet, Linking, View, Text} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {serverIP, apis} from '../../common/urls';
-import axios from 'axios';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
 
@@ -76,7 +74,6 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
                 Linking.openURL(`tel:${l.phoneNumber}`);
               }} //리스트의 phoneNumber 연락
             >
-              <Avatar source={require('../../assets/images/PHONE_CALL.png')} />
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: 'red', fontSize: 25, fontWeight: 'bold'}}>
@@ -84,6 +81,8 @@ const EmergencyList: React.FunctionComponent<DialogComponentProps> = () => {
                 </ListItem.Title>
                 <ListItem.Subtitle>{l.subTitle}</ListItem.Subtitle>
               </ListItem.Content>
+              <Avatar source={require('../../assets/images/PHONE_CALL.png')} />
+
             </ListItem>
           ))}
         </Dialog>

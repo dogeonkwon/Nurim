@@ -26,6 +26,7 @@ import Toast from 'react-native-simple-toast';
 const styles = StyleSheet.create({
   Divider: {
     flex: 1,
+    marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -18,6 +18,7 @@ import MyPage from './MyPage';
 import SignUp from './SignUp';
 import TaxiDetail from './TaxiDetail';
 import MainWidget from '../components/MainWidget';
+import SplashImage from './SplashImage';
 
 import {
   createDrawerNavigator,
@@ -31,6 +32,7 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import LogOutSideBar from '../components/LogOutSideBar/';
+import SideBarLogo from '../components/SideBarLogo';
 import LogInSideBar from '../components/LogInSideBar';
 import CustomDrawer from '../components/CustomDrawer';
 import MyReviewFavor from './MyReviewFavor';
@@ -59,16 +61,24 @@ export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 // Main Component Stack Navigator 구현
 export type MainParams = {
   Main: undefined;
+  SplashImage: undefined;
   PlaceDetail: {locatID: number; location: ILocation};
   TaxiDetail: {taxiDetail: TaxiDetailType};
   openDrawer: () => void;
   MainWidget: undefined;
+  SignUp: undefined;
 };
 export type MainStackNavigationProp = NativeStackNavigationProp<MainParams>;
 const MainStack = createNativeStackNavigator<MainParams>();
 const MainScreenStack = () => {
   return (
-    <MainStack.Navigator initialRouteName="Main">
+    <MainStack.Navigator initialRouteName="SplashImage">
+      {/* 첫 화면 */}
+      <MainStack.Screen
+        component={SplashImage}
+        name="SplashImage"
+        options={{headerShown: false}}
+      />
       {/* 지도 메인 페이지 */}
       <MainStack.Screen
         name="Main"
@@ -87,6 +97,11 @@ const MainScreenStack = () => {
       <MainStack.Screen
         component={TaxiDetail}
         name="TaxiDetail"
+        options={{headerShown: false}}
+      />
+      <MainStack.Screen
+        component={SignUp}
+        name="SignUp"
         options={{headerShown: false}}
       />
     </MainStack.Navigator>
@@ -137,6 +152,7 @@ const RootStack = () => {
       }
       drawerContent={props => (
         <DrawerContentScrollView {...props}>
+          <SideBarLogo />
           {user ? (
             <LogInSideBar />
           ) : (

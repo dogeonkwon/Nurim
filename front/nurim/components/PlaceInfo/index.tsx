@@ -157,25 +157,15 @@ const PlaceDetail = (props: IDetailType) => {
             if (idx < 4) {
               if (e.image === 'elevator-passenger' || e.image === 'exit-run') {
                 return (
-                  <View style={styles.icon}>
-                    <IconMaterial
-                      key={idx}
-                      name={e.image}
-                      size={30}
-                      color="#01a699"
-                    />
+                  <View style={styles.icon} key={idx}>
+                    <IconMaterial name={e.image} size={30} color="#01a699" />
                     <Text>{e.desc}</Text>
                   </View>
                 );
               } else {
                 return (
-                  <View style={styles.icon}>
-                    <IconAwesome
-                      key={idx}
-                      name={e.image}
-                      size={30}
-                      color="#01a699"
-                    />
+                  <View style={styles.icon} key={idx}>
+                    <IconAwesome name={e.image} size={30} color="#01a699" />
                     <Text>{e.desc}</Text>
                   </View>
                 );
@@ -188,25 +178,15 @@ const PlaceDetail = (props: IDetailType) => {
             if (idx > 3) {
               if (e.image === 'elevator-passenger' || e.image === 'exit-run') {
                 return (
-                  <View style={styles.icon}>
-                    <IconMaterial
-                      key={idx}
-                      name={e.image}
-                      size={30}
-                      color="#01a699"
-                    />
+                  <View style={styles.icon} key={idx}>
+                    <IconMaterial name={e.image} size={30} color="#01a699" />
                     <Text>{e.desc}</Text>
                   </View>
                 );
               } else {
                 return (
-                  <View style={styles.icon}>
-                    <IconAwesome
-                      key={idx}
-                      name={e.image}
-                      size={30}
-                      color="#01a699"
-                    />
+                  <View style={styles.icon} key={idx}>
+                    <IconAwesome name={e.image} size={30} color="#01a699" />
                     <Text>{e.desc}</Text>
                   </View>
                 );

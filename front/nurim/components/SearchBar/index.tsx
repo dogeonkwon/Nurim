@@ -8,8 +8,10 @@ const styles = StyleSheet.create({
   // 검색창 스타일
   header: {
     alignSelf: 'center',
-    borderWidth: 1,
-    borderRadius: 4,
+    borderBottomWidth: 3,
+    borderRightWidth: 1,
+    borderRadius: 20,
+    borderColor: 'rgba(54, 188, 155, 0.6)',
     paddingHorizontal: 15,
     paddingVertical: 5,
     width: '100%',
@@ -24,6 +26,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingHorizontal: 3,
+    fontSize: 20,
     width: '70%',
   },
 });
@@ -42,19 +45,19 @@ const SearchBar = ({openDrawer, getInput}: Props) => {
         <Icon
           name="bars"
           size={30}
-          color="#000000"
+          color="rgba(54, 188, 155, 1)"
           onPress={() => openDrawer()}
         />
         <TextInput
-          placeholder="장소 검색"
           style={styles.input}
           onChangeText={onChangeText}
           value={text}
+          onSubmitEditing={() => getInput(text)}
         />
         <Icon
           name="search"
           size={25}
-          color="#000000"
+          color="#rgba(54, 188, 155, 1)"
           onPress={() => getInput(text)}
           onPressOut={() => onChangeText('')}
         />

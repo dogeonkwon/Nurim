@@ -97,6 +97,7 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
               profile: response.imgUrl,
             }),
           );
+          Toast.show('로그인 되었습니다.');
           if (response.isFirst) props.navigation.navigate('SignUp');
           else return true;
         });

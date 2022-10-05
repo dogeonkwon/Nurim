@@ -39,7 +39,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {authorize} from '../slices/auth';
 import {RootState} from '../slices';
 import {ILocation} from '../components/Map';
-import {TaxiDetailType} from '../components/TaxiInfo'
+import {TaxiDetailType} from '../components/TaxiInfo';
+import Toast from 'react-native-simple-toast';
 
 /* 스택 내비게이션 사용 파트 */
 // [스택 내비게이션] 화면마다 어떤 파라미터가 필요한지 목록, 타입 정의.
@@ -59,7 +60,7 @@ export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
 export type MainParams = {
   Main: undefined;
   PlaceDetail: {locatID: number; location: ILocation};
-  TaxiDetail: {taxiDetail : TaxiDetailType};
+  TaxiDetail: {taxiDetail: TaxiDetailType};
   openDrawer: () => void;
   MainWidget: undefined;
 };
@@ -77,7 +78,11 @@ const MainScreenStack = () => {
         }}
       />
       {/* 장소 상세보기 페이지 */}
-      <MainStack.Screen component={PlaceDetail} name="PlaceDetail" />
+      <MainStack.Screen
+        component={PlaceDetail}
+        name="PlaceDetail"
+        options={{headerShown: false}}
+      />
       {/* 콜택시 상세보기 페이지 */}
       <MainStack.Screen
         component={TaxiDetail}
@@ -114,6 +119,7 @@ const RootStack = () => {
   const logoutButtonClicked = async () => {
     // 로그아웃
     const message = await logout();
+    Toast.show('로그아웃 되었습니다.');
 
     dispatch(authorize(null));
   };

@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleHeight: {
-    height: '35%',
+    flex: 3,
   },
   contentHeight: {
-    height: '65%',
+    flex: 7,
   },
 });
 

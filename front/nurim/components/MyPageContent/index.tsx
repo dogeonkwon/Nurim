@@ -55,6 +55,8 @@ const MyPageContent = () => {
   const navigation = useNavigation<MainStackNavigationProp>();
   const user = useSelector((state: RootState) => state.auth.user);
 
+  console.log(user?.profile);
+
   // 회원 탈퇴 클릭
   const outClicked = () => {
     Alert.alert('회원 탈퇴하시겠습니까?', '', [

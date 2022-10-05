@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-lone-blocks */
 /* eslint-disable no-const-assign */
 /* eslint-disable react-hooks/rules-of-hooks */
@@ -66,10 +67,6 @@ const Map = ({openDrawer}: MapProps) => {
     getCurrentLocation();
   }, []);
 
-  // useEffect(() => {
-  //   getCategory();
-  // }, [range]);
-
   // 현재 내 위치 구하기
   const getCurrentLocation = (): void => {
     Geolocation.getCurrentPosition(
@@ -117,7 +114,6 @@ const Map = ({openDrawer}: MapProps) => {
 
   // 검색에 맞는 시설 좌표들 구하기
   const getInput = (searchText: string): void => {
-    console.log(searchText);
     fetch(serverIP + apis.placeAllInfo + '/search/' + searchText, {
       method: 'GET',
     })
@@ -134,9 +130,28 @@ const Map = ({openDrawer}: MapProps) => {
           };
           newTextInfos.push(newTextInfo);
         });
+        let latt = 0;
+        let lngg = 0;
+        let subDistance = 9999999;
+        newTextInfos.map((searchData, idx) => {
+          console.log(searchData);
+          let tmp = getDistance(
+            Number(searchData.lat),
+            Number(searchData.lng),
+            Number(location.latitude),
+            Number(location.longitude),
+            true,
+          );
+          console.log(subDistance);
+          if (subDistance > tmp) {
+            subDistance = tmp;
+            latt = Number(searchData.lat);
+            lngg = Number(searchData.lng);
+          }
+        });
         setLocation({
-          latitude: Number(newTextInfos[0].lat),
-          longitude: Number(newTextInfos[0].lng),
+          latitude: latt,
+          longitude: lngg,
         });
         setCategory(newTextInfos);
       })
@@ -179,52 +194,37 @@ const Map = ({openDrawer}: MapProps) => {
     }
   };
 
-  // const distance = getDistance(
-  //   Number(props.placeAllInfo?.lng),
-  //   Number(props.placeAllInfo?.lat),
-  //   Number(myLng),
-  //   Number(myLat),
-  //   true,
-  // );
-
-  // console.log(category);
-  // latitude: number;
-  // longitude: number;
-
   return (
     <View style={styles.container}>
-      <View style={styles.relative_view}>
-        <NaverMapView
-          style={{width: '100%', height: '100%'}}
-          showsMyLocationButton={false}
-          center={{...location, zoom: 16}}
-          // onTouch={e => console.warn('onTouch', JSON.stringify(e.nativeEvent))}
-          onCameraChange={e => {
-            setrange({
-              sw_latitude: e.contentRegion[0].latitude,
-              sw_longitude: e.contentRegion[0].longitude,
-              ne_latitude: e.contentRegion[2].latitude,
-              ne_longitude: e.contentRegion[2].longitude,
-            });
-          }}>
-          {category?.map((e, idx) => {
-            return (
-              <Marker
-                key={idx}
-                pinColor="blue"
-                coordinate={{
-                  latitude: Number(e.lat),
-                  longitude: Number(e.lng),
-                }}
-                onClick={() => {
-                  setPreview(true);
-                  setlocatID(e.locationId);
-                }}
-              />
-            );
-          })}
-        </NaverMapView>
-      </View>
+      <NaverMapView
+        style={{width: '100%', height: '100%'}}
+        showsMyLocationButton={false}
+        center={{...location, zoom: 16}}
+        onCameraChange={e => {
+          setrange({
+            sw_latitude: e.contentRegion[0].latitude,
+            sw_longitude: e.contentRegion[0].longitude,
+            ne_latitude: e.contentRegion[2].latitude,
+            ne_longitude: e.contentRegion[2].longitude,
+          });
+        }}>
+        {category?.map((e, idx) => {
+          return (
+            <Marker
+              key={idx}
+              pinColor="blue"
+              coordinate={{
+                latitude: Number(e.lat),
+                longitude: Number(e.lng),
+              }}
+              onClick={() => {
+                setPreview(true);
+                setlocatID(e.locationId);
+              }}
+            />
+          );
+        })}
+      </NaverMapView>
       <BottomSheet
         modalProps={{}}
         isVisible={preview}
@@ -251,9 +251,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '3%',
     left: '5%',
-  },
-  relative_view: {
-    position: 'relative',
+    width: '90%',
   },
 });
 

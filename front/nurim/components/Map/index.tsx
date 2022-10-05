@@ -1,31 +1,20 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-lone-blocks */
 /* eslint-disable no-const-assign */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import NaverMapView, {
-  Circle,
-  Marker,
-  Path,
-  Polyline,
-  Polygon,
-} from 'react-native-nmap';
-import {View, StyleSheet, Dimensions, Text, Button} from 'react-native';
+import NaverMapView, {Marker} from 'react-native-nmap';
+import {View, StyleSheet} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import SearchBar from '../SearchBar';
 import FilterBar from '../FilterBar';
 import MainWidget from '../MainWidget';
 import Geolocation from '@react-native-community/geolocation';
 import {serverIP, apis} from '../../common/urls';
-import {List} from 'reselect/es/types';
-import {
-  RootStackParams,
-  MainStackNavigationProp,
-} from '../../screens/RootStack';
 import PlacePreview from '../PlacePreview';
 import {BottomSheet} from '@rneui/themed';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../slices';
+import {useIsFocused} from '@react-navigation/native';
 
 // 햄버거 -> 사이드바 네이게이션 실행 하는 함수 타입 지정
 type MapProps = {
@@ -33,7 +22,7 @@ type MapProps = {
 };
 
 // 내 위치, 마커 등에 사용하는 위도와 경도 타입 지정
-interface ILocation {
+export interface ILocation {
   latitude: number;
   longitude: number;
 }
@@ -74,14 +63,19 @@ const Map = ({openDrawer}: MapProps) => {
   // 시설 아이디
   const [locatID, setlocatID] = useState<number>(0);
 
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setLocation(location);
+    setCategory([]);
+    setPreview(false);
+    setlocatID(0);
+  }, [isFocused]);
+
   // 내 위치 구하기
   useEffect(() => {
     getCurrentLocation();
   }, []);
-
-  // useEffect(() => {
-  //   getCategory();
-  // }, [range]);
 
   // 현재 내 위치 구하기
   const getCurrentLocation = (): void => {
@@ -128,55 +122,133 @@ const Map = ({openDrawer}: MapProps) => {
       .catch(e => console.log('error:', e));
   };
 
+  // 검색에 맞는 시설 좌표들 구하기
+  const getInput = (searchText: string): void => {
+    fetch(serverIP + apis.placeAllInfo + '/search/' + searchText, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(response => {
+        const textInfos = [...response];
+        let newTextInfos: ICategory[] = [];
+        textInfos.map((textInfo, id) => {
+          const newTextInfo: ICategory = {
+            id: id,
+            locationId: textInfo.locationId,
+            lat: textInfo.lat,
+            lng: textInfo.lng,
+          };
+          newTextInfos.push(newTextInfo);
+        });
+        let latt = 0;
+        let lngg = 0;
+        let subDistance = 9999999;
+        newTextInfos.map((searchData, idx) => {
+          console.log(searchData);
+          let tmp = getDistance(
+            Number(searchData.lat),
+            Number(searchData.lng),
+            Number(location.latitude),
+            Number(location.longitude),
+            true,
+          );
+          console.log(subDistance);
+          if (subDistance > tmp) {
+            subDistance = tmp;
+            latt = Number(searchData.lat);
+            lngg = Number(searchData.lng);
+          }
+        });
+        setLocation({
+          latitude: latt,
+          longitude: lngg,
+        });
+        setCategory(newTextInfos);
+      })
+      .catch(e => console.log('error:', e));
+  };
+
+  // 출발지 위경도로 부터 도착지 위경도까지의 거리 구하기
+  const deg2rad = (deg: number) => {
+    return (deg * Math.PI) / 180.0;
+  };
+  const rad2deg = (rad: number) => {
+    return (rad * 180) / Math.PI;
+  };
+
+  const getDistance = (
+    lng1: number,
+    lat1: number,
+    lng2: number,
+    lat2: number,
+    useKm?: boolean,
+  ) => {
+    if (lng1 === lng2 && lat1 === lat2) {
+      return 0;
+    } else {
+      const theta = lng1 - lng2;
+      let dist =
+        Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) +
+        Math.cos(deg2rad(lat1)) *
+          Math.cos(deg2rad(lat2)) *
+          Math.cos(deg2rad(theta));
+      dist = Math.acos(dist);
+      dist = rad2deg(dist);
+      dist = dist * 60 * 1.1515;
+      if (useKm) {
+        dist = dist * 1.609344;
+      } else {
+        dist = dist * 1609.344;
+      }
+      return Math.round(dist);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.relative_view}>
-        <NaverMapView
-          style={{width: '100%', height: '100%'}}
-          showsMyLocationButton={false}
-          center={{...location, zoom: 16}}
-          // onTouch={e => console.warn('onTouch', JSON.stringify(e.nativeEvent))}
-          onCameraChange={e => {
-            setrange({
-              sw_latitude: e.contentRegion[0].latitude,
-              sw_longitude: e.contentRegion[0].longitude,
-              ne_latitude: e.contentRegion[2].latitude,
-              ne_longitude: e.contentRegion[2].longitude,
-            });
-          }}>
-          {category?.map((e, idx) => {
-            return (
-              <Marker
-                key={idx}
-                pinColor="blue"
-                coordinate={{
-                  latitude: Number(e.lat),
-                  longitude: Number(e.lng),
-                }}
-                onClick={() => {
-                  setPreview(true);
-                  setlocatID(e.locationId);
-                }}
-              />
-            );
-          })}
-        </NaverMapView>
-      </View>
+      <NaverMapView
+        style={{width: '100%', height: '100%'}}
+        showsMyLocationButton={false}
+        center={{...location, zoom: 16}}
+        // onTouch={e => console.warn('onTouch', JSON.stringify(e.nativeEvent))}
+        onCameraChange={e => {
+          setrange({
+            sw_latitude: e.contentRegion[0].latitude,
+            sw_longitude: e.contentRegion[0].longitude,
+            ne_latitude: e.contentRegion[2].latitude,
+            ne_longitude: e.contentRegion[2].longitude,
+          });
+        }}>
+        {category?.map((e, idx) => {
+          return (
+            <Marker
+              key={idx}
+              pinColor="blue"
+              coordinate={{
+                latitude: Number(e.lat),
+                longitude: Number(e.lng),
+              }}
+              onClick={() => {
+                setPreview(true);
+                setlocatID(e.locationId);
+              }}
+            />
+          );
+        })}
+      </NaverMapView>
       <BottomSheet
         modalProps={{}}
         isVisible={preview}
         onBackdropPress={() => setPreview(false)}>
         <View>
-          <PlacePreview locatID={locatID} />
+          <PlacePreview locatID={locatID} location={location} />
         </View>
       </BottomSheet>
       <View style={styles.absolute_view}>
-        <SearchBar openDrawer={openDrawer} />
-        <FilterBar getCategory={getCategory} setCatenum={setCatenum} />
-        {/* {preview ? <PlacePreview /> : null} */}
-        {/* <PlacePreview /> */}
+        <SearchBar openDrawer={openDrawer} getInput={getInput} />
+        <FilterBar getCategory={getCategory} catenum={catenum} />
       </View>
-      <MainWidget getCurrentLocation={getCurrentLocation} />
+      <MainWidget getCurrentLocation={getCurrentLocation} location={location} />
     </View>
   );
 };
@@ -190,9 +262,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '3%',
     left: '5%',
-  },
-  relative_view: {
-    position: 'relative',
+    width: '90%',
   },
 });
 

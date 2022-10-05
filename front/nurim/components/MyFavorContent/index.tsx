@@ -1,6 +1,10 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {serverIP, apis} from '../../common/urls';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../slices';
+import Toast from 'react-native-simple-toast';
 
 const styles = StyleSheet.create({
   viewContainer: {
@@ -23,24 +27,62 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textTitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'black',
     marginTop: 3,
     marginBottom: 3,
   },
   textContent: {
-    fontSize: 12,
+    fontSize: 14,
     color: 'rgba(0, 0, 0, 0.6)',
-    marginBottom: 2,
+    marginBottom: 4,
   },
 });
 
 type MyFavorProps = {
+  favoriteId: number;
   locationName: string; // 업체명
   locationAddress: string; // 주소
+  refreshFavor: boolean;
+  setRefreshFavor: (refreshFavor: boolean) => void;
 };
 
-const MyFavorContent = ({locationName, locationAddress}: MyFavorProps) => {
+const MyFavorContent = ({
+  favoriteId,
+  locationName,
+  locationAddress,
+  refreshFavor,
+  setRefreshFavor,
+}: MyFavorProps) => {
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  // 즐겨찾기 해제
+  const favorButtonClicked = () => {
+    Alert.alert('즐겨찾기를 해제하시겠습니까?', '', [
+      {
+        text: '확인',
+        onPress: () => deleteFavor(),
+        style: 'cancel',
+      },
+      {text: '취소'},
+    ]);
+  };
+  const deleteFavor = () => {
+    // 통신 헤더 정의
+    const requestHeaders = new Headers();
+    requestHeaders.set('jwt-token', user?.token ? user.token : '');
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    fetch(serverIP + apis.favorDelete + favoriteId, {
+      method: 'DELETE',
+      headers: requestHeaders,
+    })
+      //.then(response => response.json())
+      .then(response => {
+        Toast.show('즐겨찾기가 삭제되었습니다.');
+        setRefreshFavor(!refreshFavor);
+      })
+      .catch(e => console.log(e));
+  };
   return (
     <View style={styles.viewContainer}>
       <View style={styles.viewDivider}>
@@ -49,7 +91,11 @@ const MyFavorContent = ({locationName, locationAddress}: MyFavorProps) => {
           <Text style={styles.textContent}>{locationAddress}</Text>
         </View>
         <View style={styles.viewPicture}>
-          <Icon name="favorite-border" size={30} />
+          <Icon
+            name="favorite"
+            size={30}
+            onPress={() => favorButtonClicked()}
+          />
         </View>
       </View>
     </View>

@@ -19,16 +19,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleHeight: {
-    height: '35%',
+    flex: 3,
   },
   contentHeight: {
-    height: '65%',
+    flex: 7,
   },
 });
 
 // 나의 리뷰 타입 지정
 export type ReviewType = {
   id: number; // 식별자
+  reviewId: number; // 리뷰아이디
   locationName: string; // 업체명
   content: string; // 리뷰내용
   date: string; // 작성일
@@ -37,6 +38,7 @@ export type ReviewType = {
 
 export type FavorType = {
   id: number; // 식별자
+  favoriteId: number; // 업체 번호
   locationName: string; // 업체명
   locationAddress: string; // 주소
 };
@@ -48,7 +50,6 @@ type MyReviewFavorProps = {
 const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const {params} = useRoute<MyReviewFavorRouteProp>();
-  console.log(user);
   // 나의리뷰/즐겨찾기 메뉴 스왑용도
   const [selectedMenu, setSelectedMenu] = useState<number>(params?.type);
   // 나의 리뷰 Data
@@ -59,6 +60,10 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
   const [myFavor, setMyFavor] = useState<FavorType[] | undefined>();
   // 나의 즐겨찾기 갯수
   const [myFavorCnt, setMyFavorCnt] = useState<number>(0);
+
+  // 리프레시용 상태
+  const [refreshReview, setRefreshReview] = useState<boolean>(false);
+  const [refreshFavor, setRefreshFavor] = useState<boolean>(false);
 
   // 화면 포커스 인식용
   const isFocused = useIsFocused();
@@ -78,6 +83,14 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
       getMyFavor();
     }
   }, [selectedMenu]);
+
+  useEffect(() => {
+    getMyReview();
+  }, [refreshReview]);
+
+  useEffect(() => {
+    getMyFavor();
+  }, [refreshFavor]);
 
   // 나의 리뷰 GET 서버 통신
   const getMyReview = (): void => {
@@ -100,6 +113,7 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
           // 리뷰 객체 생성
           const newData: ReviewType = {
             id: index,
+            reviewId: data.reviewId,
             locationName: data.locationName,
             content: data.content,
             date: data.createdDate,
@@ -134,6 +148,7 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
         datas.map((data, index) => {
           const newData: FavorType = {
             id: index,
+            favoriteId: data.favoriteId,
             locationName: data.locationName,
             locationAddress: data.locationAddress,
           };
@@ -160,9 +175,17 @@ const MyReviewFavor = ({navigation}: MyReviewFavorProps) => {
 
       <View style={styles.contentHeight}>
         {selectedMenu === 0 ? (
-          <MyReview myReview={myReview} />
+          <MyReview
+            myReview={myReview}
+            refreshReview={refreshReview}
+            setRefreshReview={setRefreshReview}
+          />
         ) : (
-          <MyFavor myFavor={myFavor} />
+          <MyFavor
+            myFavor={myFavor}
+            refreshFavor={refreshFavor}
+            setRefreshFavor={setRefreshFavor}
+          />
         )}
       </View>
     </View>

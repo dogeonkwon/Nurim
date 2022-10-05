@@ -3,11 +3,11 @@ import {BottomSheet, Icon} from '@rneui/themed';
 import {StyleSheet, SafeAreaView, View} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import TaxiInfo from '../TaxiInfo';
-import TaxiInfoContent from '../TaxiInfoContent';
 import {MainStackNavigationProp} from '../../screens/RootStack';
-type BottomSheetComponentProps = {};
+import {ILocation} from '../Map/index';
+import Toast from 'react-native-simple-toast';
 
-const TaxiPreview = () => {
+const TaxiPreview = (props: ILocation) => {
   //버튼을 눌러야만 보이도록 false, 타입스크립트 문법에 따라 useState와 기본값 사이에 boolean이라고 표기
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -19,7 +19,8 @@ const TaxiPreview = () => {
         name="taxi"
         type="font-awesome"
         color="#36BC9B"
-        onPress={() => setVisible(true)}
+        // onPress={() => setVisible(true)}
+        onPress={() => Toast.show('미지원 기능입니다.')}
       />
       {/* onBackdropPress = {setVisible}, bottomsheet 이외의 화면을 누르면 다시 보이지 않도록(setVisible의 기본값인 false로) */}
       <BottomSheet
@@ -27,21 +28,8 @@ const TaxiPreview = () => {
         isVisible={visible}
         onBackdropPress={() => setVisible(false)}>
         <View>
-          <TaxiInfo></TaxiInfo>
-          <TaxiInfoContent></TaxiInfoContent>
+          <TaxiInfo props={props}></TaxiInfo>
         </View>
-        {/* {taxiInfoList.map((l, i) => (
-        <ListItem
-          key={i}
-          //리스트아이템 사이에 줄 추가
-          bottomDivider
-        >
-          <ListItem.Content>
-            <ListItem.Title>{l.title}</ListItem.Title>
-            <ListItem.Subtitle>{l.subTitle}</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
-      ))} */}
       </BottomSheet>
     </View>
   );

@@ -44,7 +44,11 @@ const TaxiInfo = (props : ILocation) => {
           const addressResponse = await axios.get(
             `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${props.props.location.latitude}&longitude=${props.props.location.longitude}&localityLanguage=ko`);
           const { data } = addressResponse;
-          setAddressData(data.principalSubdivision)
+          if (data.principalSubdivision != data.city) {
+            setAddressData(data.principalSubdivision+data.city)}
+            else {
+            setAddressData(data.principalSubdivision)
+          };
           console.log(addressData)
           setTaxiInfoData([]);
           setLoading(true);

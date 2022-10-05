@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -46,7 +46,6 @@ export interface IDetailType {
 
 const PlaceDetail = (props: IDetailType) => {
   const [iconList, setIconList] = useState<iconF[]>([]);
-  console.log(props.placeAllInfo);
   useEffect(() => {
     getIcon();
   }, [props]);
@@ -118,81 +117,109 @@ const PlaceDetail = (props: IDetailType) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 시설 정보 */}
-      <View style={styles.placeInfo}>
-        <Text style={{fontSize: 30}}>{props.placeAllInfo?.locationName}</Text>
-      </View>
-      <View style={styles.placeInfo}>
-        <Text style={{color: 'gray'}}>
-          {distance} KM | {props.placeAllInfo?.subCategoryName}
-        </Text>
-      </View>
-      <View style={{marginVertical: 5}}>
-        <PlaceFuncBox preview={props.placeAllInfo} />
-      </View>
-      <View style={styles.placeInfo}>
-        <Ionicons
-          name={'location-outline'}
-          size={20}
-          style={{marginRight: 5}}
-        />
-        <Text>{props.placeAllInfo?.address}</Text>
-      </View>
-      {props.placeAllInfo?.openingHours ? (
+    <SafeAreaView style={{backgroundColor: 'white'}}>
+      <View style={styles.container}>
+        {/* 시설 정보 */}
         <View style={styles.placeInfo}>
-          <AntDesign name={'clockcircleo'} size={20} style={{marginRight: 5}} />
-          <Text>{props.placeAllInfo?.openingHours}</Text>
+          <Text style={{color: 'gray'}}>
+            {distance} KM | {props.placeAllInfo?.subCategoryName}
+          </Text>
         </View>
-      ) : null}
-      {props.placeAllInfo?.phone ? (
+        <View style={{marginVertical: 5}}>
+          <PlaceFuncBox preview={props.placeAllInfo} />
+        </View>
         <View style={styles.placeInfo}>
-          <Ionicons name={'call-outline'} size={20} style={{marginRight: 5}} />
-          <Text>{props.placeAllInfo?.phone}</Text>
+          <Ionicons
+            name={'location-outline'}
+            size={20}
+            style={{marginRight: 5}}
+            color="black"
+          />
+          <Text style={{color: 'black'}}>{props.placeAllInfo?.address}</Text>
         </View>
-      ) : null}
-      <View style={styles.placeInfo}>
-        <View style={{flexDirection: 'row'}}>
-          {iconList.map((e, idx) => {
-            if (idx < 4) {
-              if (e.image === 'elevator-passenger' || e.image === 'exit-run') {
-                return (
-                  <View style={styles.icon} key={idx}>
-                    <IconMaterial name={e.image} size={30} color="#01a699" />
-                    <Text>{e.desc}</Text>
-                  </View>
-                );
-              } else {
-                return (
-                  <View style={styles.icon} key={idx}>
-                    <IconAwesome name={e.image} size={30} color="#01a699" />
-                    <Text>{e.desc}</Text>
-                  </View>
-                );
-              }
-            }
-          })}
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          {iconList.map((e, idx) => {
-            if (idx > 3) {
-              if (e.image === 'elevator-passenger' || e.image === 'exit-run') {
-                return (
-                  <View style={styles.icon} key={idx}>
-                    <IconMaterial name={e.image} size={30} color="#01a699" />
-                    <Text>{e.desc}</Text>
-                  </View>
-                );
-              } else {
-                return (
-                  <View style={styles.icon} key={idx}>
-                    <IconAwesome name={e.image} size={30} color="#01a699" />
-                    <Text>{e.desc}</Text>
-                  </View>
-                );
-              }
-            }
-          })}
+        {props.placeAllInfo?.openingHours ? (
+          <View style={styles.placeInfo}>
+            <AntDesign
+              name={'clockcircleo'}
+              size={20}
+              style={{marginRight: 5}}
+              color="black"
+            />
+            <Text style={{color: 'black'}}>
+              {props.placeAllInfo?.openingHours}
+            </Text>
+          </View>
+        ) : null}
+        {props.placeAllInfo?.phone ? (
+          <View style={styles.placeInfo}>
+            <Ionicons
+              name={'call-outline'}
+              size={20}
+              style={{marginRight: 5}}
+              color="black"
+            />
+            <Text style={{color: 'black'}}>{props.placeAllInfo?.phone}</Text>
+          </View>
+        ) : null}
+        <View style={styles.placeInfo}>
+          <ScrollView nestedScrollEnabled={true}>
+            <View style={{flexDirection: 'row'}}>
+              {iconList.map((e, idx) => {
+                if (idx < 4) {
+                  if (
+                    e.image === 'elevator-passenger' ||
+                    e.image === 'exit-run'
+                  ) {
+                    return (
+                      <View style={styles.icon} key={idx}>
+                        <IconMaterial
+                          name={e.image}
+                          size={30}
+                          color="#01a699"
+                        />
+                        <Text style={{color: 'black'}}>{e.desc}</Text>
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View style={styles.icon} key={idx}>
+                        <IconAwesome name={e.image} size={30} color="#01a699" />
+                        <Text style={{color: 'black'}}>{e.desc}</Text>
+                      </View>
+                    );
+                  }
+                }
+              })}
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              {iconList.map((e, idx) => {
+                if (idx > 3) {
+                  if (
+                    e.image === 'elevator-passenger' ||
+                    e.image === 'exit-run'
+                  ) {
+                    return (
+                      <View style={styles.icon} key={idx}>
+                        <IconMaterial
+                          name={e.image}
+                          size={30}
+                          color="#01a699"
+                        />
+                        <Text style={{color: 'black'}}>{e.desc}</Text>
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View style={styles.icon} key={idx}>
+                        <IconAwesome name={e.image} size={30} color="#01a699" />
+                        <Text style={{color: 'black'}}>{e.desc}</Text>
+                      </View>
+                    );
+                  }
+                }
+              })}
+            </View>
+          </ScrollView>
         </View>
       </View>
     </SafeAreaView>
@@ -203,10 +230,12 @@ const styles = StyleSheet.create({
   container: {
     marginLeft: '5%',
     marginRight: '5%',
+    backgroundColor: 'white',
   },
   placeInfo: {
     flexDirection: 'row',
     marginVertical: 5,
+    backgroundColor: 'white',
   },
   icon: {
     margin: 15,

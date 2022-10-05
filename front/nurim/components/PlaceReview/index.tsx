@@ -33,12 +33,11 @@ export type subListType = {
 };
 
 const PlaceReview = (placeAllInfo: IReviewType) => {
-  console.log(placeAllInfo.reviewInfo?.locationId);
   // 유저 정보 불러오기
   const user = useSelector((state: RootState) => state.auth.user);
 
   // 리뷰 종류(0: 전체, 1: 초록, 2: 노랑, 3: 빨강)
-  const [reviewList, setReviewList] = useState<number>(0);
+  const [reviewList, setReviewList] = useState<number>(4);
 
   // 리뷰 종류에 맞는 리뷰 리스트
   const [allReview, setAllReview] = useState<subListType[]>([]);
@@ -116,11 +115,15 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
 
   useEffect(() => {
     getAllReview();
-  }, []);
+  }, [placeAllInfo.reviewInfo?.locationId]);
 
   useEffect(() => {
     getAllReview();
   }, [reviewList]);
+
+  useEffect(() => {
+    console.log(allReview);
+  }, [allReview]);
 
   // 서버로 리뷰 등록하기
   const pushReview = (): void => {
@@ -146,7 +149,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
   // 리뷰리스트 가져오기
   const getAllReview = () => {
     let subLists: subListType[] = [];
-    if (reviewList === 0) {
+    if (reviewList === 4) {
       {
         placeAllInfo.reviewInfo?.reviews.green.map((data1, idx) => {
           const subList1: subListType = {
@@ -218,109 +221,109 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
       setAllReview(subLists);
     }
   };
-  console.log(allReview);
 
   return (
-    <SafeAreaView style={styles.underSignalPart}>
-      <View style={styles.container}>
-        <Text onPress={() => setReviewList(1)}>
-          🟢 {placeAllInfo.reviewInfo?.reviewCount.green}
-        </Text>
-        <Text onPress={() => setReviewList(2)}>
-          | 🟠 {placeAllInfo.reviewInfo?.reviewCount.yellow}
-        </Text>
-        <Text onPress={() => setReviewList(3)}>
-          | 🔴 {placeAllInfo.reviewInfo?.reviewCount.red}
-        </Text>
-        <Text onPress={() => setReviewList(0)}>
-          | 총 리뷰 {placeAllInfo.reviewInfo?.reviewCount.total} 건
-        </Text>
-      </View>
-      <View style={styles.reviewListView}>
-        <ScrollView style={styles.reviewScrollView}>
-          {/* <ScrollView> */}
-          {reviewList === 2 ? (
-            <Text>등록된 리뷰가 없습니다.</Text>
-          ) : (
-            allReview.map((e, idx) => {
-              <View key={idx} style={styles.eachReaviewView}>
-                <View style={styles.nameDay}>
-                  <Text style={styles.name}>{e.nickname}</Text>
-                  <Text style={styles.day}>
-                    {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
-                    {e.createdDate.slice(6, 8)}
-                  </Text>
+    <SafeAreaView style={{backgroundColor: 'white'}}>
+      <View style={styles.underSignalPart}>
+        <View style={styles.container}>
+          <Text onPress={() => setReviewList(1)} style={{color: 'black'}}>
+            🟢 {placeAllInfo.reviewInfo?.reviewCount.green}
+          </Text>
+          <Text onPress={() => setReviewList(2)} style={{color: 'black'}}>
+            | 🟠 {placeAllInfo.reviewInfo?.reviewCount.yellow}
+          </Text>
+          <Text onPress={() => setReviewList(3)} style={{color: 'black'}}>
+            | 🔴 {placeAllInfo.reviewInfo?.reviewCount.red}
+          </Text>
+          <Text onPress={() => setReviewList(4)} style={{color: 'black'}}>
+            | 총 리뷰 {placeAllInfo.reviewInfo?.reviewCount.total} 건
+          </Text>
+        </View>
+        <View style={styles.reviewListView}>
+          <ScrollView
+            style={styles.reviewScrollView}
+            nestedScrollEnabled={true}>
+            <View>
+              {allReview.map((e, idx) => (
+                <View key={idx} style={styles.eachReaviewView}>
+                  <View style={styles.nameDay}>
+                    <Text style={styles.name}>{e.nickname}</Text>
+                    <Text style={styles.day}>
+                      {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
+                      {e.createdDate.slice(6, 8)}
+                    </Text>
+                  </View>
+                  <Text style={styles.content}>{e.content}</Text>
                 </View>
-                <Text style={styles.content}>{e.content}</Text>
-              </View>;
-            })
-          )}
-        </ScrollView>
-      </View>
-      <View>
-        <Button
-          title="리뷰 작성"
-          onPress={toggleOverlay}
-          buttonStyle={styles.button}
-        />
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <SafeAreaView style={styles.popup}>
-            <Text style={styles.textPrimary}>
-              사용자의 경험을 공유해 주세요.
-            </Text>
-            <View style={styles.userExp}>
-              <View style={styles.userExpCon}>
-                <Button
-                  onPress={getGreen}
-                  containerStyle={styles.userConBtn}
-                  buttonStyle={{backgroundColor: greenLight}}>
-                  좋아요
-                </Button>
-                <Button
-                  onPress={getYellow}
-                  containerStyle={styles.userConBtn}
-                  buttonStyle={{backgroundColor: yellowLight}}>
-                  보통
-                </Button>
-                <Button
-                  onPress={getRed}
-                  containerStyle={styles.userConBtn}
-                  buttonStyle={{backgroundColor: redLight}}>
-                  나빠요
-                </Button>
-              </View>
-              <View style={styles.userExpWriteView}>
-                <TextInput
-                  style={styles.userExpWrite}
-                  multiline={true}
-                  numberOfLines={5}
-                  maxLength={100}
-                  onChangeText={onChangeText}
-                  value={text}
-                  placeholder="시설에 대한 만족도를 남겨주세요."
-                />
-              </View>
-              <View style={styles.userExpCon}>
-                <Button
-                  containerStyle={styles.defaultBtn}
-                  buttonStyle={styles.cancelBtn}
-                  title="취소"
-                  onPress={toggleOverlay}
-                />
-                <Button
-                  containerStyle={styles.defaultBtn}
-                  buttonStyle={styles.registBtn}
-                  title="등록"
-                  onPress={() => {
-                    user
-                      ? pushReview()
-                      : Alert.alert('회원가입 후 이용가능합니다.');
-                  }}
-                />
-              </View>
+              ))}
             </View>
-          </SafeAreaView>
-        </Overlay>
+          </ScrollView>
+        </View>
+        <View>
+          <Button
+            title="리뷰 작성"
+            onPress={toggleOverlay}
+            buttonStyle={styles.button}
+          />
+          <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+            <SafeAreaView style={styles.popup}>
+              <Text style={styles.textPrimary}>
+                사용자의 경험을 공유해 주세요.
+              </Text>
+              <View style={styles.userExp}>
+                <View style={styles.userExpCon}>
+                  <Button
+                    onPress={getGreen}
+                    containerStyle={styles.userConBtn}
+                    buttonStyle={{backgroundColor: greenLight}}>
+                    좋아요
+                  </Button>
+                  <Button
+                    onPress={getYellow}
+                    containerStyle={styles.userConBtn}
+                    buttonStyle={{backgroundColor: yellowLight}}>
+                    보통
+                  </Button>
+                  <Button
+                    onPress={getRed}
+                    containerStyle={styles.userConBtn}
+                    buttonStyle={{backgroundColor: redLight}}>
+                    나빠요
+                  </Button>
+                </View>
+                <View style={styles.userExpWriteView}>
+                  <TextInput
+                    style={styles.userExpWrite}
+                    multiline={true}
+                    numberOfLines={5}
+                    maxLength={100}
+                    onChangeText={onChangeText}
+                    value={text}
+                    placeholder="시설에 대한 만족도를 남겨주세요."
+                  />
+                </View>
+                <View style={styles.userExpCon}>
+                  <Button
+                    containerStyle={styles.defaultBtn}
+                    buttonStyle={styles.cancelBtn}
+                    title="취소"
+                    onPress={toggleOverlay}
+                  />
+                  <Button
+                    containerStyle={styles.defaultBtn}
+                    buttonStyle={styles.registBtn}
+                    title="등록"
+                    onPress={() => {
+                      user
+                        ? pushReview()
+                        : Alert.alert('회원가입 후 이용가능합니다.');
+                    }}
+                  />
+                </View>
+              </View>
+            </SafeAreaView>
+          </Overlay>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -330,6 +333,7 @@ const styles = StyleSheet.create({
   underSignalPart: {
     marginLeft: 10,
     marginRight: 10,
+    // flex: 0.1,
   },
   container: {
     flexDirection: 'row',

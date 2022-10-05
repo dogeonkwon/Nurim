@@ -2,20 +2,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native';
+import {SafeAreaView, ScrollView} from 'react-native';
 import Placeinfo from '../components/PlaceInfo';
 import PlaceReview from '../components/PlaceReview';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {MainStackNavigationProp, MainParams} from './RootStack';
 import {serverIP, apis} from '../common/urls';
 import {IPlace} from '../components/PlacePreview';
+import PopTab from '../components/PopTab';
 
 type PlaceDetailRouteProp = RouteProp<MainParams, 'PlaceDetail'>;
 type PlaceDetailProps = {
   navigation: MainStackNavigationProp;
 };
 
-const PlaceDetail = () => {
+const PlaceDetail = (props: PlaceDetailProps) => {
   const {params} = useRoute<PlaceDetailRouteProp>();
 
   // 시설 데이터
@@ -39,8 +40,16 @@ const PlaceDetail = () => {
 
   return (
     <SafeAreaView>
+      <PopTab
+        title={placeAllInfo?.locationName ? placeAllInfo.locationName : ''}
+        titleColor="black"
+        navigation={props.navigation}
+        color="white"
+      />
+      {/* <ScrollView nestedScrollEnabled={true}> */}
       <Placeinfo placeAllInfo={placeAllInfo} location={params.location} />
       <PlaceReview reviewInfo={placeAllInfo} />
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };

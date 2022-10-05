@@ -2,9 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
 import IconAwesome from 'react-native-vector-icons/FontAwesome5';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ILocation} from '../Map';
 import PlaceFuncBox from '../PlaceFuncBox';
 import {IPlace} from '../PlacePreview';
@@ -116,33 +118,40 @@ const PlaceDetail = (props: IDetailType) => {
   );
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       {/* 시설 정보 */}
-      <View style={styles.placeName}>
-        <Text>{props.placeAllInfo?.locationName}</Text>
+      <View style={styles.placeInfo}>
+        <Text style={{fontSize: 30}}>{props.placeAllInfo?.locationName}</Text>
       </View>
-      <View style={styles.change}>
-        <Text>
+      <View style={styles.placeInfo}>
+        <Text style={{color: 'gray'}}>
           {distance} KM | {props.placeAllInfo?.subCategoryName}
         </Text>
       </View>
-      <View style={styles.change}>
+      <View style={{marginVertical: 5}}>
         <PlaceFuncBox preview={props.placeAllInfo} />
       </View>
-      <View style={styles.change}>
+      <View style={styles.placeInfo}>
+        <Ionicons
+          name={'location-outline'}
+          size={20}
+          style={{marginRight: 5}}
+        />
         <Text>{props.placeAllInfo?.address}</Text>
       </View>
       {props.placeAllInfo?.openingHours ? (
-        <View style={styles.change}>
+        <View style={styles.placeInfo}>
+          <AntDesign name={'clockcircleo'} size={20} style={{marginRight: 5}} />
           <Text>{props.placeAllInfo?.openingHours}</Text>
         </View>
       ) : null}
       {props.placeAllInfo?.phone ? (
-        <View style={styles.change}>
+        <View style={styles.placeInfo}>
+          <Ionicons name={'call-outline'} size={20} style={{marginRight: 5}} />
           <Text>{props.placeAllInfo?.phone}</Text>
         </View>
       ) : null}
-      <View style={{borderColor: 'red', borderWidth: 5}}>
+      <View style={styles.placeInfo}>
         <View style={{flexDirection: 'row'}}>
           {iconList.map((e, idx) => {
             if (idx < 4) {
@@ -206,20 +215,18 @@ const PlaceDetail = (props: IDetailType) => {
           })}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  placeName: {
-    borderWidth: 3,
-    borderColor: 'black',
-    backgroundColor: 'gray',
+  container: {
+    marginLeft: '5%',
+    marginRight: '5%',
   },
-  change: {
-    borderWidth: 3,
-    borderColor: 'black',
-    backgroundColor: 'gray',
+  placeInfo: {
+    flexDirection: 'row',
+    marginVertical: 5,
   },
   icon: {
     margin: 15,

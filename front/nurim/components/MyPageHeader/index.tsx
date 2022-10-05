@@ -25,16 +25,19 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
       backgroundColor: getColor('HEADER'),
     },
     viewBack: {
-      height: '25%',
+      flex: 2,
+      //height: '25%',
     },
     viewContent: {
-      height: '35%',
+      flex: 5,
+      //height: '40%',
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
     },
     viewTab: {
-      height: '40%',
+      flex: 3,
+      //height: '35%',
     },
   });
 
@@ -43,6 +46,7 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
       <View style={styles.viewBack}>
         <PopTab
           title=""
+          titleColor="rgba(0, 0, 0, 0.4)"
           navigation={props.navigation}
           color={getColor('HEADER')}
         />

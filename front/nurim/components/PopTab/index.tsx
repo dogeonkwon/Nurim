@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface PopTabProps {
   title: string;
+  titleColor: string;
   navigation: MainStackNavigationProp;
   color: string;
 }
@@ -29,6 +30,7 @@ const PopTab = (props: PopTabProps) => {
     },
     titleText: {
       fontSize: 20,
+      color: props.titleColor,
     },
   });
   return (

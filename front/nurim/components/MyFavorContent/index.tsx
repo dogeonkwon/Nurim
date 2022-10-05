@@ -27,15 +27,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textTitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'black',
     marginTop: 3,
     marginBottom: 3,
   },
   textContent: {
-    fontSize: 12,
+    fontSize: 14,
     color: 'rgba(0, 0, 0, 0.6)',
-    marginBottom: 2,
+    marginBottom: 4,
   },
 });
 

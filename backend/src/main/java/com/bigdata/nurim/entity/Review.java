@@ -63,6 +63,7 @@ public class Review {
                 .reviewId(this.reviewId)
                 .content(this.content)
                 .createdDate(this.createdDate)
+                .profileImg(this.user.getImgUrl())
                 .nickname(this.user.getNickname())
                 .build();
     }

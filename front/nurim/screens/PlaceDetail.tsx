@@ -39,7 +39,7 @@ const PlaceDetail = (props: PlaceDetailProps) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <PopTab
         title={placeAllInfo?.locationName ? placeAllInfo.locationName : ''}
         titleColor="black"

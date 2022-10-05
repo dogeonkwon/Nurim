@@ -223,7 +223,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: 'white'}}>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <View style={styles.underSignalPart}>
         <View style={styles.container}>
           <Text onPress={() => setReviewList(1)} style={{color: 'black'}}>
@@ -333,7 +333,6 @@ const styles = StyleSheet.create({
   underSignalPart: {
     marginLeft: 10,
     marginRight: 10,
-    // flex: 0.1,
   },
   container: {
     flexDirection: 'row',
@@ -350,7 +349,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   reviewScrollView: {
-    height: '35%',
+    height: '40%',
   },
   eachReaviewView: {
     display: 'flex',

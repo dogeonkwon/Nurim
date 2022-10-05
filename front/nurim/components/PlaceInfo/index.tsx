@@ -117,12 +117,12 @@ const PlaceDetail = (props: IDetailType) => {
   );
 
   return (
-    <SafeAreaView style={{backgroundColor: 'white'}}>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 2}}>
       <View style={styles.container}>
         {/* 시설 정보 */}
         <View style={styles.placeInfo}>
           <Text style={{color: 'gray'}}>
-            {distance} KM | {props.placeAllInfo?.subCategoryName}
+            {distance} km | {props.placeAllInfo?.subCategoryName}
           </Text>
         </View>
         <View style={{marginVertical: 5}}>
@@ -161,66 +161,65 @@ const PlaceDetail = (props: IDetailType) => {
             <Text style={{color: 'black'}}>{props.placeAllInfo?.phone}</Text>
           </View>
         ) : null}
-        <View style={styles.placeInfo}>
-          <ScrollView nestedScrollEnabled={true}>
-            <View style={{flexDirection: 'row'}}>
-              {iconList.map((e, idx) => {
-                if (idx < 4) {
-                  if (
-                    e.image === 'elevator-passenger' ||
-                    e.image === 'exit-run'
-                  ) {
-                    return (
-                      <View style={styles.icon} key={idx}>
-                        <IconMaterial
-                          name={e.image}
-                          size={30}
-                          color="#01a699"
-                        />
-                        <Text style={{color: 'black'}}>{e.desc}</Text>
-                      </View>
-                    );
-                  } else {
-                    return (
-                      <View style={styles.icon} key={idx}>
-                        <IconAwesome name={e.image} size={30} color="#01a699" />
-                        <Text style={{color: 'black'}}>{e.desc}</Text>
-                      </View>
-                    );
-                  }
+        {/* <View style={styles.placeInfo}> */}
+        <ScrollView
+          nestedScrollEnabled={true}
+          style={{
+            height: '30%',
+            borderWidth: 1,
+            borderRadius: 10,
+            borderColor: '#CCCCCC',
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            {iconList.map((e, idx) => {
+              if (idx < 4) {
+                if (
+                  e.image === 'elevator-passenger' ||
+                  e.image === 'exit-run'
+                ) {
+                  return (
+                    <View style={styles.icon} key={idx}>
+                      <IconMaterial name={e.image} size={30} color="#01a699" />
+                      <Text style={{color: 'black'}}>{e.desc}</Text>
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View style={styles.icon} key={idx}>
+                      <IconAwesome name={e.image} size={30} color="#01a699" />
+                      <Text style={{color: 'black'}}>{e.desc}</Text>
+                    </View>
+                  );
                 }
-              })}
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              {iconList.map((e, idx) => {
-                if (idx > 3) {
-                  if (
-                    e.image === 'elevator-passenger' ||
-                    e.image === 'exit-run'
-                  ) {
-                    return (
-                      <View style={styles.icon} key={idx}>
-                        <IconMaterial
-                          name={e.image}
-                          size={30}
-                          color="#01a699"
-                        />
-                        <Text style={{color: 'black'}}>{e.desc}</Text>
-                      </View>
-                    );
-                  } else {
-                    return (
-                      <View style={styles.icon} key={idx}>
-                        <IconAwesome name={e.image} size={30} color="#01a699" />
-                        <Text style={{color: 'black'}}>{e.desc}</Text>
-                      </View>
-                    );
-                  }
+              }
+            })}
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            {iconList.map((e, idx) => {
+              if (idx > 3) {
+                if (
+                  e.image === 'elevator-passenger' ||
+                  e.image === 'exit-run'
+                ) {
+                  return (
+                    <View style={styles.icon} key={idx}>
+                      <IconMaterial name={e.image} size={30} color="#01a699" />
+                      <Text style={{color: 'black'}}>{e.desc}</Text>
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View style={styles.icon} key={idx}>
+                      <IconAwesome name={e.image} size={30} color="#01a699" />
+                      <Text style={{color: 'black'}}>{e.desc}</Text>
+                    </View>
+                  );
                 }
-              })}
-            </View>
-          </ScrollView>
-        </View>
+              }
+            })}
+          </View>
+        </ScrollView>
+        {/* </View> */}
       </View>
     </SafeAreaView>
   );

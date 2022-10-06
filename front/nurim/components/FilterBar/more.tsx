@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Pressable, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Icon} from '@react-native-material/core';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {useEffect} from 'react';
 
 const styles = StyleSheet.create({
   dropdown: {

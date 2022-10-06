@@ -8,7 +8,6 @@ import {serverIP, apis} from '../../common/urls';
 import Toast from 'react-native-simple-toast';
 import {useSelector, useDispatch} from 'react-redux';
 import {MainStackNavigationProp} from '../../screens/RootStack';
-import {useNavigation} from '@react-navigation/native';
 import {logout} from '@react-native-seoul/kakao-login';
 import {authorize} from '../../slices/auth';
 
@@ -21,6 +20,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    marginTop: '10%',
+  },
+  profileImg: {
+    borderColor: '#5a5c5c9a',
+    borderStyle: 'solid',
+    borderWidth: 5,
   },
   viewContent: {
     marginTop: '5%',
@@ -37,99 +42,62 @@ const styles = StyleSheet.create({
   },
   viewContentContent: {
     width: '60%',
+    borderBottomColor: 'rgba(54, 188, 155, 0.6)',
+    borderBottomWidth: 1,
+    alignItems: 'flex-start',
   },
-  viewOut: {
-    width: '100%',
-    height: '20%',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-  },
-
-  textStyle: {
+  contentTextStyle: {
     fontSize: 16,
-    fontWeight: '600',
+    marginBottom: '5%',
+    color: 'black',
+  },
+  titleTextStyle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2b2c2cc2',
   },
 });
 const MyPageContent = () => {
-  const dispatch = useDispatch();
-  const navigation = useNavigation<MainStackNavigationProp>();
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // 회원 탈퇴 클릭
-  const outClicked = () => {
-    Alert.alert('회원 탈퇴하시겠습니까?', '', [
-      {
-        text: '확인',
-        onPress: () => signDelete(),
-        style: 'cancel',
-      },
-      {text: '취소'},
-    ]);
-  };
+  console.log(user?.profile);
 
-  const signDelete = () => {
-    // 통신 헤더 정의
-    const requestHeaders = new Headers();
-    requestHeaders.set('jwt-token', user?.token ? user.token : '');
-    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
-    fetch(serverIP + apis.userDelete, {
-      method: 'DELETE',
-      headers: requestHeaders,
-    })
-      //.then(response => response.json())
-      .then(response => {
-        Toast.show('회원탈퇴하였습니다.');
-        // 로그아웃
-        logout().then(() => {
-          dispatch(authorize(null));
-          navigation.navigate('Main');
-        });
-      })
-      .catch(e => console.log(e));
-  };
   return (
     <View style={styles.viewContainer}>
       <View style={styles.viewProfile}>
         <Avatar
-          size="xlarge"
+          size={250}
           rounded
           source={{
             uri: `${user?.profile}`,
           }}
-          containerStyle={{
-            borderColor: 'rgba(0, 0, 0, 0.4)',
-            borderStyle: 'solid',
-            borderWidth: 3,
-          }}
+          containerStyle={styles.profileImg}
         />
       </View>
       <View style={styles.viewContent}>
         <View style={styles.viewContentItem}>
           <View style={styles.viewContentTitle}>
-            <Text style={styles.textStyle}>닉네임</Text>
+            <Text style={styles.titleTextStyle}>닉네임</Text>
           </View>
           <View style={styles.viewContentContent}>
-            <Text style={styles.textStyle}>{user?.nickname}</Text>
+            <Text style={styles.contentTextStyle}>{user?.nickname}</Text>
           </View>
         </View>
         <View style={styles.viewContentItem}>
           <View style={styles.viewContentTitle}>
-            <Text style={styles.textStyle}>휴대전화</Text>
+            <Text style={styles.titleTextStyle}>휴대전화</Text>
           </View>
           <View style={styles.viewContentContent}>
-            <Text style={styles.textStyle}>{user?.phone}</Text>
+            <Text style={styles.contentTextStyle}>{user?.phone}</Text>
           </View>
         </View>
         <View style={styles.viewContentItem}>
           <View style={styles.viewContentTitle}>
-            <Text style={styles.textStyle}>비상연락처</Text>
+            <Text style={styles.titleTextStyle}>비상연락처</Text>
           </View>
           <View style={styles.viewContentContent}>
-            <Text style={styles.textStyle}>{user?.emergency}</Text>
+            <Text style={styles.contentTextStyle}>{user?.emergency}</Text>
           </View>
-        </View>
-        <View style={styles.viewOut}>
-          <Text onPress={() => outClicked()}>회원탈퇴</Text>
         </View>
         {/*
         <View style={styles.viewContentTitle}>

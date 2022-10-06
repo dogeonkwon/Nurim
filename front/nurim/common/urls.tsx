@@ -22,4 +22,5 @@ export const apis = {
   placeInfo: 'api/location', // 장소 검색
   taxiInfo: 'api/taxi', // 콜택시 조회
   slope: 'api/slope', // 급경사 조회
+  wordCount: 'api/word/',
 };

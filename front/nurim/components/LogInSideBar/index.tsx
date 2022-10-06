@@ -14,6 +14,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    //marginTop: '40%',
+    marginTop: 50,
+    paddingBottom: 20,
   },
   Avatar: {
     marginTop: 20,

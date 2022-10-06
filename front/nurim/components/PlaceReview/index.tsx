@@ -9,19 +9,15 @@ import {
   TextInput,
   Alert,
   ScrollView,
-  StatusBar,
-  TextInputBase,
 } from 'react-native';
 import {IPlace} from '../PlacePreview';
 import {Button, Overlay} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
-import {Flex} from '@react-native-material/core';
-import {Input} from '@rneui/base';
 
 type IReviewType = {
-  reviewInfo: IPlace | null;
+  reviewInfo: number;
 };
 
 export type subListType = {
@@ -32,7 +28,7 @@ export type subListType = {
   reviewId: number;
 };
 
-const PlaceReview = (placeAllInfo: IReviewType) => {
+const PlaceReview = (props: IReviewType) => {
   // 유저 정보 불러오기
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -73,14 +69,15 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
     getPlaceAll();
   }, [visible]);
 
+  useEffect(() => {
+    getPlaceAll();
+  }, [props.reviewInfo]);
+
   // 시설 ID에 맞는 데이터 구하기
   const getPlaceAll = (): void => {
-    fetch(
-      serverIP + apis.placeAllInfo + '/' + placeAllInfo.reviewInfo?.locationId,
-      {
-        method: 'GET',
-      },
-    )
+    fetch(serverIP + apis.placeAllInfo + '/' + props.reviewInfo, {
+      method: 'GET',
+    })
       .then(response => response.json())
       .then(response => {
         setReviewInfo(response);
@@ -115,15 +112,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
 
   useEffect(() => {
     getAllReview();
-  }, [placeAllInfo.reviewInfo?.locationId]);
-
-  useEffect(() => {
-    getAllReview();
-  }, [reviewList]);
-
-  useEffect(() => {
-    console.log(allReview);
-  }, [allReview]);
+  }, [reviewInfo?.reviewCount.total]);
 
   // 서버로 리뷰 등록하기
   const pushReview = (): void => {
@@ -137,13 +126,16 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         headers: requestHeaders,
         body: JSON.stringify({
           content: text,
-          locationId: placeAllInfo.reviewInfo?.locationId,
+          locationId: props.reviewInfo,
           type: reviewColor,
         }),
-      }).catch(error => console.log('pushMyFavor 에러 임당', error));
+      })
+        .then(() => {
+          getPlaceAll();
+          toggleOverlay();
+        })
+        .catch(error => console.log('pushMyFavor 에러 임당', error));
     }
-    toggleOverlay();
-    getAllReview();
   };
 
   // 리뷰리스트 가져오기
@@ -151,7 +143,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
     let subLists: subListType[] = [];
     if (reviewList === 4) {
       {
-        placeAllInfo.reviewInfo?.reviews.green.map((data1, idx) => {
+        reviewInfo?.reviews.green.map((data1, idx) => {
           const subList1: subListType = {
             id: idx,
             content: data1.content,
@@ -162,7 +154,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
           subLists.push(subList1);
         });
       }
-      placeAllInfo.reviewInfo?.reviews.yellow.map((data2, idx) => {
+      reviewInfo?.reviews.yellow.map((data2, idx) => {
         const subList2: subListType = {
           id: idx,
           content: data2.content,
@@ -172,7 +164,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         };
         subLists.push(subList2);
       });
-      placeAllInfo.reviewInfo?.reviews.red.map((data3, idx) => {
+      reviewInfo?.reviews.red.map((data3, idx) => {
         const subList3: subListType = {
           id: idx,
           content: data3.content,
@@ -184,7 +176,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
       });
       setAllReview(subLists);
     } else if (reviewList === 1) {
-      placeAllInfo.reviewInfo?.reviews.green.map((data1, idx) => {
+      reviewInfo?.reviews.green.map((data1, idx) => {
         const subList1: subListType = {
           id: idx,
           content: data1.content,
@@ -196,7 +188,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
       });
       setAllReview(subLists);
     } else if (reviewList === 2) {
-      placeAllInfo.reviewInfo?.reviews.yellow.map((data2, idx) => {
+      reviewInfo?.reviews.yellow.map((data2, idx) => {
         const subList2: subListType = {
           id: idx,
           content: data2.content,
@@ -208,7 +200,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
       });
       setAllReview(subLists);
     } else if (reviewList === 3) {
-      placeAllInfo.reviewInfo?.reviews.red.map((data3, idx) => {
+      reviewInfo?.reviews.red.map((data3, idx) => {
         const subList3: subListType = {
           id: idx,
           content: data3.content,
@@ -227,16 +219,43 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
       <View style={styles.underSignalPart}>
         <View style={styles.container}>
           <Text onPress={() => setReviewList(1)} style={{color: 'black'}}>
-            🟢 {placeAllInfo.reviewInfo?.reviewCount.green}
+            🟢 {reviewInfo?.reviewCount.green}
           </Text>
+          <View
+            style={{
+              borderRightColor: 'black',
+              borderRightWidth: 1,
+              height: '80%',
+              marginTop: 1,
+            }}>
+            <Text />
+          </View>
           <Text onPress={() => setReviewList(2)} style={{color: 'black'}}>
-            | 🟠 {placeAllInfo.reviewInfo?.reviewCount.yellow}
+            🟠 {reviewInfo?.reviewCount.yellow}
           </Text>
+          <View
+            style={{
+              borderRightColor: 'black',
+              borderRightWidth: 1,
+              height: '80%',
+              marginTop: 1,
+            }}>
+            <Text />
+          </View>
           <Text onPress={() => setReviewList(3)} style={{color: 'black'}}>
-            | 🔴 {placeAllInfo.reviewInfo?.reviewCount.red}
+            🔴 {reviewInfo?.reviewCount.red}
           </Text>
+          <View
+            style={{
+              borderRightColor: 'black',
+              borderRightWidth: 1,
+              height: '80%',
+              marginTop: 1,
+            }}>
+            <Text />
+          </View>
           <Text onPress={() => setReviewList(4)} style={{color: 'black'}}>
-            | 총 리뷰 {placeAllInfo.reviewInfo?.reviewCount.total} 건
+            총 리뷰 {reviewInfo?.reviewCount.total} 건
           </Text>
         </View>
         <View style={styles.reviewListView}>

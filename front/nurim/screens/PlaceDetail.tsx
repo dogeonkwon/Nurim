@@ -48,7 +48,7 @@ const PlaceDetail = (props: PlaceDetailProps) => {
       />
       {/* <ScrollView nestedScrollEnabled={true}> */}
       <Placeinfo placeAllInfo={placeAllInfo} location={params.location} />
-      <PlaceReview reviewInfo={placeAllInfo} />
+      <PlaceReview reviewInfo={params.locatID} />
       {/* </ScrollView> */}
     </SafeAreaView>
   );

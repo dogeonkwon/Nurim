@@ -8,6 +8,7 @@ import {IPlace} from '../PlacePreview';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {IDetailType} from '../PlaceInfo';
 import Toast from 'react-native-simple-toast';
 
 interface IFuncType {
@@ -50,6 +51,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
         .then(response => response.json())
         .then(response => {
           const datas = [...response];
+          console.log(datas);
           datas.map(data => {
             if (data.locationId === placeInfo.preview?.locationId) {
               setPlaceFavor(1);
@@ -99,19 +101,16 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
             Alert.alert('등록된 번호가 없습니다.');
           }
         }}>
-        <Icon name={'call'} size={30} />
-        <Text>전화 걸기</Text>
+        <Icon name={'call'} size={25} color="black" />
+        <Text style={{color: 'black'}}>전화 걸기</Text>
       </Pressable>
-      {/* <Pressable style={styles.button}>
-        <Icon name={'cellular'} size={30} />
-        <Text>통계 보기</Text>
-      </Pressable> */}
       <Pressable style={styles.button}>
         {user ? (
           placeFavor ? (
             <Icon
               name={'heart'}
-              size={30}
+              size={25}
+              color="black"
               onPress={() => {
                 deleteFavor(favoriteId);
                 setPlaceFavor(0);
@@ -121,7 +120,8 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
           ) : (
             <Icon
               name={'heart-outline'}
-              size={30}
+              size={25}
+              color="black"
               onPress={() => {
                 pushMyFavor(placeInfo.preview?.locationId);
                 setPlaceFavor(1);
@@ -132,13 +132,14 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
         ) : (
           <Icon
             name={'heart-outline'}
-            size={30}
+            size={25}
+            color="black"
             onPress={() => {
               return Alert.alert('로그인 후 이용가능합니다.');
             }}
           />
         )}
-        <Text>즐겨 찾기</Text>
+        <Text style={{color: 'black'}}>즐겨 찾기</Text>
       </Pressable>
     </SafeAreaView>
   );
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderColor: 'gray',
+    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 20,
   },

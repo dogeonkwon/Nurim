@@ -9,16 +9,18 @@ import {
   TextInput,
   Alert,
   ScrollView,
-  StatusBar,
 } from 'react-native';
+import {ButtonGroup} from '@rneui/themed';
 import {IPlace} from '../PlacePreview';
 import {Button, Overlay} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {color} from 'react-native-reanimated';
+import {getColor} from '../../common/colors';
 
 type IReviewType = {
-  reviewInfo: IPlace | null;
+  reviewInfo: number;
 };
 
 export type subListType = {
@@ -29,13 +31,12 @@ export type subListType = {
   reviewId: number;
 };
 
-const PlaceReview = (placeAllInfo: IReviewType) => {
-  console.log(placeAllInfo.reviewInfo?.locationId);
+const PlaceReview = (props: IReviewType) => {
   // 유저 정보 불러오기
   const user = useSelector((state: RootState) => state.auth.user);
 
   // 리뷰 종류(0: 전체, 1: 초록, 2: 노랑, 3: 빨강)
-  const [reviewList, setReviewList] = useState<number>(0);
+  const [reviewList, setReviewList] = useState<number>(4);
 
   // 리뷰 종류에 맞는 리뷰 리스트
   const [allReview, setAllReview] = useState<subListType[]>([]);
@@ -47,7 +48,9 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
   const [reviewColor, setReviewColor] = useState<number>(0);
 
   // 리뷰 글
-  const [text, onChangeText] = useState<string>('');
+  const [text, onChangeText] = useState<string>(
+    '주차장이 넓어서 차들고 오기 좋아요~',
+  );
 
   // 초록 불
   const [greenLight, onChangeGreenLight] = useState<string>(
@@ -64,6 +67,9 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
     'rgba(204, 204, 204, 1)',
   );
 
+  // 버튼그룹 선택 상태
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
   // 시설 데이터
   const [reviewInfo, setReviewInfo] = useState<IPlace | null>(null);
 
@@ -71,20 +77,25 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
     getPlaceAll();
   }, [visible]);
 
+  useEffect(() => {
+    getPlaceAll();
+  }, [props.reviewInfo]);
+
   // 시설 ID에 맞는 데이터 구하기
   const getPlaceAll = (): void => {
-    fetch(
-      serverIP + apis.placeAllInfo + '/' + placeAllInfo.reviewInfo?.locationId,
-      {
-        method: 'GET',
-      },
-    )
+    fetch(serverIP + apis.placeAllInfo + '/' + props.reviewInfo, {
+      method: 'GET',
+    })
       .then(response => response.json())
       .then(response => {
         setReviewInfo(response);
       })
       .catch(e => console.log('PlacePreview 에러 임당', e));
   };
+
+  useEffect(() => {
+    getAllReview();
+  }, [reviewInfo]);
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -111,14 +122,6 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
     onChangeRedLight('rgba(214, 61, 57, 1)');
   };
 
-  useEffect(() => {
-    getAllReview();
-  }, []);
-
-  useEffect(() => {
-    getAllReview();
-  }, [reviewList]);
-
   // 서버로 리뷰 등록하기
   const pushReview = (): void => {
     if (user) {
@@ -131,21 +134,24 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         headers: requestHeaders,
         body: JSON.stringify({
           content: text,
-          locationId: placeAllInfo.reviewInfo?.locationId,
+          locationId: props.reviewInfo,
           type: reviewColor,
         }),
-      }).catch(error => console.log('pushMyFavor 에러 임당', error));
+      })
+        .then(() => {
+          getPlaceAll();
+          toggleOverlay();
+        })
+        .catch(error => console.log('pushMyFavor 에러 임당', error));
     }
-    toggleOverlay();
-    getAllReview();
   };
 
   // 리뷰리스트 가져오기
   const getAllReview = () => {
     let subLists: subListType[] = [];
-    if (reviewList === 0) {
+    if (selectedIndex === 0) {
       {
-        placeAllInfo.reviewInfo?.reviews.green.map((data1, idx) => {
+        reviewInfo?.reviews.green.map((data1, idx) => {
           const subList1: subListType = {
             id: idx,
             content: data1.content,
@@ -156,7 +162,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
           subLists.push(subList1);
         });
       }
-      placeAllInfo.reviewInfo?.reviews.yellow.map((data2, idx) => {
+      reviewInfo?.reviews.yellow.map((data2, idx) => {
         const subList2: subListType = {
           id: idx,
           content: data2.content,
@@ -166,7 +172,7 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         };
         subLists.push(subList2);
       });
-      placeAllInfo.reviewInfo?.reviews.red.map((data3, idx) => {
+      reviewInfo?.reviews.red.map((data3, idx) => {
         const subList3: subListType = {
           id: idx,
           content: data3.content,
@@ -176,9 +182,8 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         };
         subLists.push(subList3);
       });
-      setAllReview(subLists);
-    } else if (reviewList === 1) {
-      placeAllInfo.reviewInfo?.reviews.green.map((data1, idx) => {
+    } else if (selectedIndex === 1) {
+      reviewInfo?.reviews.green.map((data1, idx) => {
         const subList1: subListType = {
           id: idx,
           content: data1.content,
@@ -188,9 +193,8 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         };
         subLists.push(subList1);
       });
-      setAllReview(subLists);
-    } else if (reviewList === 2) {
-      placeAllInfo.reviewInfo?.reviews.yellow.map((data2, idx) => {
+    } else if (selectedIndex === 2) {
+      reviewInfo?.reviews.yellow.map((data2, idx) => {
         const subList2: subListType = {
           id: idx,
           content: data2.content,
@@ -200,9 +204,8 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         };
         subLists.push(subList2);
       });
-      setAllReview(subLists);
-    } else if (reviewList === 3) {
-      placeAllInfo.reviewInfo?.reviews.red.map((data3, idx) => {
+    } else if (selectedIndex === 3) {
+      reviewInfo?.reviews.red.map((data3, idx) => {
         const subList3: subListType = {
           id: idx,
           content: data3.content,
@@ -212,112 +215,245 @@ const PlaceReview = (placeAllInfo: IReviewType) => {
         };
         subLists.push(subList3);
       });
-      setAllReview(subLists);
     }
+    setAllReview(subLists);
   };
-  console.log(allReview);
 
+  useEffect(() => {
+    getAllReview();
+  }, [selectedIndex]);
+
+  const componentTotal = () => (
+    <Text>전체 {reviewInfo?.reviewCount.total} 건</Text>
+  );
+  const component1 = () => <Text>🟢 {reviewInfo?.reviewCount.green}</Text>;
+  const component2 = () => <Text>🟠 {reviewInfo?.reviewCount.yellow}</Text>;
+  const component3 = () => <Text>🔴 {reviewInfo?.reviewCount.red}</Text>;
+  const buttons = [
+    {element: componentTotal},
+    {element: component1},
+    {element: component2},
+    {element: component3},
+  ];
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <Text onPress={() => setReviewList(1)}>
-          🟢 {placeAllInfo.reviewInfo?.reviewCount.green}
-        </Text>
-        <Text onPress={() => setReviewList(2)}>
-          | 🟠 {placeAllInfo.reviewInfo?.reviewCount.yellow}
-        </Text>
-        <Text onPress={() => setReviewList(3)}>
-          | 🔴 {placeAllInfo.reviewInfo?.reviewCount.red}
-        </Text>
-        <Text onPress={() => setReviewList(0)}>
-          | 총 리뷰 {placeAllInfo.reviewInfo?.reviewCount.total} 건
-        </Text>
-      </View>
-      <View style={{backgroundColor: 'blue'}}>
-        <ScrollView style={{height: '30%'}}>
-          {/* <ScrollView> */}
-          {reviewList === 2 ? (
-            <Text>등록된 리뷰가 없습니다.</Text>
-          ) : (
-            allReview.map((e, idx) => {
-              return (
-                <SafeAreaView style={{backgroundColor: 'gray'}}>
-                  <View key={idx} style={styles.nameday}>
-                    <Text>{e.nickname}</Text>
-                    <Text>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
+      <View style={styles.underSignalPart}>
+        <View style={styles.container}>
+          <ButtonGroup
+            buttons={buttons}
+            selectedIndex={selectedIndex}
+            selectedButtonStyle={{backgroundColor: getColor('HEADER')}}
+            onPress={value => {
+              setSelectedIndex(value);
+            }}
+            //containerStyle={{marginBottom: 20}}
+          />
+        </View>
+        {/*
+        <View style={styles.container}>
+          <Text
+            onPress={() => setReviewList(1)}
+            style={{fontSize: 14, color: 'black'}}>
+            🟢 {reviewInfo?.reviewCount.green}
+          </Text>
+          <View
+            style={{
+              borderRightColor: 'rgba(0, 0, 0, 0.3)',
+              borderRightWidth: 1,
+              height: '80%',
+              marginTop: 1,
+            }}>
+            <Text />
+          </View>
+          <Text
+            onPress={() => setReviewList(2)}
+            style={{fontSize: 14, color: 'black'}}>
+            🟠 {reviewInfo?.reviewCount.yellow}
+          </Text>
+          <View
+            style={{
+              borderRightColor: 'rgba(0, 0, 0, 0.3)',
+              borderRightWidth: 1,
+              height: '80%',
+              marginTop: 1,
+            }}>
+            <Text />
+          </View>
+          <Text
+            onPress={() => setReviewList(3)}
+            style={{fontSize: 18, color: 'black'}}>
+            🔴 {reviewInfo?.reviewCount.red}
+          </Text>
+          <View
+            style={{
+              borderRightColor: 'rgba(0, 0, 0, 0.3)',
+              borderRightWidth: 1,
+              height: '80%',
+              marginTop: 1,
+            }}>
+            <Text />
+          </View>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Text
+              onPress={() => setReviewList(4)}
+              style={{fontSize: 16, color: 'black'}}>
+              전체 {reviewInfo?.reviewCount.total} 건
+            </Text>
+          </View>
+          </View>*/}
+        <View style={styles.reviewListView}>
+          <ScrollView
+            style={styles.reviewScrollView}
+            nestedScrollEnabled={true}>
+            <View>
+              {allReview.length === 0 && (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Text style={{fontSize: 16}}>
+                    {'작성된 리뷰가 없습니다.\n리뷰를 등록해 주세요.'}
+                  </Text>
+                </View>
+              )}
+              {allReview.map((e, idx) => (
+                <View key={idx} style={styles.eachReaviewView}>
+                  <View style={styles.nameDay}>
+                    <Text style={styles.name}>{e.nickname}</Text>
+                    <Text style={styles.day}>
                       {e.createdDate.slice(0, 4)}.{e.createdDate.slice(4, 6)}.
                       {e.createdDate.slice(6, 8)}
                     </Text>
                   </View>
-                  <Text>{e.content}</Text>
-                </SafeAreaView>
-              );
-            })
-          )}
-        </ScrollView>
-      </View>
-      <View>
-        <Button
-          title="리뷰 작성"
-          onPress={toggleOverlay}
-          buttonStyle={styles.button}
-        />
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <Text style={styles.textPrimary}>사용자의 경험을 공유해 주세요.</Text>
-          <View style={styles.nameday}>
-            <Button
-              onPress={getGreen}
-              buttonStyle={{backgroundColor: greenLight}}>
-              좋아요
-            </Button>
-            <Button
-              onPress={getYellow}
-              buttonStyle={{backgroundColor: yellowLight}}>
-              보통
-            </Button>
-            <Button onPress={getRed} buttonStyle={{backgroundColor: redLight}}>
-              나빠요
-            </Button>
-          </View>
-          <View style={{backgroundColor: 'rgba(204, 204, 204, 1)', margin: 10}}>
-            <TextInput
-              style={{flexShrink: 1}}
-              multiline={true}
-              onChangeText={onChangeText}
-              value={text}
-              placeholder="시설에 대한 만족도를 남겨주세요."
-            />
-          </View>
-          <View style={styles.nameday}>
-            <Button
-              buttonStyle={{
-                backgroundColor: 'rgba(204, 204, 204, 1)',
-              }}
-              title="취소"
-              onPress={toggleOverlay}
-            />
-            <Button
-              buttonStyle={{backgroundColor: 'rgba(54, 188, 155, 1)'}}
-              title="등록"
-              onPress={() => {
-                user
-                  ? pushReview()
-                  : Alert.alert('회원가입 후 이용가능합니다.');
-              }}
-            />
-          </View>
-        </Overlay>
+                  <Text style={styles.content}>{e.content}</Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+        <View style={{flex: 3}}>
+          <Button
+            title="리뷰 작성"
+            onPress={toggleOverlay}
+            buttonStyle={styles.button}
+          />
+          <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+            <SafeAreaView style={styles.popup}>
+              <Text style={styles.textPrimary}>
+                사용자의 경험을 공유해 주세요.
+              </Text>
+              <View style={styles.userExp}>
+                <View style={styles.userExpCon}>
+                  <Button
+                    onPress={getGreen}
+                    containerStyle={styles.userConBtn}
+                    buttonStyle={{backgroundColor: greenLight}}>
+                    좋아요
+                  </Button>
+                  <Button
+                    onPress={getYellow}
+                    containerStyle={styles.userConBtn}
+                    buttonStyle={{backgroundColor: yellowLight}}>
+                    보통
+                  </Button>
+                  <Button
+                    onPress={getRed}
+                    containerStyle={styles.userConBtn}
+                    buttonStyle={{backgroundColor: redLight}}>
+                    나빠요
+                  </Button>
+                </View>
+                <View style={styles.userExpWriteView}>
+                  <TextInput
+                    style={styles.userExpWrite}
+                    multiline={true}
+                    numberOfLines={5}
+                    maxLength={100}
+                    onChangeText={onChangeText}
+                    value={text}
+                    placeholder="시설에 대한 만족도를 남겨주세요."
+                  />
+                </View>
+                <View style={styles.userExpCon}>
+                  <Button
+                    containerStyle={styles.defaultBtn}
+                    buttonStyle={styles.cancelBtn}
+                    title="취소"
+                    onPress={toggleOverlay}
+                  />
+                  <Button
+                    containerStyle={styles.defaultBtn}
+                    buttonStyle={styles.registBtn}
+                    title="등록"
+                    onPress={() => {
+                      user
+                        ? pushReview()
+                        : Alert.alert('회원가입 후 이용가능합니다.');
+                    }}
+                  />
+                </View>
+              </View>
+            </SafeAreaView>
+          </Overlay>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  underSignalPart: {
+    marginTop: '5%',
+    flex: 1,
+  },
   container: {
+    justifyContent: 'center',
+    marginBottom: 10,
+    width: '100%',
+    flex: 1,
+  },
+  reviewListView: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 8,
+    marginLeft: '5%',
+    marginRight: '5%',
+  },
+  reviewScrollView: {
+    height: '60%',
+  },
+  eachReaviewView: {
+    display: 'flex',
+    flexDirection: 'column',
+    textAlign: 'left',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderColor: 'lightgray',
+    paddingBottom: 1,
+  },
+  nameDay: {
+    width: '100%',
+    display: 'flex',
     flexDirection: 'row',
-    borderWidth: 3,
-    borderColor: 'black',
-    backgroundColor: 'gray',
+    justifyContent: 'flex-start',
+    textAlign: 'center',
+    alignItems: 'baseline',
+    marginBottom: 3,
+  },
+  name: {
+    fontSize: 15,
+    color: 'black',
+  },
+  day: {
+    marginLeft: 5,
+    fontSize: 10,
+    color: 'gray',
+  },
+  content: {
+    marginBottom: 3,
+    color: '#414141',
+    fontSize: 13,
+  },
+  popup: {
+    padding: 5,
+    maxWidth: '90%',
   },
   change: {
     borderWidth: 3,
@@ -328,34 +464,49 @@ const styles = StyleSheet.create({
     margin: 15,
     alignItems: 'center',
   },
-  nameday: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
   button: {
-    margin: 10,
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: 'rgba(54, 188, 155, 1)',
   },
   textPrimary: {
-    marginVertical: 20,
+    marginVertical: 10,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 19,
+    color: 'black',
+    fontWeight: 'bold',
+    width: '100%',
+    marginHorizontal: 4,
   },
-  textSecondary: {
-    marginBottom: 10,
-    textAlign: 'center',
-    fontSize: 17,
+  userExp: {
+    justifyContent: 'center',
+    alignContent: 'center',
   },
-  vcontainer: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight,
+  userExpCon: {
+    justifyContent: 'space-between',
+    display: 'flex',
+    flexDirection: 'row',
   },
-  vscrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
+  userConBtn: {
+    width: '30%',
   },
-  vtext: {
-    fontSize: 42,
+  userExpWriteView: {
+    backgroundColor: '#e2e3e2',
+    marginVertical: 10,
+    padding: 0,
+  },
+  userExpWrite: {
+    flexShrink: 1,
+    margin: 0,
+  },
+  defaultBtn: {
+    width: '45%',
+  },
+  cancelBtn: {
+    backgroundColor: '#494949',
+  },
+  registBtn: {
+    backgroundColor: '#3ec689',
   },
 });
 

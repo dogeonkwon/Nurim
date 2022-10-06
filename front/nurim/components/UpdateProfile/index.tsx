@@ -2,6 +2,8 @@
 // 2022-09-26 김국진
 
 import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {MainStackNavigationProp} from '../../screens/RootStack';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, Input} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
@@ -10,11 +12,14 @@ import {RootState} from '../../slices';
 import {useDispatch} from 'react-redux';
 import {authorize} from '../../slices/auth';
 import Toast from 'react-native-simple-toast';
+import {logout} from '@react-native-seoul/kakao-login';
 
 const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
-    marginTop: '5%',
+    marginTop: '15%',
+    marginLeft: '5%',
+    marginRight: '5%',
   },
   viewButton: {marginLeft: '3%', marginRight: '3%'},
   messageContainer: {
@@ -23,7 +28,6 @@ const styles = StyleSheet.create({
   },
   nicknameInput: {width: '70%'},
   nicknameButton: {width: '30%', marginTop: '2%'},
-
   textMargin: {
     marginLeft: '4%',
     fontSize: 16,
@@ -39,11 +43,21 @@ const styles = StyleSheet.create({
   errTextImpossible: {
     color: 'red',
   },
-
   messageText: {
     fontSize: 16,
     color: 'blue',
     marginBottom: 15,
+  },
+  viewOut: {
+    width: '100%',
+    height: '20%',
+    marginTop: '3%',
+    alignItems: 'center',
+  },
+  outText: {
+    fontSize: 15,
+    textDecorationLine: 'underline',
+    color: 'darkgray',
   },
 });
 
@@ -54,6 +68,7 @@ type UpdateProfileProps = {
 const UpdateProfile = (props: UpdateProfileProps) => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
+  const navigation = useNavigation<MainStackNavigationProp>();
 
   const [errMsg, setErrMsg] = useState<number>(0);
   const [message, setMessage] = useState<string>('');
@@ -63,6 +78,9 @@ const UpdateProfile = (props: UpdateProfileProps) => {
   const [checkNick, setCheckNick] = useState<boolean>(false);
 
   const nicknameCheck = (): void => {
+    if (nickname.length === 0) {
+      return;
+    }
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     //requestHeaders.set('jwt-token', user?.token);
@@ -86,6 +104,39 @@ const UpdateProfile = (props: UpdateProfileProps) => {
           setErrMsg(2);
           setCheckNick(false);
         }
+      })
+      .catch(e => console.log(e));
+  };
+
+  // 회원 탈퇴 클릭
+  const outClicked = () => {
+    Alert.alert('회원 탈퇴하시겠습니까?', '', [
+      {
+        text: '확인',
+        onPress: () => signDelete(),
+        style: 'cancel',
+      },
+      {text: '취소'},
+    ]);
+  };
+
+  const signDelete = () => {
+    // 통신 헤더 정의
+    const requestHeaders = new Headers();
+    requestHeaders.set('jwt-token', user?.token ? user.token : '');
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    fetch(serverIP + apis.userDelete, {
+      method: 'DELETE',
+      headers: requestHeaders,
+    })
+      //.then(response => response.json())
+      .then(response => {
+        Toast.show('회원탈퇴하였습니다.');
+        // 로그아웃
+        logout().then(() => {
+          dispatch(authorize(null));
+          navigation.navigate('Main');
+        });
       })
       .catch(e => console.log(e));
   };
@@ -172,6 +223,11 @@ const UpdateProfile = (props: UpdateProfileProps) => {
         <Button size="md" onPress={() => saveButtonClicked()}>
           저장하기
         </Button>
+      </View>
+      <View style={styles.viewOut}>
+        <Text style={styles.outText} onPress={() => outClicked()}>
+          회원탈퇴
+        </Text>
       </View>
     </View>
   );

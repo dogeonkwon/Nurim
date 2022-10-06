@@ -38,10 +38,12 @@ const MyReviewHeader = (props: MyReviewHeaderProps) => {
       backgroundColor: getColor('HEADER'),
     },
     viewBack: {
-      height: '20%',
+      flex: 1,
+      //height: '20%',
     },
     viewProfile: {
-      height: '50%',
+      flex: 2,
+      //height: '50%',
       flexDirection: 'row',
     },
     viewProfilePicture: {
@@ -55,7 +57,8 @@ const MyReviewHeader = (props: MyReviewHeaderProps) => {
       alignItems: 'center',
     },
     viewTab: {
-      height: '30%',
+      flex: 1,
+      //height: '30%',
     },
     textWhite: {
       color: 'white',
@@ -68,6 +71,7 @@ const MyReviewHeader = (props: MyReviewHeaderProps) => {
       <View style={styles.viewBack}>
         <PopTab
           title=""
+          titleColor="rgba(0, 0, 0, 0.4)"
           navigation={props.navigation}
           color={getColor('HEADER')}
         />

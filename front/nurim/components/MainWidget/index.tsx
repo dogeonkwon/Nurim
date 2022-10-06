@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   },
   // 버튼의 스타일
   button: {
+    marginLeft: 30,
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.2)',
     alignItems: 'center',
@@ -52,7 +53,7 @@ const MainWidget = ({getCurrentLocation, location}: MainWidgetProps) => {
           <TouchableOpacity>
             <EmergencyList />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity style={{marginRight: 8}}>
             <TaxiPreview location={location} />
           </TouchableOpacity>
         </>

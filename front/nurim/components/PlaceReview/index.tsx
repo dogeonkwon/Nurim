@@ -48,9 +48,7 @@ const PlaceReview = (props: IReviewType) => {
   const [reviewColor, setReviewColor] = useState<number>(0);
 
   // 리뷰 글
-  const [text, onChangeText] = useState<string>(
-    '주차장이 넓어서 차들고 오기 좋아요~',
-  );
+  const [text, onChangeText] = useState<string>('');
 
   // 초록 불
   const [greenLight, onChangeGreenLight] = useState<string>(
@@ -151,7 +149,7 @@ const PlaceReview = (props: IReviewType) => {
     let subLists: subListType[] = [];
     if (selectedIndex === 0) {
       {
-        reviewInfo?.reviews.green.map((data1, idx) => {
+        reviewInfo?.reviews.green.map((data1: subListType, idx: number) => {
           const subList1: subListType = {
             id: idx,
             content: data1.content,
@@ -162,7 +160,7 @@ const PlaceReview = (props: IReviewType) => {
           subLists.push(subList1);
         });
       }
-      reviewInfo?.reviews.yellow.map((data2, idx) => {
+      reviewInfo?.reviews.yellow.map((data2: subListType, idx: number) => {
         const subList2: subListType = {
           id: idx,
           content: data2.content,
@@ -172,7 +170,7 @@ const PlaceReview = (props: IReviewType) => {
         };
         subLists.push(subList2);
       });
-      reviewInfo?.reviews.red.map((data3, idx) => {
+      reviewInfo?.reviews.red.map((data3: subListType, idx: number) => {
         const subList3: subListType = {
           id: idx,
           content: data3.content,
@@ -183,7 +181,7 @@ const PlaceReview = (props: IReviewType) => {
         subLists.push(subList3);
       });
     } else if (selectedIndex === 1) {
-      reviewInfo?.reviews.green.map((data1, idx) => {
+      reviewInfo?.reviews.green.map((data1: subListType, idx: number) => {
         const subList1: subListType = {
           id: idx,
           content: data1.content,
@@ -194,7 +192,7 @@ const PlaceReview = (props: IReviewType) => {
         subLists.push(subList1);
       });
     } else if (selectedIndex === 2) {
-      reviewInfo?.reviews.yellow.map((data2, idx) => {
+      reviewInfo?.reviews.yellow.map((data2: subListType, idx: number) => {
         const subList2: subListType = {
           id: idx,
           content: data2.content,
@@ -205,7 +203,7 @@ const PlaceReview = (props: IReviewType) => {
         subLists.push(subList2);
       });
     } else if (selectedIndex === 3) {
-      reviewInfo?.reviews.red.map((data3, idx) => {
+      reviewInfo?.reviews.red.map((data3: subListType, idx: number) => {
         const subList3: subListType = {
           id: idx,
           content: data3.content,
@@ -243,7 +241,7 @@ const PlaceReview = (props: IReviewType) => {
             buttons={buttons}
             selectedIndex={selectedIndex}
             selectedButtonStyle={{backgroundColor: getColor('HEADER')}}
-            onPress={value => {
+            onPress={(value: number) => {
               setSelectedIndex(value);
             }}
             //containerStyle={{marginBottom: 20}}
@@ -313,7 +311,7 @@ const PlaceReview = (props: IReviewType) => {
                   </Text>
                 </View>
               )}
-              {allReview.map((e, idx) => (
+              {allReview.map((e: subListType, idx: number) => (
                 <View key={idx} style={styles.eachReaviewView}>
                   <View style={styles.nameDay}>
                     <Text style={styles.name}>{e.nickname}</Text>

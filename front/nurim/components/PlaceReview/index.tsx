@@ -48,7 +48,9 @@ const PlaceReview = (props: IReviewType) => {
   const [reviewColor, setReviewColor] = useState<number>(0);
 
   // 리뷰 글
-  const [text, onChangeText] = useState<string>('');
+  const [text, onChangeText] = useState<string>(
+    '주차장이 넓어서 차들고 오기 좋아요~',
+  );
 
   // 초록 불
   const [greenLight, onChangeGreenLight] = useState<string>(
@@ -307,7 +309,7 @@ const PlaceReview = (props: IReviewType) => {
               {allReview.length === 0 && (
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <Text style={{fontSize: 16}}>
-                    {`작성된 리뷰가 없습니다.\n리뷰를 등록해 주세요.`}
+                    {'작성된 리뷰가 없습니다.\n리뷰를 등록해 주세요.'}
                   </Text>
                 </View>
               )}

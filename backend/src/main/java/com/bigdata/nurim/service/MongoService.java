@@ -3,23 +3,35 @@ package com.bigdata.nurim.service;
 import com.bigdata.nurim.dto.WordAnalysisDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class MongoService {
-
+    private final ImageUploadService imageUploadService;
     private final MongoTemplate mongoTemplate;
 
     //MongoDB 저장내용 불러오기
@@ -29,7 +41,91 @@ public class MongoService {
                 Query.query(Criteria.where("_id").is(locationId)),
                 WordAnalysisDto.class);
 
+        String text = getText(wordAnalysisDto.getWord());
+        String tmp=performPostCall(text);
+        log.warn(tmp);
         return new ResponseEntity<>(wordAnalysisDto, HttpStatus.OK);
+    }
+    private MultipartFile getMultipartFile(File file) throws IOException {
+        FileItem fileItem = new DiskFileItem("originFile", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
+
+        try {
+            InputStream input = new FileInputStream(file);
+            OutputStream os = fileItem.getOutputStream();
+            IOUtils.copy(input, os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //jpa.png -> multipart 변환
+        MultipartFile mFile = new CommonsMultipartFile(fileItem);
+        return mFile;
+    }
+    public String getText(Map<String,Long>map){
+
+        StringBuilder text=new StringBuilder();
+        Iterator<String> keys = map.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            long count = map.get(key);
+            while(count-->0){
+                text.append(key+" ");
+            }
+        }
+        return text.toString();
+    }
+    private static void copyInputStreamToFile(InputStream inputStream, File file) {
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            int read;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public String  performPostCall(String text) {
+        String result="";
+        try {
+            HttpClient httpclient = HttpClients.createDefault();
+            HttpPost httppost = new HttpPost("https://quickchart.io/wordcloud");
+            List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+            params.add(new BasicNameValuePair("format", "png"));
+            params.add(new BasicNameValuePair("scale", "linear"));
+            params.add(new BasicNameValuePair("fontScale","20"));
+            params.add(new BasicNameValuePair("text", text));
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+            if (entity != null) {
+                try (InputStream inputStream = entity.getContent()) {
+                    File file = File.createTempFile(String.valueOf(inputStream.hashCode()), ".png");
+                    file.deleteOnExit();
+                    copyInputStreamToFile(inputStream, file);
+
+                    FileItem fileItem = new DiskFileItem("result", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
+
+                    try {
+                        InputStream input = new FileInputStream(file);
+                        OutputStream os = fileItem.getOutputStream();
+                        IOUtils.copy(input, os);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+
+                    result = imageUploadService.uploadImge(multipartFile);
+                }
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     //리뷰 분석 저장
@@ -100,23 +196,19 @@ public class MongoService {
 
         //기존에 DB에 있던 리뷰의 WordMap, wordList 생성
         Map<String, Long> oldWord = dbWords.getWord();
-        List<String> oldWordList = new ArrayList<>(oldWord.keySet());
+        //List<String> oldWordList = new ArrayList<>(oldWord.keySet());
 
         //새롭게 DB에 저장할 HashMap
-        Map<String, Long> saveWord = new HashMap<>();
+        Map<String, Long> saveWord = oldWord;
 
         for (String key: newWordList) {
-            if(oldWord.containsKey(key)){
-                long containCount = oldWord.get(key)-newWord.get(key);
+            if(saveWord.containsKey(key)){
+                long containCount = saveWord.get(key)-newWord.get(key);
                 if(containCount != 0){
                     saveWord.put(key,containCount);
+                }else{
+                    saveWord.remove(key);
                 }
-            }
-        }
-
-        for (String key: oldWordList) {
-            if(!saveWord.containsKey(key)){
-                saveWord.put(key, oldWord.get(key));
             }
         }
 

@@ -1,8 +1,8 @@
 /* eslint-disable no-lone-blocks */
 /* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Linking, Button, Text, Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useEffect, useState} from 'react';
 import {serverIP, apis} from '../../common/urls';
 import {MainStackNavigationProp} from '../../screens/RootStack';
 import {useNavigation} from '@react-navigation/native';

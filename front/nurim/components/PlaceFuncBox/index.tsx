@@ -101,7 +101,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
             Alert.alert('등록된 번호가 없습니다.');
           }
         }}>
-        <Icon name={'call'} size={30} color="black" />
+        <Icon name={'call'} size={25} color="black" />
         <Text style={{color: 'black'}}>전화 걸기</Text>
       </Pressable>
       <Pressable style={styles.button}>
@@ -109,7 +109,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
           placeFavor ? (
             <Icon
               name={'heart'}
-              size={30}
+              size={25}
               color="black"
               onPress={() => {
                 deleteFavor(favoriteId);
@@ -120,7 +120,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
           ) : (
             <Icon
               name={'heart-outline'}
-              size={30}
+              size={25}
               color="black"
               onPress={() => {
                 pushMyFavor(placeInfo.preview?.locationId);
@@ -132,7 +132,7 @@ const PlaceFuncBox = (placeInfo: IFuncType) => {
         ) : (
           <Icon
             name={'heart-outline'}
-            size={30}
+            size={25}
             color="black"
             onPress={() => {
               return Alert.alert('로그인 후 이용가능합니다.');

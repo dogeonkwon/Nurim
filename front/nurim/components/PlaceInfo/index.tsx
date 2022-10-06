@@ -138,16 +138,18 @@ const PlaceDetail = (props: IDetailType) => {
           <Text style={{color: 'black'}}>{props.placeAllInfo?.address}</Text>
         </View>
         {props.placeAllInfo?.openingHours ? (
-          <View style={styles.placeInfo}>
-            <AntDesign
-              name={'clockcircleo'}
-              size={20}
-              style={{marginRight: 5}}
-              color="black"
-            />
-            <Text style={{color: 'black'}}>
-              {props.placeAllInfo?.openingHours}
-            </Text>
+          <View>
+            <View style={styles.placeInfo}>
+              <AntDesign
+                name={'clockcircleo'}
+                size={20}
+                style={{marginRight: 5}}
+                color="black"
+              />
+              <Text style={{color: 'black'}}>
+                {props.placeAllInfo?.openingHours}
+              </Text>
+            </View>
           </View>
         ) : null}
         {props.placeAllInfo?.phone ? (
@@ -161,7 +163,6 @@ const PlaceDetail = (props: IDetailType) => {
             <Text style={{color: 'black'}}>{props.placeAllInfo?.phone}</Text>
           </View>
         ) : null}
-        {/* <View style={styles.placeInfo}> */}
         <ScrollView
           nestedScrollEnabled={true}
           style={{
@@ -169,7 +170,7 @@ const PlaceDetail = (props: IDetailType) => {
             borderRadius: 10,
             borderColor: '#CCCCCC',
           }}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', alignSelf: 'center'}}>
             {iconList.map((e, idx) => {
               if (idx < 4) {
                 if (
@@ -193,7 +194,7 @@ const PlaceDetail = (props: IDetailType) => {
               }
             })}
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', alignSelf: 'center'}}>
             {iconList.map((e, idx) => {
               if (idx > 3) {
                 if (
@@ -218,7 +219,6 @@ const PlaceDetail = (props: IDetailType) => {
             })}
           </View>
         </ScrollView>
-        {/* </View> */}
       </View>
     </SafeAreaView>
   );

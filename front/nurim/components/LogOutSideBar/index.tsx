@@ -123,6 +123,7 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
           카카오 로그인
         </Text>
       </Button>
+      {/*
       <Button
         buttonStyle={styles.naverButton}
         containerStyle={[styles.ButtonContainer, {marginBottom: 20}]}
@@ -132,7 +133,7 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
         <Text style={[styles.naverButtonText, styles.ButtonText]}>
           네이버 로그인
         </Text>
-      </Button>
+  </Button>*/}
     </Divider>
   );
 };

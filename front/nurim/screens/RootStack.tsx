@@ -19,7 +19,6 @@ import SignUp from './SignUp';
 import TaxiDetail from './TaxiDetail';
 import MainWidget from '../components/MainWidget';
 import SplashImage from './SplashImage';
-import WordCloud from './WordCloud';
 
 import {
   createDrawerNavigator,
@@ -55,7 +54,6 @@ export type RootStackParams = {
   MyReviewFavor: {type: number};
   나의리뷰: {type: number};
   나의장소: {type: number};
-  WordCloud: undefined;
 };
 const StackNavi = createDrawerNavigator<RootStackParams>();
 export type MainDrawerNavigationProp = DrawerNavigationProp<RootStackParams>;
@@ -69,7 +67,6 @@ export type MainParams = {
   openDrawer: () => void;
   MainWidget: undefined;
   SignUp: undefined;
-  WordCloud: undefined;
 };
 export type MainStackNavigationProp = NativeStackNavigationProp<MainParams>;
 const MainStack = createNativeStackNavigator<MainParams>();
@@ -185,7 +182,6 @@ const RootStack = () => {
             name="마이페이지"
             options={{headerShown: false}}
           />
-          <StackNavi.Screen component={WordCloud} name="WordCloud" />
           <StackNavi.Screen
             component={MyReviewFavor}
             name="나의리뷰"

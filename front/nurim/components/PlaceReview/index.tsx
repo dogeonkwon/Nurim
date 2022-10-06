@@ -10,11 +10,14 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import {ButtonGroup} from '@rneui/themed';
 import {IPlace} from '../PlacePreview';
 import {Button, Overlay} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {color} from 'react-native-reanimated';
+import {getColor} from '../../common/colors';
 
 type IReviewType = {
   reviewInfo: number;
@@ -62,6 +65,9 @@ const PlaceReview = (props: IReviewType) => {
     'rgba(204, 204, 204, 1)',
   );
 
+  // 버튼그룹 선택 상태
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
   // 시설 데이터
   const [reviewInfo, setReviewInfo] = useState<IPlace | null>(null);
 
@@ -84,6 +90,10 @@ const PlaceReview = (props: IReviewType) => {
       })
       .catch(e => console.log('PlacePreview 에러 임당', e));
   };
+
+  useEffect(() => {
+    getAllReview();
+  }, [reviewInfo]);
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -109,10 +119,6 @@ const PlaceReview = (props: IReviewType) => {
     onChangeYellowLight('rgba(204, 204, 204, 1)');
     onChangeRedLight('rgba(214, 61, 57, 1)');
   };
-
-  useEffect(() => {
-    getAllReview();
-  }, [reviewInfo?.reviewCount.total]);
 
   // 서버로 리뷰 등록하기
   const pushReview = (): void => {
@@ -141,7 +147,7 @@ const PlaceReview = (props: IReviewType) => {
   // 리뷰리스트 가져오기
   const getAllReview = () => {
     let subLists: subListType[] = [];
-    if (reviewList === 4) {
+    if (selectedIndex === 0) {
       {
         reviewInfo?.reviews.green.map((data1, idx) => {
           const subList1: subListType = {
@@ -174,8 +180,7 @@ const PlaceReview = (props: IReviewType) => {
         };
         subLists.push(subList3);
       });
-      setAllReview(subLists);
-    } else if (reviewList === 1) {
+    } else if (selectedIndex === 1) {
       reviewInfo?.reviews.green.map((data1, idx) => {
         const subList1: subListType = {
           id: idx,
@@ -186,8 +191,7 @@ const PlaceReview = (props: IReviewType) => {
         };
         subLists.push(subList1);
       });
-      setAllReview(subLists);
-    } else if (reviewList === 2) {
+    } else if (selectedIndex === 2) {
       reviewInfo?.reviews.yellow.map((data2, idx) => {
         const subList2: subListType = {
           id: idx,
@@ -198,8 +202,7 @@ const PlaceReview = (props: IReviewType) => {
         };
         subLists.push(subList2);
       });
-      setAllReview(subLists);
-    } else if (reviewList === 3) {
+    } else if (selectedIndex === 3) {
       reviewInfo?.reviews.red.map((data3, idx) => {
         const subList3: subListType = {
           id: idx,
@@ -210,59 +213,104 @@ const PlaceReview = (props: IReviewType) => {
         };
         subLists.push(subList3);
       });
-      setAllReview(subLists);
     }
+    setAllReview(subLists);
   };
 
+  useEffect(() => {
+    getAllReview();
+  }, [selectedIndex]);
+
+  const componentTotal = () => (
+    <Text>전체 {reviewInfo?.reviewCount.total} 건</Text>
+  );
+  const component1 = () => <Text>🟢 {reviewInfo?.reviewCount.green}</Text>;
+  const component2 = () => <Text>🟠 {reviewInfo?.reviewCount.yellow}</Text>;
+  const component3 = () => <Text>🔴 {reviewInfo?.reviewCount.red}</Text>;
+  const buttons = [
+    {element: componentTotal},
+    {element: component1},
+    {element: component2},
+    {element: component3},
+  ];
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <View style={styles.underSignalPart}>
         <View style={styles.container}>
-          <Text onPress={() => setReviewList(1)} style={{color: 'black'}}>
+          <ButtonGroup
+            buttons={buttons}
+            selectedIndex={selectedIndex}
+            selectedButtonStyle={{backgroundColor: getColor('HEADER')}}
+            onPress={value => {
+              setSelectedIndex(value);
+            }}
+            //containerStyle={{marginBottom: 20}}
+          />
+        </View>
+        {/*
+        <View style={styles.container}>
+          <Text
+            onPress={() => setReviewList(1)}
+            style={{fontSize: 14, color: 'black'}}>
             🟢 {reviewInfo?.reviewCount.green}
           </Text>
           <View
             style={{
-              borderRightColor: 'black',
+              borderRightColor: 'rgba(0, 0, 0, 0.3)',
               borderRightWidth: 1,
               height: '80%',
               marginTop: 1,
             }}>
             <Text />
           </View>
-          <Text onPress={() => setReviewList(2)} style={{color: 'black'}}>
+          <Text
+            onPress={() => setReviewList(2)}
+            style={{fontSize: 14, color: 'black'}}>
             🟠 {reviewInfo?.reviewCount.yellow}
           </Text>
           <View
             style={{
-              borderRightColor: 'black',
+              borderRightColor: 'rgba(0, 0, 0, 0.3)',
               borderRightWidth: 1,
               height: '80%',
               marginTop: 1,
             }}>
             <Text />
           </View>
-          <Text onPress={() => setReviewList(3)} style={{color: 'black'}}>
+          <Text
+            onPress={() => setReviewList(3)}
+            style={{fontSize: 18, color: 'black'}}>
             🔴 {reviewInfo?.reviewCount.red}
           </Text>
           <View
             style={{
-              borderRightColor: 'black',
+              borderRightColor: 'rgba(0, 0, 0, 0.3)',
               borderRightWidth: 1,
               height: '80%',
               marginTop: 1,
             }}>
             <Text />
           </View>
-          <Text onPress={() => setReviewList(4)} style={{color: 'black'}}>
-            총 리뷰 {reviewInfo?.reviewCount.total} 건
-          </Text>
-        </View>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Text
+              onPress={() => setReviewList(4)}
+              style={{fontSize: 16, color: 'black'}}>
+              전체 {reviewInfo?.reviewCount.total} 건
+            </Text>
+          </View>
+          </View>*/}
         <View style={styles.reviewListView}>
           <ScrollView
             style={styles.reviewScrollView}
             nestedScrollEnabled={true}>
             <View>
+              {allReview.length === 0 && (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Text style={{fontSize: 16}}>
+                    {`작성된 리뷰가 없습니다.\n리뷰를 등록해 주세요.`}
+                  </Text>
+                </View>
+              )}
               {allReview.map((e, idx) => (
                 <View key={idx} style={styles.eachReaviewView}>
                   <View style={styles.nameDay}>
@@ -278,7 +326,7 @@ const PlaceReview = (props: IReviewType) => {
             </View>
           </ScrollView>
         </View>
-        <View>
+        <View style={{flex: 3}}>
           <Button
             title="리뷰 작성"
             onPress={toggleOverlay}
@@ -350,25 +398,24 @@ const PlaceReview = (props: IReviewType) => {
 
 const styles = StyleSheet.create({
   underSignalPart: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginTop: '5%',
+    flex: 1,
   },
   container: {
-    flexDirection: 'row',
-    borderStyle: 'solid',
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: 'lightgray',
-    marginBottom: 5,
-    padding: 3,
+    justifyContent: 'center',
+    marginBottom: 10,
+    width: '100%',
+    flex: 1,
   },
   reviewListView: {
     display: 'flex',
     flexDirection: 'column',
+    flex: 8,
+    marginLeft: '5%',
+    marginRight: '5%',
   },
   reviewScrollView: {
-    height: '40%',
+    height: '60%',
   },
   eachReaviewView: {
     display: 'flex',

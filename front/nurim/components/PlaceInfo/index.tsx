@@ -117,7 +117,7 @@ const PlaceDetail = (props: IDetailType) => {
   );
 
   return (
-    <SafeAreaView style={{backgroundColor: 'white', flex: 2}}>
+    <SafeAreaView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
         {/* 시설 정보 */}
         <View style={styles.placeInfo}>
@@ -165,7 +165,6 @@ const PlaceDetail = (props: IDetailType) => {
         <ScrollView
           nestedScrollEnabled={true}
           style={{
-            height: '30%',
             borderWidth: 1,
             borderRadius: 10,
             borderColor: '#CCCCCC',

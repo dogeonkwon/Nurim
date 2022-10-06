@@ -3,29 +3,6 @@ import {View} from 'react-native';
 import {PieChart} from 'react-native-chart-kit';
 import {serverIP, apis} from '../../common/urls';
 
-const data = [
-  {
-    name: '휠체어',
-    population: 14,
-    color: 'rgba(131, 167, 234, 1)',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-  {
-    name: '화장실',
-    population: 10,
-    color: '#F00',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-  {
-    name: '불편',
-    population: 4,
-    color: 'blue',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-];
 interface chartDataType {
   name: string;
   population: number;

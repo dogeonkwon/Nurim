@@ -1,18 +1,17 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Button} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParams} from './RootStack';
+import {RootStackParams, MainStackNavigationProp} from './RootStack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Map from '../components/Map';
+import {useNavigation} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
-
-type Props = NativeStackScreenProps<RootStackParams, 'Main'>;
-
-const Main = ({navigation}: Props) => {
+const Main = () => {
+  const navigation = useNavigation<MainStackNavigationProp>();
   const openDrawer = () => {
     navigation.openDrawer();
   };
@@ -20,6 +19,12 @@ const Main = ({navigation}: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <Map openDrawer={openDrawer} />
+      <Button
+        title="gkdl"
+        onPress={() => {
+          navigation.navigate('PlaceDetail');
+        }}
+      />
     </SafeAreaView>
   );
 };

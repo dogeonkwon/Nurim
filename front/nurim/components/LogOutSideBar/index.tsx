@@ -3,12 +3,24 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 //import styled from 'styled-components/native';
-import {styled} from '@mui/styles';
-import {Button, Text, Avatar, Divider, Icon} from '@rneui/themed';
+import {Button, Avatar, Divider, Icon} from '@rneui/themed';
 import {getFont} from '../../common/font';
 import {getColor} from '../../common/colors';
-import {signInWithKakao} from '../../modules/kakao';
 import {naverLogin} from '../../modules/naver';
+import {
+  getProfile as getKakaoProfile,
+  login,
+  logout,
+  unlink,
+} from '@react-native-seoul/kakao-login';
+import {serverIP, apis} from '../../common/urls';
+import {useDispatch, useSelector} from 'react-redux';
+import {authorize} from '../../slices/auth';
+import {
+  MainStackNavigationProp,
+  MainDrawerNavigationProp,
+} from './../../screens/RootStack';
+import {Tab, Text, TabView} from '@rneui/themed';
 
 const styles = StyleSheet.create({
   Divider: {
@@ -54,14 +66,55 @@ const styles = StyleSheet.create({
   },
 });
 
-const LogOutSideBar = () => {
+type LogOutSideBarProps = {
+  navigation: MainDrawerNavigationProp;
+};
+const LogOutSideBar = (props: LogOutSideBarProps) => {
+  const dispatch = useDispatch();
+  // 카카오 로그인 버튼 클릭 이벤트
+  const kakaoLoginButtonClicked = async () => {
+    try {
+      const token: any = await login();
+      const requestHeaders = new Headers();
+      requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+      fetch(serverIP + apis.kakaoLogin, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify({
+          access_token: JSON.stringify(token.accessToken),
+        }),
+      })
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+          dispatch(
+            authorize({
+              nickname: response.nickname, // 닉네임
+              phone: response.phone, // 휴대폰번호
+              emergency: response.emergency, // 비상연락번호
+              token: response.token, // 액세스토큰
+              profile: response.imgUrl,
+            }),
+          );
+          if (response.isFirst) props.navigation.navigate('SignUp');
+          else return true;
+        });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('login err', err);
+    }
+  };
+
+  // 네이버 로그인 버튼 클릭 이벤트
+  const naverLoginButtonClicked = () => {
+    naverLogin();
+  };
   return (
     <Divider style={styles.Divider}>
-      <Text style={styles.nameText}>로그인 해주세요.</Text>
       <Button
         buttonStyle={styles.kakaoButton}
         containerStyle={styles.ButtonContainer}
-        onPress={() => signInWithKakao()}>
+        onPress={() => kakaoLoginButtonClicked()}>
         <Avatar source={require('../../assets/images/KAKAO_LOGO_EDGE.png')} />
         <Text style={[styles.kakaoButtomText, styles.ButtonText]}>
           카카오 로그인
@@ -70,7 +123,7 @@ const LogOutSideBar = () => {
       <Button
         buttonStyle={styles.naverButton}
         containerStyle={[styles.ButtonContainer, {marginBottom: 20}]}
-        onPress={() => naverLogin(Platform.OS)}>
+        onPress={() => naverLoginButtonClicked()}>
         <Avatar source={require('../../assets/images/NAVER_LOGO.png')} />
         <Text style={[styles.naverButtonText, styles.ButtonText]}>
           네이버 로그인

@@ -1,7 +1,13 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {StyleSheet, TouchableOpacity, Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import Icon from '@rneui/themed';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Geolocation from '@react-native-community/geolocation';
+import TaxiPreview from '../TaxiPreview';
+import EmergencyList from '../EmergencyList';
+import {MainStackNavigationProp} from '../../screens/RootStack';
 
 const styles = StyleSheet.create({
   // 비상호출, 내위치 버튼 컴포넌트 위치
@@ -9,7 +15,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
-    margin: 10,
+    // margin: 10,
   },
   // 버튼의 스타일
   button: {
@@ -17,25 +23,47 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 50,
+    width: '15%',
     height: 50,
     backgroundColor: '#fff',
     borderRadius: 100,
-    margin: 10,
+    marginBottom: 20,
+    marginRight: 15,
   },
 });
 
-const SearchBar = () => {
+type MainWidgetProps = {
+  getCurrentLocation: () => void;
+};
+
+const MainWidget = ({getCurrentLocation}: MainWidgetProps) => {
+  const [visible, setVisible] = useState<boolean>(false);
+  const taxiEmergencyButton = () => {
+    setVisible(!visible);
+  };
+  // style={styles.wrap}
   return (
     <SafeAreaView style={styles.wrap}>
-      <TouchableOpacity style={styles.button}>
-        <Icon name={'car-emergency'} size={30} color="#01a699" />
+      {visible && (
+        <>
+          <TouchableOpacity>
+            <EmergencyList />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <TaxiPreview />
+          </TouchableOpacity>
+        </>
+      )}
+      <TouchableOpacity style={styles.button} onPress={taxiEmergencyButton}>
+        <Icon2 name={'add-box'} size={30} color="#01a699" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => getCurrentLocation()}>
         <Icon2 name={'my-location'} size={30} color="#01a699" />
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-export default SearchBar;
+export default MainWidget;

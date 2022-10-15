@@ -17,8 +17,8 @@ const androidKeys = {
 
 const initials = Platform.OS === 'ios' ? iosKeys : androidKeys;
 
-export const naverLogin = (props: string) => {
-  const key = props === 'ios' ? iosKeys : androidKeys;
+export const naverLogin = () => {
+  const key = Platform.OS === 'ios' ? iosKeys : androidKeys;
   console.log('naver login 시도');
   return new Promise((resolve, reject) => {
     NaverLogin.login(key, (err, token) => {

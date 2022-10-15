@@ -8,6 +8,7 @@ import Geolocation from '@react-native-community/geolocation';
 import TaxiPreview from '../TaxiPreview';
 import EmergencyList from '../EmergencyList';
 import {MainStackNavigationProp} from '../../screens/RootStack';
+import {ILocation} from '../Map';
 
 const styles = StyleSheet.create({
   // 비상호출, 내위치 버튼 컴포넌트 위치
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
   },
   // 버튼의 스타일
   button: {
+    marginLeft: 30,
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.2)',
     alignItems: 'center',
@@ -34,13 +36,15 @@ const styles = StyleSheet.create({
 
 type MainWidgetProps = {
   getCurrentLocation: () => void;
+  location: ILocation;
 };
 
-const MainWidget = ({getCurrentLocation}: MainWidgetProps) => {
+const MainWidget = ({getCurrentLocation, location}: MainWidgetProps) => {
   const [visible, setVisible] = useState<boolean>(false);
   const taxiEmergencyButton = () => {
     setVisible(!visible);
   };
+
   // style={styles.wrap}
   return (
     <SafeAreaView style={styles.wrap}>
@@ -49,8 +53,8 @@ const MainWidget = ({getCurrentLocation}: MainWidgetProps) => {
           <TouchableOpacity>
             <EmergencyList />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <TaxiPreview />
+          <TouchableOpacity style={{marginRight: 8}}>
+            <TaxiPreview location={location} />
           </TouchableOpacity>
         </>
       )}

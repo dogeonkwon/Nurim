@@ -2,25 +2,32 @@
 // 2022-09-26 김국진
 
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {MainStackNavigationProp} from '../../screens/RootStack';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, Input} from '@rneui/themed';
 import {serverIP, apis} from '../../common/urls';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../slices';
+import {useDispatch} from 'react-redux';
+import {authorize} from '../../slices/auth';
+import Toast from 'react-native-simple-toast';
+import {logout} from '@react-native-seoul/kakao-login';
 
 const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
-    marginTop: '5%',
+    marginTop: '15%',
+    marginLeft: '5%',
+    marginRight: '5%',
   },
   viewButton: {marginLeft: '3%', marginRight: '3%'},
-  viewNickname: {
+  messageContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
   nicknameInput: {width: '70%'},
   nicknameButton: {width: '30%', marginTop: '2%'},
-
   textMargin: {
     marginLeft: '4%',
     fontSize: 16,
@@ -36,18 +43,44 @@ const styles = StyleSheet.create({
   errTextImpossible: {
     color: 'red',
   },
+  messageText: {
+    fontSize: 16,
+    color: 'blue',
+    marginBottom: 15,
+  },
+  viewOut: {
+    width: '100%',
+    height: '20%',
+    marginTop: '3%',
+    alignItems: 'center',
+  },
+  outText: {
+    fontSize: 15,
+    textDecorationLine: 'underline',
+    color: 'darkgray',
+  },
 });
 
-const UpdateProfile = () => {
+type UpdateProfileProps = {
+  setSelectedMenu: (selectedMenu: number) => void;
+};
+
+const UpdateProfile = (props: UpdateProfileProps) => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
+  const navigation = useNavigation<MainStackNavigationProp>();
 
   const [errMsg, setErrMsg] = useState<number>(0);
-  const [nickname, setNickname] = useState<string>('김국진');
+  const [message, setMessage] = useState<string>('');
+  const [nickname, setNickname] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [emergency, setEmergency] = useState<string>('');
   const [checkNick, setCheckNick] = useState<boolean>(false);
 
   const nicknameCheck = (): void => {
+    if (nickname.length === 0) {
+      return;
+    }
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     //requestHeaders.set('jwt-token', user?.token);
@@ -66,6 +99,7 @@ const UpdateProfile = () => {
         if (response.availability) {
           setErrMsg(1);
           setCheckNick(true);
+          setMessage('');
         } else {
           setErrMsg(2);
           setCheckNick(false);
@@ -74,7 +108,45 @@ const UpdateProfile = () => {
       .catch(e => console.log(e));
   };
 
-  const updateProfile = (): void => {
+  // 회원 탈퇴 클릭
+  const outClicked = () => {
+    Alert.alert('회원 탈퇴하시겠습니까?', '', [
+      {
+        text: '확인',
+        onPress: () => signDelete(),
+        style: 'cancel',
+      },
+      {text: '취소'},
+    ]);
+  };
+
+  const signDelete = () => {
+    // 통신 헤더 정의
+    const requestHeaders = new Headers();
+    requestHeaders.set('jwt-token', user?.token ? user.token : '');
+    requestHeaders.set('Content-Type', 'application/json;charset=utf-8');
+    fetch(serverIP + apis.userDelete, {
+      method: 'DELETE',
+      headers: requestHeaders,
+    })
+      //.then(response => response.json())
+      .then(response => {
+        Toast.show('회원탈퇴하였습니다.');
+        // 로그아웃
+        logout().then(() => {
+          dispatch(authorize(null));
+          navigation.navigate('Main');
+        });
+      })
+      .catch(e => console.log(e));
+  };
+
+  const saveButtonClicked = (): void => {
+    if (!checkNick) {
+      setMessage('닉네임 중복체크가 필요합니다.');
+      return;
+    }
+
     // 통신 헤더 정의
     const requestHeaders = new Headers();
     requestHeaders.set('jwt-token', user?.token ? user.token : '');
@@ -90,7 +162,17 @@ const UpdateProfile = () => {
     })
       .then(response => response.json())
       .then(response => {
-        console.log(response);
+        dispatch(
+          authorize({
+            nickname: response.nickname, // 닉네임
+            phone: response.phone, // 휴대폰번호
+            emergency: response.emergency, // 비상연락번호
+            token: response.token, // 액세스토큰
+            profile: response.imgUrl,
+          }),
+        );
+        Toast.show('회원 정보 수정이 완료되었습니다.');
+        props.setSelectedMenu(0);
       })
       .catch(e => console.log(e));
   };
@@ -98,7 +180,7 @@ const UpdateProfile = () => {
   return (
     <View style={styles.viewContainer}>
       <View>
-        <View style={styles.viewNickname}>
+        <View style={styles.messageContainer}>
           <View style={styles.nicknameInput}>
             <Input
               placeholder="새 닉네임을 입력하세요."
@@ -134,10 +216,18 @@ const UpdateProfile = () => {
           onChangeText={value => setEmergency(value)}
         />
       </View>
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageText}>{message}</Text>
+      </View>
       <View style={styles.viewButton}>
-        <Button size="md" onPress={() => updateProfile()}>
+        <Button size="md" onPress={() => saveButtonClicked()}>
           저장하기
         </Button>
+      </View>
+      <View style={styles.viewOut}>
+        <Text style={styles.outText} onPress={() => outClicked()}>
+          회원탈퇴
+        </Text>
       </View>
     </View>
   );

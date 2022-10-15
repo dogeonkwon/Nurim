@@ -1,18 +1,25 @@
 /* eslint-disable no-lone-blocks */
 /* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Linking, Button, Text, Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useEffect, useState} from 'react';
 import {serverIP, apis} from '../../common/urls';
 import {MainStackNavigationProp} from '../../screens/RootStack';
 import {useNavigation} from '@react-navigation/native';
 import PlaceFuncBox from '../PlaceFuncBox';
-import {IRange} from '../Map';
+import {ILocation} from '../Map';
+
+interface reviewColor {
+  content: string;
+  createdDate: string;
+  nickname: string;
+  reviewId: number;
+}
 
 interface IReviews {
-  additionalProp1: object[];
-  additionalProp3: object[];
-  additionalProp2: object[];
+  green: reviewColor[];
+  red: reviewColor[];
+  yellow: reviewColor[];
 }
 
 interface IAddition {
@@ -51,9 +58,10 @@ export type IPlace = {
 
 interface PlacePreviewProps {
   locatID: number;
+  location: ILocation;
 }
 
-const PlacePreview = (locatID: PlacePreviewProps) => {
+const PlacePreview = (props: PlacePreviewProps) => {
   const navigation = useNavigation<MainStackNavigationProp>();
 
   // 시설 데이터
@@ -65,7 +73,7 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
 
   // 시설 ID에 맞는 데이터 구하기
   const getPlaceInfo = (): void => {
-    fetch(serverIP + apis.placeAllInfo + '/' + locatID.locatID, {
+    fetch(serverIP + apis.placeAllInfo + '/' + props.locatID, {
       method: 'GET',
     })
       .then(response => response.json())
@@ -84,7 +92,10 @@ const PlacePreview = (locatID: PlacePreviewProps) => {
         </Text>
         <Pressable
           onPress={() => {
-            navigation.navigate('PlaceDetail', locatID);
+            navigation.navigate('PlaceDetail', {
+              locatID: props.locatID,
+              location: props.location,
+            });
           }}>
           <Text>상세보기</Text>
         </Pressable>
@@ -153,4 +164,3 @@ const styles = StyleSheet.create({
 });
 
 export default PlacePreview;
-export type {IPlace, IReviews, IReviewCount};

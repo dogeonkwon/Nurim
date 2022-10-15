@@ -5,6 +5,8 @@ import MyFavorContent from '../MyFavorContent';
 
 type MyFavorProps = {
   myFavor: FavorType[] | undefined;
+  refreshFavor: boolean;
+  setRefreshFavor: (refreshFavor: boolean) => void;
 };
 
 const MyFavor = (props: MyFavorProps) => {
@@ -14,8 +16,11 @@ const MyFavor = (props: MyFavorProps) => {
         {props.myFavor?.map(favor => (
           <MyFavorContent
             key={favor.id}
+            favoriteId={favor.favoriteId}
             locationName={favor.locationName}
             locationAddress={favor.locationAddress}
+            refreshFavor={props.refreshFavor}
+            setRefreshFavor={props.setRefreshFavor}
           />
         ))}
       </ScrollView>

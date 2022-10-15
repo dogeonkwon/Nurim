@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Pressable, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Icon} from '@react-native-material/core';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {useEffect} from 'react';
 
 const styles = StyleSheet.create({
   dropdown: {
@@ -72,10 +70,10 @@ const morelist = [
 
 type MoreProps = {
   getCategory: (catenum: string) => void;
-  setCatenum: (catenum: string) => void;
+  catenum: string;
 };
 
-const More = ({getCategory, setCatenum}: MoreProps) => {
+const More = (Props: MoreProps) => {
   return (
     <SafeAreaView>
       <ModalDropdown
@@ -87,15 +85,15 @@ const More = ({getCategory, setCatenum}: MoreProps) => {
         onSelect={e => {
           if (Number(e) >= 5) {
             if (Number(e) >= 7) {
-              getCategory(String(Number(e) + 3));
-              setCatenum(String(Number(e) + 3));
+              Props.getCategory(String(Number(e) + 3));
+              // setCatenum(String(Number(e) + 3));
             } else {
-              getCategory('0' + String(Number(e) + 3));
-              setCatenum('0' + String(Number(e) + 3));
+              Props.getCategory('0' + String(Number(e) + 3));
+              // setCatenum('0' + String(Number(e) + 3));
             }
           } else {
-            getCategory('0' + e);
-            setCatenum('0' + e);
+            Props.getCategory('0' + e);
+            // setCatenum('0' + e);
           }
         }}
         defaultTextStyle={{fontWeight: '900'}}

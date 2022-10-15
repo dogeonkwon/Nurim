@@ -21,10 +21,12 @@ import {
   MainDrawerNavigationProp,
 } from './../../screens/RootStack';
 import {Tab, Text, TabView} from '@rneui/themed';
+import Toast from 'react-native-simple-toast';
 
 const styles = StyleSheet.create({
   Divider: {
     flex: 1,
+    marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
 });
 
 type LogOutSideBarProps = {
-  navigation: MainDrawerNavigationProp;
+  navigation: any;
 };
 const LogOutSideBar = (props: LogOutSideBarProps) => {
   const dispatch = useDispatch();
@@ -96,6 +98,7 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
               profile: response.imgUrl,
             }),
           );
+          Toast.show('로그인 되었습니다.');
           if (response.isFirst) props.navigation.navigate('SignUp');
           else return true;
         });
@@ -120,15 +123,17 @@ const LogOutSideBar = (props: LogOutSideBarProps) => {
           카카오 로그인
         </Text>
       </Button>
+      {/*
       <Button
         buttonStyle={styles.naverButton}
         containerStyle={[styles.ButtonContainer, {marginBottom: 20}]}
-        onPress={() => naverLoginButtonClicked()}>
+        //onPress={() => naverLoginButtonClicked()}
+        onPress={() => Toast.show('미지원 기능입니다.')}>
         <Avatar source={require('../../assets/images/NAVER_LOGO.png')} />
         <Text style={[styles.naverButtonText, styles.ButtonText]}>
           네이버 로그인
         </Text>
-      </Button>
+  </Button>*/}
     </Divider>
   );
 };
